@@ -1,0 +1,271 @@
+# Stage 1A — UX findings
+
+Audited 2026-08-30 against `61e241abe`, on emulator-5556 (phone 1080x2400) under the
+**Aurora** skin, with a populated library and history. Screenshots in
+`scratchpad/ux/phone/`. Each finding has a status kept current through Stage 2.
+
+Status key: `OPEN` · `FIXED` · `DEFERRED` (with reason) · `REJECTED` (with reason).
+
+---
+
+## S1. Home (`themed/now/NowScreen.kt`)
+
+**Purpose.** Get the returning user back into what they were listening to.
+**Primary action.** Resume the hero item.
+
+1. **Primary navigation sits below the carousel.** `Your library`, `Search` and `Car mode`
+   render at the *bottom* of Home, below the "Back to" row — **4 full swipes** on a
+   1080x2400 phone. Above the fold the only affordances are the hero Play and a search
+   icon. A returning user has no visible route to their own library.
+   *Why it's wrong:* the app's three top-level destinations are effectively hidden the
+   moment the user has any history, which is permanently after day one.
+   **P0.** *Fix:* persistent top-level navigation that does not depend on scroll position.
+   — `OPEN`
+2. **The empty-state Home and the populated Home have different navigation.** On first run
+   the three links are visible near the top; once content exists they move below it. The
+   information architecture changes shape under the user.
+   **P1.** *Fix:* same nav in both states. — `OPEN`
+3. **The search affordance is icon-only with no visible label on populated Home,** while
+   the empty state renders the word "Search". Inconsistent, and the icon is the only route
+   to search from Home.
+   **P2.** *Fix:* one treatment for both states. — `OPEN`
+
+## S2. Search (`themed/luma/LumaSearchScreen.kt`)
+
+**Purpose.** Find something by name. **Primary action.** Submit the query.
+
+4. **No back affordance on screen.** Relies entirely on system back / gesture.
+   **P1.** *Fix:* a back control consistent with the rest of the app. — `OPEN`
+
+## S3. Search results (`ui/screens/searchresult/SearchResultScreen.kt`)
+
+**Purpose.** Pick from matches. **Primary action.** Play a result.
+
+5. **This screen is the app's only route to Settings, History, Statistics, Appearance,
+   Your listening, Handoff and Car Mode** — all of them live behind its `More` overflow.
+   A user who wants Settings must first perform a search.
+   *Why it's wrong:* it is not a navigation surface, and nothing about it suggests it
+   holds the app's entire secondary IA.
+   **P0.** *Fix:* move these to a real top-level destination; keep contextual actions
+   (sort, filter) in the results overflow. — `OPEN`
+6. Every row carries a download icon, competing with the row's own primary action (play).
+   **P2.** *Fix:* move download into the row's overflow. — `OPEN`
+
+## S4. Player (`themed/player/LumaPlayer.kt`)
+
+**Purpose.** Control what is playing. **Primary action.** Play/pause.
+
+7. **Secondary transport (prev/next) renders mid-grey on a light surface.** Measured on
+   the Aurora capture, the glyphs are far lower contrast than the play control.
+   **P1.** *Fix:* transport glyphs use `LumaColor.Ink`, not a fixed grey. — `OPEN`
+8. Progress arc and play button take the artwork accent, which on some artwork lands close
+   to the skin accent and on others clashes with it. There is no rule keeping the two apart.
+   **P2.** *Fix:* accent selection respects the skin's accent as a floor. — `OPEN`
+
+## S5. Queue
+
+**Purpose.** See and reorder what is next. **Primary action.** Reorder / jump.
+
+9. **The now-playing row truncates from the left** on mixed-script content: the artist
+   renders as `ashary Rashed El Afasi - راشد العفاسى` with the leading characters cut.
+   Every other row truncates from the right.
+   **P1.** *Fix:* single truncation rule; do not centre-align mixed-script rows. — `OPEN`
+10. **Two stray blue dots are drawn over the now-playing thumbnail,** landing on the
+    reciter's face. Appears to be a drag-handle or selection artifact rendered in the wrong
+    place.
+    **P1.** *Fix:* trace the overlay and constrain it. — `OPEN`
+11. **The mini-player repeats the queue's own now-playing row** directly beneath it — the
+    same title, artist and artwork twice on one screen.
+    **P1.** *Fix:* suppress the mini-player on the queue surface. — `OPEN`
+12. **The bottom toolbar is six unlabelled icons** (count, crosshair, magnifier, padlock,
+    ellipsis, chevron). "Crosshair" and "padlock" are not guessable.
+    *Why it's wrong:* fails "icons legible without guessing"; a padlock in a music app
+    reads as security, not as queue-lock.
+    **P1.** *Fix:* label them or reduce to the two that earn their place. — `OPEN`
+13. This whole surface is upstream chrome, not the Luma language — different toolbar,
+    different type, different spacing from every screen around it.
+    **P1 (system-level, see X2).** — `OPEN`
+
+## S6. Library (`themed/library/LibraryScreen.kt`)
+
+**Purpose.** Find something already saved. **Primary action.** Open a saved item.
+
+14. **Artist and album tiles are giant empty placeholders.** Artists render as ~230px
+    white circles containing a single letter; albums as ~290px white squares containing a
+    single letter. Two full rows of near-empty shapes occupy the top two-thirds of the
+    screen, pushing the only rows with real artwork (Songs) below the fold.
+    *Why it's wrong:* the eye is drawn to the largest, emptiest elements, and the actual
+    content is what gets cut off.
+    **P1.** *Fix:* use real artwork where it exists; shrink the placeholder scale
+    substantially; lead with content that has imagery. — `OPEN`
+15. **No back affordance.** **P1.** — `OPEN`
+
+## S7. Car Mode (`themed/car/CarModeScreen.kt`)
+
+Audited as a driver: glance-length looks, arm's length, direct sun.
+
+16. **A photographic sky background sits behind the entire surface**, including behind the
+    text. This is a direct breach of the theme prompt's Car Mode hard gate ("no
+    photographic backgrounds") and of the legibility rule ("text never sits directly on a
+    photograph").
+    **P0.** *Fix:* Car Mode gets a flat, high-contrast surface; the skin may set its
+    colour and nothing else. — `OPEN`
+17. **Prev and next glyphs are mid-grey on white** — the lowest-contrast controls on the
+    screen are the ones a driver reaches for without looking.
+    **P0.** *Fix:* full-contrast glyphs, no exceptions in Car Mode. — `OPEN`
+18. **Transport sits at the vertical middle** in portrait. In a phone cradle the natural
+    thumb arc is the lower third.
+    **P1.** *Fix:* anchor transport to the lower third in portrait. — `OPEN`
+19. **An empty progress bar and `0:00 / 0:00` occupy prime real estate when nothing is
+    playing,** and the artwork slot is a large blank plate.
+    **P2.** *Fix:* collapse the transport furniture in the idle state. — `OPEN`
+20. No route back to Home from Car Mode other than a chevron that reads as "collapse".
+    **P2.** — `OPEN`
+
+## S8. Settings (`ui/screens/settings/SettingsScreen.kt`)
+
+21. **Two search affordances on one screen**: the circular search in the header and a
+    second, unlabelled cyan magnifier immediately below it.
+    **P1.** *Fix:* one. — `OPEN`
+22. **`Check now` renders as pale text on a pale pill** — the lowest-contrast interactive
+    element found in the audit.
+    **P1 (contrast).** — `OPEN`
+23. Section labels (`UPDATE`, `LANGUAGES`, `PLAYER`) are small grey caps on a pale ground;
+    likely below 4.5:1 on light skins. Needs measurement, then a token that guarantees it.
+    **P1.** — `OPEN`
+24. `Currently selected: System language` sits between the section label and its divider
+    in a third, lighter grey — a fourth text colour in one header block.
+    **P2.** — `OPEN`
+
+## S9. History (`ui/screens/history/HistoryScreen.kt`)
+
+25. ~250px of dead space between the header controls and the `History` title.
+    **P2.** — `OPEN`
+26. The `Today` group header is a full-width white card ~120px tall containing one word.
+    Disproportionate to its job.
+    **P2.** — `OPEN`
+27. `YTM History` is jargon. **P2.** *Fix:* "YouTube Music history". — `OPEN`
+
+## S10. Statistics (`ui/screens/statistics/StatisticsScreen.kt`)
+
+28. **Titles are clipped on both sides in the two-column grid.** Observed: `Allah Humm`,
+    `Hotel (feat. R.Ke`, `-Z, Boo & Gotti)`, `Kun Fayak`, `lmer Z`, `dy  Ca`, `liohea`,
+    `ex Wa`. Text overflows its cell rather than truncating cleanly, and some strings are
+    cut at the *start*.
+    *Why it's wrong:* it looks broken, and on a phone a two-column grid cannot hold a real
+    track title at this type size.
+    **P0.** *Fix:* single column on phone; one truncation rule; `Ellipsis` at the end only.
+    — `OPEN`
+29. **`1h 23m 48.168s time spent`** — millisecond precision in a human-facing total.
+    **P2.** *Fix:* round to seconds, drop the fraction. — `OPEN`
+30. Rank numerals are drawn over the artwork bottom-left, colliding with image content.
+    **P2.** — `OPEN`
+
+## S11. Your listening (`themed/taste/TasteCentreScreen.kt`)
+
+31. **The title collides with the status bar.** `Your listening` renders at the very top of
+    the window with no top inset, overlapping the system clock row.
+    **P0 (visual breakage).** *Fix:* apply status-bar insets. — `OPEN`
+32. **The toggle overlaps its own description.** The switch is drawn on top of the wrapping
+    description text ("…to order what **gets suggested**"), obscuring words.
+    **P0.** *Fix:* constrain the text column; the control gets its own gutter. — `OPEN`
+33. **`Reset everything the app has learned` is an unprotected destructive action** —
+    a plain button with nothing distinguishing it from a benign one.
+    **P1.** *Fix:* confirmation, and destructive styling from a token. — `OPEN`
+34. **The surface is missing most of what the architecture requires of it** (§12): no
+    "Reduced" list of suppressed items, no per-facet reset, no "forget the last 24h/7d/30d",
+    no private session, no pause-learning, no per-line undo/why. It exposes a single global
+    switch and a nuclear reset.
+    **P1.** *Fix:* build out as part of Stage 3 P2, which is where it belongs. — `OPEN`
+35. ~60% of the screen is empty below the reset button.
+    **P2.** — `OPEN`
+
+## S12. Handoff, Appearance, Profiles
+
+36. All three are reachable only through the search-results overflow (see finding 5).
+    **P0, tracked by 5.** — `OPEN`
+37. Appearance is the only screen in the app with a genuinely strong first impression
+    (ten named skins with taglines). It is buried four taps deep.
+    **P1.** *Fix:* surface it from Settings and from the top-level nav. — `OPEN`
+
+---
+
+## Phone
+
+38. One-handed reach: the primary navigation is at the extreme bottom of a long scroll
+    (finding 1) while the search icon is in the top-right corner — the two most-used
+    controls are at opposite, hard-to-reach ends.
+    **P1.** — `OPEN`
+39. Two-column grids (Statistics) are wrong at this width with real content (finding 28).
+    **P1.** — `OPEN`
+
+## Tablet
+
+40. **The tablet runs the phone layout scaled up.** The audit sweep on emulator-5554
+    produced the same single-column composition at 2560x1600, with the same bottom-anchored
+    navigation. No multi-column, no side navigation, no persistent queue.
+    *Why it's wrong:* on a 2560px-wide surface a single column of list rows wastes most of
+    the display and makes every journey longer than it is on the phone.
+    **P1.** *Fix:* side navigation at ≥900dp, two-pane library, persistent queue.
+    — `OPEN`
+
+## Car Mode
+
+Findings 16–20 above. Additionally:
+
+41. Car Mode inherits the skin's ornament wholesale, so a skin with a photographic
+    backdrop puts photography behind driving controls (finding 16 is the instance; this is
+    the mechanism). Car Mode must opt out of ornament at the system level, not per skin.
+    **P0 (system-level, see X4).** — `OPEN`
+
+---
+
+## Top 10 problems, ranked by daily-user harm
+
+1. **(5, 1)** The app's entire secondary IA lives behind a search-results overflow, and its
+   top-level links are below a carousel. Everything else on this list is smaller than this.
+2. **(16, 17)** Car Mode puts photography behind text and renders its secondary transport
+   in low-contrast grey — the one surface where a mistake has a physical cost.
+3. **(28)** Statistics clips titles on both sides; the screen reads as broken.
+4. **(31, 32)** "Your listening" overlaps the status bar and draws its switch on top of its
+   own text — the surface whose entire job is trust.
+5. **(14)** Library leads with two rows of giant empty placeholders and pushes real content
+   off-screen.
+6. **(9, 10, 11, 12)** The queue: left-truncated mixed-script rows, stray dots over
+   artwork, a duplicated now-playing row, and six unlabelled icons.
+7. **(40)** The tablet is a scaled phone.
+8. **(21, 22, 23)** Settings: duplicate search, a near-invisible primary button, and
+   unmeasured label contrast.
+9. **(34)** The personalisation surface promises transparency and provides a single switch.
+10. **(7)** Player secondary transport contrast.
+
+## System-level problems — these get fixed first
+
+- **X1. There is no radius or elevation scale.** 17 distinct corner radii across 92 uses,
+  and **zero** elevation/shadow usage anywhere in 589 files. Colour and type are already
+  centralised; these two are not. Every card, sheet and button therefore has a hand-picked
+  corner and no depth, which is also why the app cannot currently express the Aero
+  aesthetic — gloss, bevel and shadow have nothing to hang on.
+- **X2. Two parallel UI languages ship simultaneously.** The Luma surfaces
+  (`themed/**`) and the inherited upstream surfaces (`ui/screens/**`) have different
+  headers, toolbars, type and spacing, and the user crosses between them constantly
+  (player → queue, home → statistics).
+- **X3. Duplicate components.** Five dialog base implementations, two live action-sheet
+  systems, two players. Any fix has to be made in two or five places or it drifts.
+- **X4. Ornament is applied globally rather than per surface.** A skin's backdrop reaches
+  Car Mode and reaches behind body text, which is what makes the light skins fragile.
+  Intensity (Full / Reduced / Minimal) needs to be a property of the surface.
+- **X5. Contrast is unmeasured.** No screen has a recorded worst-case ratio. Several
+  candidates found by eye (22, 23, 17). Needs a measurement tool, not opinions.
+
+## Batch order for Stage 2, and why
+
+1. **Batch 1 — foundations**: radius + elevation scales, surface-intensity token, then
+   collapse dialogs and action sheets onto one implementation each. Chosen first because
+   X1 blocks the entire theme track and X3 doubles the cost of every later fix.
+2. **Batch 2 — P0 navigation**: findings 1, 5, 31, 32. The IA problem is the single
+   largest source of daily friction and everything else is cosmetic beside it.
+3. **Batch 3 — hierarchy and depth**: 14, 28, 9–13, 21–24.
+4. **Batch 4 — Car Mode**: 16–20, 41. Treated as its own surface with its own intensity.
+5. **Batch 5 — Tablet**: 40.
+6. **Batch 6 — polish**: the P2 tail.
