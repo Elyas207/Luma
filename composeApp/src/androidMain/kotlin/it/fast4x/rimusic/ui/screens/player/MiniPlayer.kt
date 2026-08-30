@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -195,6 +196,11 @@ fun MiniPlayer(
 
     SwipeToDismissBox(
         modifier = Modifier
+            // The mini player floats above the content, so nothing else reserves room for the
+            // system navigation bar — without this the back, home and recents glyphs are drawn
+            // straight over the artist name, which is exactly how it rendered on a 3-button
+            // navigation device (refinement pass 1).
+            .navigationBarsPadding()
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape( LumaRadius.Panel )),
         state = dismissState,
@@ -314,7 +320,14 @@ fun MiniPlayer(
                     modifier = Modifier.clip( androidx.compose.foundation.shape.CircleShape )
                                        .size( 44.dp )
                 )
-                NowPlayingSongIndicator(mediaItem.mediaId, player)
+                // No now-playing indicator here. It defaulted to the list-row thumbnail size, which
+                // is far larger than this 44dp disc, so the equaliser animation spilled outside the
+                // artwork and rendered as stray blobs across the reciter's face (finding 10).
+                //
+                // Sizing it correctly fixed the spill but left the real problem: the mini player is
+                // *by definition* the thing that is playing, so an "this is playing" badge on its
+                // own artwork is redundant, and it competes with the one image on the control.
+                // It stays in the list rows, where it distinguishes one row from the others.
             }
 
             Column(
@@ -353,8 +366,12 @@ fun MiniPlayer(
                         color = app.kreate.android.themed.luma.LumaColor.InkSoft
                     ),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.scrollingText()
+                    overflow = TextOverflow.Ellipsis
+                    // No marquee on this line. With both lines scrolling independently the mini
+                    // player reads as garbled at any given instant — the title showing its tail
+                    // above the artist showing its middle — and two things moving in a control
+                    // this small is noise rather than information. The title still scrolls; the
+                    // artist truncates. It is also one less animation running during playback.
                 )
             }
 

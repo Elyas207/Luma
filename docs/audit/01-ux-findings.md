@@ -74,7 +74,12 @@ Status key: `OPEN` · `FIXED` · `DEFERRED` (with reason) · `REJECTED` (with re
 10. **Two stray blue dots are drawn over the now-playing thumbnail,** landing on the
     reciter's face. Appears to be a drag-handle or selection artifact rendered in the wrong
     place.
-    **P1.** *Fix:* trace the overlay and constrain it. — `OPEN`
+    **P1.** — `FIXED`. Traced: `NowPlayingSongIndicator` defaults its size to
+    `Dimensions.thumbnails.song`, the *list-row* thumbnail, wherever it is placed — so over the
+    mini player's 44dp disc the equaliser animation spilled outside the artwork. Sizing it
+    correctly stopped the spill, but the real answer was that the mini player *is* the playing
+    item, so a "now playing" badge on its own artwork is redundant and competes with the one
+    image on the control. Removed there; kept in list rows where it distinguishes a row.
 11. **The mini-player repeats the queue's own now-playing row** directly beneath it — the
     same title, artist and artwork twice on one screen.
     **P1.** *Fix:* suppress the mini-player on the queue surface. — `OPEN`
@@ -303,3 +308,30 @@ Findings 16–20 above. Additionally:
 4. **Batch 4 — Car Mode**: 16–20, 41. Treated as its own surface with its own intensity.
 5. **Batch 5 — Tablet**: 40.
 6. **Batch 6 — polish**: the P2 tail.
+
+
+---
+
+## Refinement pass 1 — new findings
+
+Found by walking the app again after the Stage 2/3 work, on a dark skin.
+
+42. **The mini player was drawn underneath the system navigation bar**, so the back, home and
+    recents glyphs sat on top of the artist name. Nothing else on that surface reserves room for
+    the system bars, and the mini player floats above the content.
+    **P1.** — `FIXED` (`navigationBarsPadding()`).
+43. **Both mini-player lines ran an independent marquee**, so at any given instant it read as
+    garbled — the title showing its tail directly above the artist showing its middle. Two things
+    moving in a control that size is noise, not information.
+    **P1.** — `FIXED` (marquee on the title only; the artist truncates. Also one fewer animation
+    running during playback).
+44. **The playback oracle read a dead media session.** `dumpsys media_session` retains entries for
+    sessions that are gone; after a run of force-stops the device listed seven mentions of the
+    package, one PLAYING at 64s and three stale `ERROR(7)` rows at position zero. The oracle took
+    the first match and reported a hard, *reproducible* failure while audio was plainly playing.
+    **P0 (test infrastructure).** — `FIXED` (takes the most recently updated session). Worth
+    recording as a finding in its own right: a test that fails consistently for the wrong reason is
+    more dangerous than one that fails intermittently, because it gets believed.
+45. The emulator's `system_server` died under the load of repeated force-stops mid-pass, which
+    presented as a series of playback failures. Environmental, not an app defect — noted so the
+    same symptom is not misread next time.
