@@ -177,14 +177,23 @@ Audited as a driver: glance-length looks, arm's length, direct sun.
 32. **The toggle overlaps its own description.** The switch is drawn on top of the wrapping
     description text ("…to order what **gets suggested**"), obscuring words.
     **P0.** *Fix:* constrain the text column; the control gets its own gutter. — `FIXED` (16dp gutter; description now wraps clear of the switch)
-33. **`Reset everything the app has learned` is an unprotected destructive action** —
-    a plain button with nothing distinguishing it from a benign one.
-    **P1.** *Fix:* confirmation, and destructive styling from a token. — `OPEN`
+33. ~~**`Reset everything the app has learned` is an unprotected destructive action.**~~
+    **REJECTED — I was wrong.** Reading the code, it is already a two-tap confirm that relabels to
+    "Tap again to forget everything" and switches to the alarm colour. A modal would be heavier
+    than a reversible preference deserves. Superseded by 33b.
+33b. **The reset only cleared the derived counters, not the raw event log**, so "forget everything"
+    left the evidence behind. **P1.** — `FIXED` (clears both).
+33c. **A settings row's label is not tappable — only the switch is.** Found while testing the
+    private session: tapping the words did nothing. A ~50x30dp target at the far edge of a 411dp
+    row, for the row's primary action. **P1.** — `FIXED` (the whole row toggles).
 34. **The surface is missing most of what the architecture requires of it** (§12): no
     "Reduced" list of suppressed items, no per-facet reset, no "forget the last 24h/7d/30d",
     no private session, no pause-learning, no per-line undo/why. It exposes a single global
     switch and a nuclear reset.
-    **P1.** *Fix:* build out as part of Stage 3 P2, which is where it belongs. — `OPEN`
+    **P1.** *Fix:* build out as part of Stage 3 P2, which is where it belongs. — `PARTLY FIXED`
+    (private session, and forget-the-last-24h/7d/30d, both shipped with the inference as the
+    architecture requires. Per-facet reset and the per-line "why / not accurate" controls are still
+    open.)
 35. ~60% of the screen is empty below the reset button.
     **P2.** — `OPEN`
 

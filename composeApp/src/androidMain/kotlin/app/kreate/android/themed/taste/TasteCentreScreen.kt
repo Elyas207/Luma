@@ -71,6 +71,10 @@ fun TasteCentreScreen( modifier: Modifier = Modifier ) {
                          .collectAsState( initial = emptyList() )
 
     var confirmingReset by remember { mutableStateOf( false ) }
+    var privateSession by remember {
+        mutableStateOf( app.kreate.android.service.intelligence.Intelligence.isPrivateSession )
+    }
+    var forgotten by remember { mutableStateOf<Int?>( null ) }
 
     LazyColumn(
         modifier = modifier
@@ -160,6 +164,65 @@ fun TasteCentreScreen( modifier: Modifier = Modifier ) {
             }
 
         item {
+            SectionHeader(
+                "Just for now",
+                "Play something without it counting. Nothing is written down while this is on."
+            )
+            SettingRow(
+                title = "Private session",
+                subtitle = "Records nothing at all until you switch it off.",
+                checked = privateSession,
+                onCheckedChange = {
+                    privateSession = it
+                    app.kreate.android.service.intelligence.Intelligence.setPrivateSession( it )
+                }
+            )
+        }
+
+        item {
+            SectionHeader(
+                "Forget a stretch of time",
+                "A bad week, a guest, a phase you would rather not keep."
+            )
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding( horizontal = 20.dp, vertical = 4.dp ),
+                horizontalArrangement = Arrangement.spacedBy( 10.dp )
+            ) {
+                listOf(
+                    "24 hours" to 24L * 60 * 60 * 1000,
+                    "7 days"   to 7L * 24 * 60 * 60 * 1000,
+                    "30 days"  to 30L * 24 * 60 * 60 * 1000
+                ).forEach { ( label, window ) ->
+                    Box(
+                        Modifier
+                            .weight( 1f )
+                            .clip( RoundedCornerShape( LumaRadius.Card ) )
+                            .background( LumaColor.Raised )
+                            .clickable {
+                                app.kreate.android.service.intelligence.Intelligence
+                                    .forgetSince( window ) { removed -> forgotten = removed }
+                            }
+                            .padding( vertical = 14.dp ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text( label, style = LumaType.Tile, color = LumaColor.Ink )
+                    }
+                }
+            }
+            forgotten?.let { count ->
+                Text(
+                    text = if ( count == 0 ) "Nothing recorded in that window."
+                           else "Forgotten. $count entries removed.",
+                    style = LumaType.Meta,
+                    color = LumaColor.InkSoft,
+                    modifier = Modifier.padding( horizontal = 20.dp, vertical = 8.dp )
+                )
+            }
+        }
+
+        item {
             Spacer( Modifier.height( 24.dp ) )
             Box( Modifier.padding( horizontal = 20.dp ) ) {
                 Box(
@@ -172,6 +235,9 @@ fun TasteCentreScreen( modifier: Modifier = Modifier ) {
                             // speed bump to prevent a mis-tap.
                             if ( confirmingReset ) {
                                 TasteEngine.forgetAll()
+                                // The derived counters *and* the raw log. A reset that leaves the
+                                // events behind is not a reset, it is a pause.
+                                app.kreate.android.service.intelligence.Intelligence.forgetEverything()
                                 confirmingReset = false
                             } else confirmingReset = true
                         }
@@ -213,6 +279,11 @@ private fun SettingRow(
 ) = Row(
     Modifier
         .fillMaxWidth()
+        // The whole row toggles, not just the switch. A ~50x30dp control on the far edge of a
+        // 411dp row is a small target for the primary action of the row, and the label reads as
+        // tappable whether or not it is — found while testing the private session, where tapping
+        // the words did nothing at all.
+        .clickable { onCheckedChange( !checked ) }
         .padding( horizontal = 20.dp, vertical = 12.dp ),
     verticalAlignment = Alignment.CenterVertically
 ) {

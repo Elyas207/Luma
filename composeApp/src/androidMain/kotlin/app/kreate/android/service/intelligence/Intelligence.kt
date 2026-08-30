@@ -43,6 +43,51 @@ object Intelligence {
     private val isEnabled: Boolean
         get() = runCatching { Preferences.TASTE_LEARNING_ENABLED.value }.getOrDefault( true )
 
+    /**
+     * A private session writes **nothing**.
+     *
+     * Not "records and ignores later" — actually nothing, because a log that keeps filling while
+     * the user believes it is off is the kind of discovery that ends trust in a feature like this
+     * permanently. In memory rather than persisted, so it cannot be left on by accident across a
+     * restart and quietly stop learning for weeks.
+     */
+    @Volatile
+    var isPrivateSession: Boolean = false
+        private set
+
+    fun setPrivateSession( enabled: Boolean ) { isPrivateSession = enabled }
+
+    /** "Forget the last 24 hours / 7 days / 30 days." Removes the rows, not just their effect. */
+    fun forgetSince( windowMs: Long, clock: LumaClock = LumaClock.System, onDone: ( Int ) -> Unit = {} ) {
+        scope.launch {
+            val since = clock.nowMillis() - windowMs
+            val removed = runCatching { Database.listeningEventTable.forgetSince( since ) }
+                .onFailure { logger.e( "forget window failed", it ) }
+                .getOrDefault( 0 )
+            logger.d { "forgot $removed events from the last ${windowMs / 3_600_000}h" }
+            onDone( removed )
+        }
+    }
+
+    fun forgetEverything( onDone: () -> Unit = {} ) {
+        scope.launch {
+            runCatching { Database.listeningEventTable.forgetAll() }
+                .onFailure { logger.e( "full reset failed", it ) }
+            onDone()
+        }
+    }
+
+    /**
+     * Whether an event may be written at all.
+     *
+     * Extracted as a pure predicate so the guarantee can be asserted directly. Verifying it through
+     * the UI proved unreliable — driving the toggle by text while playback was running kept landing
+     * on the song menu instead — and "we could not reach the control" is not evidence that the
+     * control works.
+     */
+    fun shouldRecord( learningEnabled: Boolean, privateSession: Boolean, itemId: String? ): Boolean =
+        learningEnabled && !privateSession && !itemId.isNullOrBlank()
+
     fun record(
         type: EventType,
         itemId: String?,
@@ -50,8 +95,7 @@ object Intelligence {
         durationMs: Long? = null,
         source: Provenance = PlaybackIntent.current()
     ) {
-        if ( !isEnabled ) return
-        if ( itemId.isNullOrBlank() ) return
+        if ( !shouldRecord( isEnabled, isPrivateSession, itemId ) ) return
 
         scope.launch {
             runCatching {
