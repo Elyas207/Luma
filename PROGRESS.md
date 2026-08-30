@@ -5,7 +5,7 @@ Read this file first on resume; do not redo completed work.
 
 ## Current stage
 
-**Stage 3 — intelligence engine.** UX Batches 1–3 partially landed; theme foundations in place.
+**Complete.** Three refinement passes run; see `FINAL-REPORT.md` for what landed and what did not.
 
 ## Done
 
@@ -34,7 +34,8 @@ Read this file first on resume; do not redo completed work.
 
 ## In progress
 
-Test harness (injectable clock, fakes, synthetic logs, replay) then intelligence P0.
+Nothing. The run finished at delivery; `FINAL-REPORT.md` §2 lists everything unfinished
+and §7 the order I would pick it up in.
 
 ## Landed since Stage 1
 
