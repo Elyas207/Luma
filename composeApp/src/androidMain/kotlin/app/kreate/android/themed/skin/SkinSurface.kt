@@ -120,8 +120,21 @@ internal fun Color.lightenBy( amount: Float ): Color =
 @Composable
 fun SkinOrnamentLayer( modifier: Modifier = Modifier ) {
     val skin = LocalSkin.current
+    val intensity = app.kreate.android.themed.luma.lumaIntensity()
 
-    when ( skin.ornament ) {
+    // Ornament is a property of the *surface*, not of the skin. Until this check existed a skin's
+    // backdrop reached every surface it was drawn on — including Car Mode, where the theme's own
+    // hard gate forbids photography, and including the space behind body text (findings 16 and 41).
+    // Minimal draws nothing at all; Reduced keeps the cheap procedural washes but never photography.
+    if ( intensity == app.kreate.android.themed.luma.LumaIntensity.Minimal ) return
+
+    val ornament =
+        if ( skin.ornament == SkinOrnament.AERO_SKY && !intensity.allowsPhotography )
+            SkinOrnament.GRADIENT_WASH
+        else
+            skin.ornament
+
+    when ( ornament ) {
         SkinOrnament.NONE -> Unit
 
         SkinOrnament.GRADIENT_WASH -> Box(

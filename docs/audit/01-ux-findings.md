@@ -110,10 +110,16 @@ Audited as a driver: glance-length looks, arm's length, direct sun.
     photographic backgrounds") and of the legibility rule ("text never sits directly on a
     photograph").
     **P0.** *Fix:* Car Mode gets a flat, high-contrast surface; the skin may set its
-    colour and nothing else. — `OPEN`
-17. **Prev and next glyphs are mid-grey on white** — the lowest-contrast controls on the
-    screen are the ones a driver reaches for without looking.
-    **P0.** *Fix:* full-contrast glyphs, no exceptions in Car Mode. — `OPEN`
+    colour and nothing else. — `FIXED` (Car Mode declares `LumaIntensity.Minimal`, and
+    `SkinOrnamentLayer` now honours intensity, so this holds for every skin rather than
+    only the restrained ones. Verified on Aurora: the sky is gone from Car Mode and still
+    present on Home.)
+17. ~~**Prev and next glyphs are mid-grey on white.**~~ **REJECTED — I was wrong.** Re-read
+    against `CarTransport.kt`: enabled glyphs already draw at `LumaColor.Ink` full alpha;
+    the grey ones in the capture were the *disabled* state (no previous track, empty
+    queue) at 0.3 alpha. That is honest state, not a contrast defect. Superseded by 17b.
+17b. **Disabled transport is too faint to read as "present but unavailable" in a car** at
+    0.3 alpha. **P2.** *Fix:* raise disabled alpha under `Minimal` intensity. — `OPEN`
 18. **Transport sits at the vertical middle** in portrait. In a phone cradle the natural
     thumb arc is the lower third.
     **P1.** *Fix:* anchor transport to the lower third in portrait. — `OPEN`
@@ -217,7 +223,9 @@ Findings 16–20 above. Additionally:
 41. Car Mode inherits the skin's ornament wholesale, so a skin with a photographic
     backdrop puts photography behind driving controls (finding 16 is the instance; this is
     the mechanism). Car Mode must opt out of ornament at the system level, not per skin.
-    **P0 (system-level, see X4).** — `OPEN`
+    **P0 (system-level, see X4).** — `FIXED` (intensity is now a surface property;
+    `SkinOrnamentLayer` draws nothing at Minimal and downgrades photography to a gradient
+    wash at Reduced.)
 
 ---
 

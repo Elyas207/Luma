@@ -105,180 +105,188 @@ fun CarModeScreen(
                               .allFavorites( 12 )
                               .collectAsState( initial = emptyList() )
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background( LumaColor.Ground )
+    // Car Mode is the one surface where the theme has no vote. The theme's own hard gate forbids
+    // photographic backgrounds here and caps visual depth at two planes, and a driver glancing for
+    // under a second cannot be asked to find a control against a moving sky. Declaring Minimal
+    // makes that true for *every* skin at once rather than only the restrained ones.
+    androidx.compose.runtime.CompositionLocalProvider(
+        app.kreate.android.themed.luma.LocalLumaIntensity provides
+            app.kreate.android.themed.luma.LumaIntensity.Minimal
     ) {
-        // The skin's backdrop, behind everything. This is where an ornament earns its keep — a
-        // centre display is the largest surface the app ever gets, and a flat fill wastes it.
-        SkinOrnamentLayer()
-
-        // A head unit's screen is usually shared with a status bar and, on a tablet, a persistent
-        // taskbar. Without inset padding the transport row lands underneath them and the primary
-        // control gets clipped — which defeats the one guarantee this mode makes, that play/pause
-        // is always reachable.
-        Column(
-            Modifier
+        Box(
+            modifier = modifier
                 .fillMaxSize()
-                .systemBarsPadding()
+                .background( LumaColor.Ground )
         ) {
+            // Ornament honours the surface intensity, so at Minimal this draws nothing at all.
+            SkinOrnamentLayer()
 
-            // Offline is stated once, inline, and never blocks anything. Whatever is already
-            // buffered keeps playing underneath — the deep forward buffer means a dead spot is
-            // usually survivable, so the honest message is "connection lost", not "playback
-            // failed".
-            CarConnectionBanner(
-                visible = !isOnline,
-                message = "No connection — playing from buffer",
-                modifier = Modifier.padding( horizontal = CarDimensions.EDGE, vertical = 8.dp )
-            )
+            // A head unit's screen is usually shared with a status bar and, on a tablet, a persistent
+            // taskbar. Without inset padding the transport row lands underneath them and the primary
+            // control gets clipped — which defeats the one guarantee this mode makes, that play/pause
+            // is always reachable.
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding()
+            ) {
 
-            CarTopBar(
-                onExit = onExit,
-                tab = tab,
-                onTabChange = { tab = it },
-                // The toggle only appears when the track actually has video. A control that is
-                // present but inert is worse than no control at all here — it invites a tap, and
-                // a tap that does nothing while driving is a tap spent for no reason.
-                showVideoToggle = tab == CarTab.NOW_PLAYING && hasVideo,
-                showingVideo = showVideo,
-                onToggleVideo = { showVideo = !showVideo }
-            )
-
-            if ( tab == CarTab.BROWSE ) {
-                CarBrowse(
-                    recents = recents,
-                    favourites = favourites,
-                    onPlay = { song ->
-                        player.forcePlay( song.asMediaItem )
-                        // Jump straight to now-playing: choosing something is a complete action,
-                        // and leaving the user on the browse screen would make them tap again to
-                        // see what they just started.
-                        tab = CarTab.NOW_PLAYING
-                    },
-                    modifier = Modifier.padding( bottom = 24.dp )
+                // Offline is stated once, inline, and never blocks anything. Whatever is already
+                // buffered keeps playing underneath — the deep forward buffer means a dead spot is
+                // usually survivable, so the honest message is "connection lost", not "playback
+                // failed".
+                CarConnectionBanner(
+                    visible = !isOnline,
+                    message = "No connection — playing from buffer",
+                    modifier = Modifier.padding( horizontal = CarDimensions.EDGE, vertical = 8.dp )
                 )
-                return@Column
-            }
 
-            // Car Mode is designed for a landscape head unit, but nothing stops someone opening it
-            // on a phone held upright. Side-by-side zones do not merely look cramped there — the
-            // 60/40 split starves each column so badly that labels wrap to one letter per line and
-            // the skip button leaves the screen. Portrait therefore gets its own stacking, not a
-            // squeezed version of the landscape one.
-            val isLandscape = LocalConfiguration.current.let { it.screenWidthDp > it.screenHeightDp }
+                CarTopBar(
+                    onExit = onExit,
+                    tab = tab,
+                    onTabChange = { tab = it },
+                    // The toggle only appears when the track actually has video. A control that is
+                    // present but inert is worse than no control at all here — it invites a tap, and
+                    // a tap that does nothing while driving is a tap spent for no reason.
+                    showVideoToggle = tab == CarTab.NOW_PLAYING && hasVideo,
+                    showingVideo = showVideo,
+                    onToggleVideo = { showVideo = !showVideo }
+                )
 
-            val nowPlaying: @Composable () -> Unit = {
-                // Audio and video are the same playback, drawn two ways. Because both halves now
-                // run through one ExoPlayer, switching is just a matter of whether a surface is
-                // attached — the stream never restarts, the position never resets, and the queue is
-                // untouched. That is only possible because the IFrame WebView was retired.
-                if ( showVideo && hasVideo )
-                    VideoSurface(
-                        player = player,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .aspectRatio( 16f / 9f, matchHeightConstraintsFirst = true )
-                            .clip( RoundedCornerShape( LumaRadius.Large ) )
+                if ( tab == CarTab.BROWSE ) {
+                    CarBrowse(
+                        recents = recents,
+                        favourites = favourites,
+                        onPlay = { song ->
+                            player.forcePlay( song.asMediaItem )
+                            // Jump straight to now-playing: choosing something is a complete action,
+                            // and leaving the user on the browse screen would make them tap again to
+                            // see what they just started.
+                            tab = CarTab.NOW_PLAYING
+                        },
+                        modifier = Modifier.padding( bottom = 24.dp )
                     )
-                else
-                    CarArtwork(
-                        mediaItem = currentMediaItem,
-                        modifier = Modifier.fillMaxHeight()
-                    )
-            }
+                    return@Column
+                }
 
-            if ( isLandscape )
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding( horizontal = CarDimensions.EDGE )
-                ) {
-                    // Left — what's playing, and the controls for it.
-                    //
-                    // Order matters: the transport row and metadata claim their natural height
-                    // first, and the artwork takes whatever is left over. Controls can therefore
-                    // never be pushed off-screen by a large cover — art is decoration, the
-                    // transport row is the reason for the mode.
-                    Column(
+                // Car Mode is designed for a landscape head unit, but nothing stops someone opening it
+                // on a phone held upright. Side-by-side zones do not merely look cramped there — the
+                // 60/40 split starves each column so badly that labels wrap to one letter per line and
+                // the skip button leaves the screen. Portrait therefore gets its own stacking, not a
+                // squeezed version of the landscape one.
+                val isLandscape = LocalConfiguration.current.let { it.screenWidthDp > it.screenHeightDp }
+
+                val nowPlaying: @Composable () -> Unit = {
+                    // Audio and video are the same playback, drawn two ways. Because both halves now
+                    // run through one ExoPlayer, switching is just a matter of whether a surface is
+                    // attached — the stream never restarts, the position never resets, and the queue is
+                    // untouched. That is only possible because the IFrame WebView was retired.
+                    if ( showVideo && hasVideo )
+                        VideoSurface(
+                            player = player,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .aspectRatio( 16f / 9f, matchHeightConstraintsFirst = true )
+                                .clip( RoundedCornerShape( LumaRadius.Large ) )
+                        )
+                    else
+                        CarArtwork(
+                            mediaItem = currentMediaItem,
+                            modifier = Modifier.fillMaxHeight()
+                        )
+                }
+
+                if ( isLandscape )
+                    Row(
                         modifier = Modifier
-                            .weight( 0.6f )
-                            .fillMaxHeight()
-                            .padding( vertical = 24.dp ),
-                        verticalArrangement = Arrangement.Center
+                            .fillMaxSize()
+                            .padding( horizontal = CarDimensions.EDGE )
                     ) {
-                        // Art beside metadata, not above it. A centre display is far wider than it
-                        // is tall, so stacking wastes the width and starves the artwork of height.
-                        Row(
-                            modifier = Modifier.weight( 1f ),
-                            verticalAlignment = Alignment.CenterVertically
+                        // Left — what's playing, and the controls for it.
+                        //
+                        // Order matters: the transport row and metadata claim their natural height
+                        // first, and the artwork takes whatever is left over. Controls can therefore
+                        // never be pushed off-screen by a large cover — art is decoration, the
+                        // transport row is the reason for the mode.
+                        Column(
+                            modifier = Modifier
+                                .weight( 0.6f )
+                                .fillMaxHeight()
+                                .padding( vertical = 24.dp ),
+                            verticalArrangement = Arrangement.Center
                         ) {
-                            nowPlaying()
+                            // Art beside metadata, not above it. A centre display is far wider than it
+                            // is tall, so stacking wastes the width and starves the artwork of height.
+                            Row(
+                                modifier = Modifier.weight( 1f ),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                nowPlaying()
 
-                            Spacer( Modifier.width( 32.dp ) )
+                                Spacer( Modifier.width( 32.dp ) )
 
-                            CarTrackInfo(
-                                mediaItem = currentMediaItem,
-                                modifier = Modifier.weight( 1f )
-                            )
+                                CarTrackInfo(
+                                    mediaItem = currentMediaItem,
+                                    modifier = Modifier.weight( 1f )
+                                )
+                            }
+
+                            Spacer( Modifier.height( 28.dp ) )
+
+                            // Transport spans the full zone width so the controls stay as far apart as
+                            // possible — adjacent targets are what cause mis-taps at speed.
+                            CarTransport( player = player )
                         }
 
-                        Spacer( Modifier.height( 28.dp ) )
+                        Spacer( Modifier.width( CarDimensions.EDGE ) )
 
-                        // Transport spans the full zone width so the controls stay as far apart as
-                        // possible — adjacent targets are what cause mis-taps at speed.
-                        CarTransport( player = player )
+                        // Right — where we're going next
+                        CarQueue(
+                            queue = queue,
+                            currentIndex = player.currentMediaItemIndex,
+                            onJumpTo = { player.seekTo( it, 0L ) },
+                            modifier = Modifier
+                                .weight( 0.4f )
+                                .fillMaxHeight()
+                                .padding( vertical = 24.dp )
+                        )
                     }
-
-                    Spacer( Modifier.width( CarDimensions.EDGE ) )
-
-                    // Right — where we're going next
-                    CarQueue(
-                        queue = queue,
-                        currentIndex = player.currentMediaItemIndex,
-                        onJumpTo = { player.seekTo( it, 0L ) },
+                else
+                    Column(
                         modifier = Modifier
-                            .weight( 0.4f )
-                            .fillMaxHeight()
-                            .padding( vertical = 24.dp )
-                    )
-                }
-            else
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding( horizontal = CarDimensions.EDGE )
-                        .padding( bottom = 16.dp )
-                ) {
-                    // Artwork gets a bounded share rather than a weight, so it can never grow at
-                    // the expense of the controls below it.
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight( 0.34f ),
-                        contentAlignment = Alignment.Center
-                    ) { nowPlaying() }
+                            .fillMaxSize()
+                            .padding( horizontal = CarDimensions.EDGE )
+                            .padding( bottom = 16.dp )
+                    ) {
+                        // Artwork gets a bounded share rather than a weight, so it can never grow at
+                        // the expense of the controls below it.
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight( 0.34f ),
+                            contentAlignment = Alignment.Center
+                        ) { nowPlaying() }
 
-                    Spacer( Modifier.height( 20.dp ) )
+                        Spacer( Modifier.height( 20.dp ) )
 
-                    CarTrackInfo( mediaItem = currentMediaItem )
+                        CarTrackInfo( mediaItem = currentMediaItem )
 
-                    Spacer( Modifier.height( 20.dp ) )
+                        Spacer( Modifier.height( 20.dp ) )
 
-                    CarTransport( player = player )
+                        CarTransport( player = player )
 
-                    Spacer( Modifier.height( 24.dp ) )
+                        Spacer( Modifier.height( 24.dp ) )
 
-                    // Queue sits below the controls: reaching it means scrolling, which is fine
-                    // for something you consult, but the transport must never require that.
-                    CarQueue(
-                        queue = queue,
-                        currentIndex = player.currentMediaItemIndex,
-                        onJumpTo = { player.seekTo( it, 0L ) },
-                        modifier = Modifier.weight( 0.66f )
-                    )
-                }
+                        // Queue sits below the controls: reaching it means scrolling, which is fine
+                        // for something you consult, but the transport must never require that.
+                        CarQueue(
+                            queue = queue,
+                            currentIndex = player.currentMediaItemIndex,
+                            onJumpTo = { player.seekTo( it, 0L ) },
+                            modifier = Modifier.weight( 0.66f )
+                        )
+                    }
+            }
         }
     }
 }
