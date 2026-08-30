@@ -31,8 +31,15 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.ytAccountThumbnail
 
+/**
+ * The app's secondary destinations.
+ *
+ * `internal` rather than private because Home needs the *same* menu: until now these routes existed
+ * only behind the overflow on the search-results screen, so reaching Settings meant performing a
+ * search first (finding 5). Duplicating the list would guarantee the two drift apart.
+ */
 @Composable
-private fun HamburgerMenu(
+internal fun HamburgerMenu(
     expanded: Boolean,
     onItemClick: (NavRoutes) -> Unit,
     onDismissRequest: () -> Unit

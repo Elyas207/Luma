@@ -47,7 +47,8 @@ Status key: `OPEN` · `FIXED` · `DEFERRED` (with reason) · `REJECTED` (with re
    *Why it's wrong:* it is not a navigation surface, and nothing about it suggests it
    holds the app's entire secondary IA.
    **P0.** *Fix:* move these to a real top-level destination; keep contextual actions
-   (sort, filter) in the results overflow. — `OPEN`
+   (sort, filter) in the results overflow. — `FIXED` (da69… → Home masthead now renders the
+   same `HamburgerMenu`; all 8 destinations are 1 tap from Home, verified on device)
 6. Every row carries a download icon, competing with the row's own primary action (play).
    **P2.** *Fix:* move download into the row's overflow. — `OPEN`
 
@@ -165,10 +166,10 @@ Audited as a driver: glance-length looks, arm's length, direct sun.
 
 31. **The title collides with the status bar.** `Your listening` renders at the very top of
     the window with no top inset, overlapping the system clock row.
-    **P0 (visual breakage).** *Fix:* apply status-bar insets. — `OPEN`
+    **P0 (visual breakage).** *Fix:* apply status-bar insets. — `FIXED` (statusBarsPadding; verified on device)
 32. **The toggle overlaps its own description.** The switch is drawn on top of the wrapping
     description text ("…to order what **gets suggested**"), obscuring words.
-    **P0.** *Fix:* constrain the text column; the control gets its own gutter. — `OPEN`
+    **P0.** *Fix:* constrain the text column; the control gets its own gutter. — `FIXED` (16dp gutter; description now wraps clear of the switch)
 33. **`Reset everything the app has learned` is an unprotected destructive action** —
     a plain button with nothing distinguishing it from a benign one.
     **P1.** *Fix:* confirmation, and destructive styling from a token. — `OPEN`

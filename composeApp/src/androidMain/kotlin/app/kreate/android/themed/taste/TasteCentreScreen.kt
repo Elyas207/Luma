@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -73,7 +75,10 @@ fun TasteCentreScreen( modifier: Modifier = Modifier ) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background( LumaColor.Ground ),
+            .background( LumaColor.Ground )
+            // Without this the title is drawn underneath the status bar — on a 1080x2400 phone
+            // "Your listening" landed on top of the system clock (finding 31).
+            .statusBarsPadding(),
         contentPadding = PaddingValues( bottom = 48.dp )
     ) {
 
@@ -215,6 +220,9 @@ private fun SettingRow(
         Text( title, style = LumaType.Row, color = LumaColor.Ink )
         Text( subtitle, style = LumaType.Meta, color = LumaColor.InkSoft )
     }
+    // The control needs its own gutter: with the text column running right up to the switch, the
+    // last word of a wrapping description sits against it and reads as overlapping (finding 32).
+    Spacer( Modifier.width( 16.dp ) )
     Switch(
         checked = checked,
         onCheckedChange = onCheckedChange,

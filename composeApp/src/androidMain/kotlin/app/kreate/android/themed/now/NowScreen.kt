@@ -86,6 +86,7 @@ fun NowScreen(
     onOpenLibrary: () -> Unit,
     onOpenSearch: () -> Unit,
     onOpenCarMode: () -> Unit,
+    onOpenDestination: ( it.fast4x.rimusic.enums.NavRoutes ) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val recents by Database.eventTable
@@ -120,9 +121,9 @@ fun NowScreen(
                 .navigationBarsPadding()
         ) {
             if ( isWide )
-                WideNow( hero, shelf, accent, onPlaySong, onOpenLibrary, onOpenSearch, onOpenCarMode )
+                WideNow( hero, shelf, accent, onPlaySong, onOpenLibrary, onOpenSearch, onOpenCarMode, onOpenDestination )
             else
-                NarrowNow( hero, shelf, accent, onPlaySong, onOpenLibrary, onOpenSearch, onOpenCarMode )
+                NarrowNow( hero, shelf, accent, onPlaySong, onOpenLibrary, onOpenSearch, onOpenCarMode, onOpenDestination )
         }
     }
 }
@@ -136,10 +137,11 @@ private fun NarrowNow(
     onPlaySong: ( Song ) -> Unit,
     onOpenLibrary: () -> Unit,
     onOpenSearch: () -> Unit,
-    onOpenCarMode: () -> Unit
+    onOpenCarMode: () -> Unit,
+    onOpenDestination: ( it.fast4x.rimusic.enums.NavRoutes ) -> Unit
 ) = LazyColumn( contentPadding = PaddingValues( bottom = 132.dp ) ) {
 
-    item { Masthead( onOpenSearch ) }
+    item { Masthead( onOpenSearch, onOpenDestination ) }
 
     item {
         if ( hero != null )
@@ -200,7 +202,8 @@ private fun WideNow(
     onPlaySong: ( Song ) -> Unit,
     onOpenLibrary: () -> Unit,
     onOpenSearch: () -> Unit,
-    onOpenCarMode: () -> Unit
+    onOpenCarMode: () -> Unit,
+    onOpenDestination: ( it.fast4x.rimusic.enums.NavRoutes ) -> Unit
 ) = Row( Modifier.fillMaxSize() ) {
 
     // With no history there is no shelf, so the split would leave half a tablet as dead black —
@@ -209,7 +212,7 @@ private fun WideNow(
     val split = hero != null && shelf.isNotEmpty()
 
     Column( Modifier.weight( if ( split ) 0.52f else 1f ) ) {
-        Masthead( onOpenSearch )
+        Masthead( onOpenSearch, onOpenDestination )
 
         if ( hero != null )
             HeroArch(
@@ -270,7 +273,12 @@ private fun WideNow(
  * field is a promise that search is the primary action, and here it is the second.
  */
 @Composable
-private fun Masthead( onOpenSearch: () -> Unit ) {
+private fun Masthead(
+    onOpenSearch: () -> Unit,
+    onOpenDestination: ( it.fast4x.rimusic.enums.NavRoutes ) -> Unit
+) {
+
+    val showDestinations = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf( false ) }
 
     val hour = remember { Calendar.getInstance().get( Calendar.HOUR_OF_DAY ) }
     val greeting = when ( hour ) {
@@ -305,7 +313,29 @@ private fun Masthead( onOpenSearch: () -> Unit ) {
             onClick = onOpenSearch,
             diameter = 46.dp
         )
+
+        Spacer( Modifier.width( 10.dp ) )
+
+        // Everything that is not playback: history, statistics, appearance, what the app has
+        // learned, handoff, car mode, settings. These previously existed *only* behind the
+        // overflow on the search-results screen, so the way to reach Settings was to search for
+        // something first (finding 5). Same menu, not a copy of it.
+        LumaRingButton(
+            iconRes = app.kreate.android.R.drawable.ellipsis_vertical,
+            contentDescription = "More",
+            onClick = { showDestinations.value = true },
+            diameter = 46.dp
+        )
     }
+
+    it.fast4x.rimusic.ui.components.navigation.header.HamburgerMenu(
+        expanded = showDestinations.value,
+        onItemClick = {
+            showDestinations.value = false
+            onOpenDestination( it )
+        },
+        onDismissRequest = { showDestinations.value = false }
+    )
 }
 
 /**

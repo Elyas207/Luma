@@ -209,7 +209,8 @@ fun AppNavigation(
                 onPlaySong = { song -> player.forcePlay( song.asMediaItem ) },
                 onOpenLibrary = { NavRoutes.library.navigateHere( navController ) },
                 onOpenSearch = { NavRoutes.search.navigateHere( navController ) },
-                onOpenCarMode = { NavRoutes.carMode.navigateHere( navController ) }
+                onOpenCarMode = { NavRoutes.carMode.navigateHere( navController ) },
+                onOpenDestination = { it.navigateHere( navController ) }
             )
         }
 
