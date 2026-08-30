@@ -72,7 +72,7 @@ object Skins {
             bg0 = 0xFFDCEEF8, bg1 = 0xFFE8F5FC, bg2 = 0xFFF4FAFE,
             bg3 = 0xFFFFFFFF, bg4 = 0xFFC5E2F2,
             accent = 0xFF12A5C8, onAccent = 0xFFFFFFFF,
-            text = 0xFF0B2E42, textSecondary = 0xFF3D6E8A, textDisabled = 0xFF8FB3C7,
+            text = 0xFF0B2E42, textSecondary = 0xFF35607A, textDisabled = 0xFF8FB3C7,
             isDark = false
         ),
         material = SkinMaterial(
@@ -147,7 +147,7 @@ object Skins {
             bg0 = 0xFFF3E9D8, bg1 = 0xFFEADFC9, bg2 = 0xFFE0D2B8,
             bg3 = 0xFFD3C1A2, bg4 = 0xFFC2AC89,
             accent = 0xFFB4491F, onAccent = 0xFFFFF4E8,
-            text = 0xFF2A1F16, textSecondary = 0xFF6B5744, textDisabled = 0xFF9C8A76,
+            text = 0xFF2A1F16, textSecondary = 0xFF5E4C3B, textDisabled = 0xFF9C8A76,
             isDark = false
         ),
         material = SkinMaterial(
@@ -196,7 +196,7 @@ object Skins {
             bg0 = 0xFFFAF8F3, bg1 = 0xFFF2EFE7, bg2 = 0xFFE8E4D9,
             bg3 = 0xFFDBD5C7, bg4 = 0xFFC9C2B0,
             accent = 0xFF2F5D50, onAccent = 0xFFF7FBF9,
-            text = 0xFF1C1C1A, textSecondary = 0xFF63615A, textDisabled = 0xFF9A978E,
+            text = 0xFF1C1C1A, textSecondary = 0xFF57554F, textDisabled = 0xFF9A978E,
             isDark = false
         ),
         material = SkinMaterial(
@@ -242,7 +242,7 @@ object Skins {
             bg0 = 0xFFFFF7FB, bg1 = 0xFFFDEDF5, bg2 = 0xFFF8DEEC,
             bg3 = 0xFFEFCADE, bg4 = 0xFFE2B0CB,
             accent = 0xFF7C5CFF, onAccent = 0xFFFFFFFF,
-            text = 0xFF241B2E, textSecondary = 0xFF6B5E7A, textDisabled = 0xFFA79BB2,
+            text = 0xFF241B2E, textSecondary = 0xFF5E526B, textDisabled = 0xFFA79BB2,
             isDark = false
         ),
         material = SkinMaterial(

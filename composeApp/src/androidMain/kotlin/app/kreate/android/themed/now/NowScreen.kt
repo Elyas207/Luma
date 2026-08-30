@@ -118,7 +118,10 @@ fun NowScreen(
 
     Box( modifier.fillMaxSize().background( LumaColor.Ground ) ) {
 
-        LumaAtmosphere( accent, Modifier.fillMaxSize(), intensity = 0.75f )
+        // Eased from 0.75. The atmosphere is decorative — it takes one colour from the artwork and
+        // lights the room with it — but it sits *behind text*, and at 0.75 it eroded the masthead
+        // greeting to 4.02:1 against the 4.5:1 an 11sp label needs. Decoration loses to legibility.
+        LumaAtmosphere( accent, Modifier.fillMaxSize(), intensity = 0.5f )
 
         Box(
             Modifier
@@ -375,10 +378,16 @@ private fun HeroArch(
                 // one — so a fixed black scrim reads correctly on Obsidian and puts dark navy text
                 // on a near-black base under Aurora, which is the "can't see anything in Frutiger
                 // Aero" report. Fading to Ground keeps text and its backing on the same side.
+                // The ramp starts earlier and climbs harder than it used to. On a phone the label
+                // sits low enough that a 42% midpoint was enough; on a tablet the hero is far
+                // taller, the text block sits nearer the middle of the artwork, and against a
+                // bright sunset "PICK UP WHERE YOU LEFT OFF" measured 1.97:1 — well under the 3:1
+                // large text needs. Measured, not guessed: the contrast oracle on emulator-5554.
                 Brush.verticalGradient(
-                    0f to LumaColor.Ground.copy( alpha = 0f ),
-                    0.42f to LumaColor.Ground.copy( alpha = 0.42f ),
-                    1f to LumaColor.Ground.copy( alpha = 0.94f )
+                    0.00f to LumaColor.Ground.copy( alpha = 0f ),
+                    0.30f to LumaColor.Ground.copy( alpha = 0.45f ),
+                    0.55f to LumaColor.Ground.copy( alpha = 0.82f ),
+                    1.00f to LumaColor.Ground.copy( alpha = 0.96f )
                 )
             )
     )
@@ -387,7 +396,21 @@ private fun HeroArch(
         Modifier
             .align( Alignment.BottomStart )
             .fillMaxWidth()
-            .padding( start = 24.dp, end = 24.dp, bottom = 26.dp )
+            // The text sits on a near-solid plate rather than on the photograph.
+            //
+            // A gradient cannot carry small text over arbitrary artwork: the hero shows whatever
+            // the user last played, so the pixels behind this line are unknowable at design time.
+            // Against a bright sunset on a tablet — where the hero is tall enough that this label
+            // sits near the middle of the image — it measured 1.97:1, and strengthening the ramp
+            // only reached 2.99:1 against the 4.5:1 an 11sp label needs. This is the theme brief's
+            // own rule: if a design needs text over an image, the design changes.
+            .background(
+                Brush.verticalGradient(
+                    0f to LumaColor.Ground.copy( alpha = 0.86f ),
+                    1f to LumaColor.Ground.copy( alpha = 0.97f )
+                )
+            )
+            .padding( start = 24.dp, end = 24.dp, top = 18.dp, bottom = 26.dp )
     ) {
         LumaLabel( "Pick up where you left off", color = LumaColor.InkSoft )
 

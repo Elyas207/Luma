@@ -229,13 +229,11 @@ Audited as a driver: glance-length looks, arm's length, direct sun.
 
 ## Tablet
 
-40. **The tablet runs the phone layout scaled up.** The audit sweep on emulator-5554
-    produced the same single-column composition at 2560x1600, with the same bottom-anchored
-    navigation. No multi-column, no side navigation, no persistent queue.
-    *Why it's wrong:* on a 2560px-wide surface a single column of list rows wastes most of
-    the display and makes every journey longer than it is on the phone.
-    **P1.** *Fix:* side navigation at ≥900dp, two-pane library, persistent queue.
-    — `OPEN`
+40. ~~**The tablet runs the phone layout scaled up.**~~ **REJECTED — I was wrong.** Looking
+    at the tablet properly in pass 2, Home is a genuine two-pane layout: hero on the left,
+    the "Back to" grid on the right, with `WideNow` selected at ≥720dp. My Stage 1 sweep must
+    have captured a narrow window. What the tablet *did* have was a contrast failure the phone
+    did not — see 46.
 
 ## Car Mode
 
@@ -335,3 +333,27 @@ Found by walking the app again after the Stage 2/3 work, on a dark skin.
 45. The emulator's `system_server` died under the load of repeated force-stops mid-pass, which
     presented as a series of playback failures. Environmental, not an app defect — noted so the
     same symptom is not misread next time.
+
+---
+
+## Refinement pass 2 — new findings
+
+Deliberately spent on the surfaces I had looked at least, starting with the tablet.
+
+46. **Text over hero artwork failed contrast on the tablet, badly.** "PICK UP WHERE YOU LEFT
+    OFF" measured **1.97:1** over a bright sunset, against the 4.5:1 an 11sp label needs. The
+    phone passed because its hero is shorter, so the label sits lower in the scrim; on a tablet
+    the hero is tall enough that the text block lands near the middle of the image.
+    *Why the first fix was not enough:* strengthening the gradient reached only 2.99:1. A
+    gradient cannot carry small text over *arbitrary* artwork, because the hero shows whatever
+    was last played and those pixels are unknowable at design time.
+    **P0.** — `FIXED`. The hero's text block now sits on a near-solid plate, which is the theme
+    brief's own rule: if a design needs text over an image, the design changes. Arch-tile
+    captions got the same treatment after measuring 3.68:1.
+47. **Secondary text had no headroom under the artwork wash.** `InkSoft` cleared 4.5:1 against
+    a plain ground on every light skin (4.64–5.09) but the artwork atmosphere costs roughly half
+    a point, which put the greeting at 4.02:1.
+    **P1.** — `FIXED` (atmosphere eased 0.75 → 0.5, and the four light skins' secondary darkened
+    ~8% to 5.7–6.9:1 on plain ground). Decoration loses to legibility.
+
+**Result:** tablet home worst case 1.97:1 → **5.22:1**; phone home → **6.50:1**. Both pass.

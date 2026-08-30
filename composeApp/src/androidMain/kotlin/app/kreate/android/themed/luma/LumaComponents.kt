@@ -314,8 +314,14 @@ fun LumaArchTile(
                         // Ground, not black — the caption is drawn in Ink, which flips with the
                         // skin, so the scrim has to flip with it too or a light skin ends up with
                         // dark text on a dark base.
-                        0.48f to LumaColor.Ground.copy( alpha = 0.38f ),
-                        1f to LumaColor.Ground.copy( alpha = 0.92f )
+                        //
+                        // The ramp climbs harder than it first did: the caption's *secondary* line
+                        // measured 3.68:1 over bright artwork against the 4.5:1 body text needs.
+                        // The artwork behind a tile is whatever the user last played, so it cannot
+                        // be designed around — the surface under the text has to be near-solid.
+                        0.42f to LumaColor.Ground.copy( alpha = 0.55f ),
+                        0.72f to LumaColor.Ground.copy( alpha = 0.90f ),
+                        1f to LumaColor.Ground.copy( alpha = 0.97f )
                     )
                 )
         )
