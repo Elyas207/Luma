@@ -162,9 +162,10 @@ Audited as a driver: glance-length looks, arm's length, direct sun.
     *Why it's wrong:* it looks broken, and on a phone a two-column grid cannot hold a real
     track title at this type size.
     **P0.** *Fix:* single column on phone; one truncation rule; `Ellipsis` at the end only.
-    — `OPEN`
+    — `FIXED` (adaptive minimum raised 200dp → 320dp, so a 411dp phone gets one column and
+    a tablet still gets several; verified on device, titles render in full)
 29. **`1h 23m 48.168s time spent`** — millisecond precision in a human-facing total.
-    **P2.** *Fix:* round to seconds, drop the fraction. — `OPEN`
+    **P2.** *Fix:* round to seconds, drop the fraction. — `FIXED` (now "1h 23m 48s")
 30. Rank numerals are drawn over the artwork bottom-left, colliding with image content.
     **P2.** — `OPEN`
 
