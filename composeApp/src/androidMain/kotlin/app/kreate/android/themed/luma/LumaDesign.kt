@@ -136,7 +136,11 @@ object LumaType {
      */
     val Label get() = TextStyle(
         fontWeight = FontWeight.Medium,
-        color = LumaColor.InkFaint,
+        // InkSoft, not InkFaint. These labels are read — section headings, the greeting, "UP NEXT" —
+        // and InkFaint is the *disabled* role, which is allowed to be low contrast because nobody
+        // needs to read it. Measured on Aurora, the greeting came out at 2.90:1 against the 3:1 that
+        // large text requires; the same label on InkSoft clears it comfortably.
+        color = LumaColor.InkSoft,
         fontSize = 11.sp,
         lineHeight = 14.sp,
         letterSpacing = 2.2.sp,

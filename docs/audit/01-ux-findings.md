@@ -276,6 +276,15 @@ Findings 16–20 above. Additionally:
   Intensity (Full / Reduced / Minimal) needs to be a property of the surface.
 - **X5. Contrast is unmeasured.** No screen has a recorded worst-case ratio. Several
   candidates found by eye (22, 23, 17). Needs a measurement tool, not opinions.
+  — `FIXED` (`tools/unlazy-checks/contrast.mjs` reads text-node bounds from uiautomator and
+  samples the real framebuffer, reporting the WCAG ratio between the darkest and lightest
+  pixel actually present behind each text region — the extremes, as the theme brief requires,
+  not the average. It immediately found a genuine failure: the greeting label at **2.90:1**
+  against the 3:1 large-text requirement, because `LumaLabel` defaulted to `InkFaint`, which
+  is the *disabled* role and is allowed to be low contrast precisely because nobody needs to
+  read it. Now `InkSoft`. Home measured on four skins spanning light and dark: Aurora 4.08:1,
+  Terrazzo 5.02:1, Obsidian 5.23:1, Ember 6.74:1 — all pass, with the mean luma of each
+  capture confirming the skin actually changed.)
 
 ## Batch order for Stage 2, and why
 

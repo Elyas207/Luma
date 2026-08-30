@@ -257,7 +257,10 @@ fun LumaRingButton(
 fun LumaLabel(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = LumaColor.InkFaint
+    // InkSoft rather than InkFaint: these labels are meant to be read, and InkFaint is the disabled
+    // role, which is allowed to be low contrast precisely because nobody needs to read it. Measured
+    // at 2.90:1 on Aurora against the 3:1 large-text requirement before this changed.
+    color: Color = LumaColor.InkSoft
 ) = Text(
     text = text.uppercase(),
     style = LumaType.Label,
