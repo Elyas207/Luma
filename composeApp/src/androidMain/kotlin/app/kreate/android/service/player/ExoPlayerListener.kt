@@ -36,6 +36,7 @@ import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.playNext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,6 +75,38 @@ class ExoPlayerListener(
 
     var loudnessEnhancer: LoudnessEnhancer? = null
         private set
+
+    /**
+     * Checkpoints the playhead while a track is playing.
+     *
+     * The queue and position were only written on play/pause and on timeline changes, which means
+     * that during ordinary playback nothing is saved at all. Kill the process three minutes into a
+     * recitation — which Android does routinely — and the stored position is still whatever it was
+     * when playback started, so the app reopens on "Nothing playing yet" and the user starts again
+     * from the beginning. On a two-hour recitation that is the difference between the feature
+     * working and not existing.
+     *
+     * Twenty seconds is the trade: frequent enough that almost nothing is lost, rare enough that it
+     * costs a transaction every twenty seconds rather than every frame. Cancelled the moment
+     * playback stops, so a paused or idle app does no work at all.
+     */
+    private var checkpointJob: kotlinx.coroutines.Job? = null
+
+    override fun onIsPlayingChanged( isPlaying: Boolean ) {
+        checkpointJob?.cancel()
+        if ( !isPlaying ) {
+            // Leaving playback is itself worth recording, and it is the last chance to do so.
+            saveQueueToDatabase()
+            return
+        }
+
+        checkpointJob = CoroutineScope( Dispatchers.Default ).launch {
+            while ( isActive ) {
+                kotlinx.coroutines.delay( 20_000 )
+                saveQueueToDatabase()
+            }
+        }
+    }
 
     /**
      * Requires [Preferences.ENABLE_PERSISTENT_QUEUE] to be **enabled** to work.

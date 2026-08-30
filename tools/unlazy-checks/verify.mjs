@@ -164,7 +164,7 @@ if (cmd === 'device-no-crash') {
   for (const s of serials) {
     let out = '';
     try {
-      out = adb(s, 'shell', 'ls', '/sdcard/Android/data/me.knighthat.kreate.debug/files/crashlogs');
+      out = adb(s, 'shell', 'ls', `/sdcard/Android/data/${process.env.LUMA_PKG || 'me.knighthat.kreate.debug'}/files/crashlogs`);
     } catch { out = ''; }
     const files = out.split('\n').map(x => x.trim()).filter(x => x && !x.includes('No such file'));
     if (files.length) fail(`${s} has crash logs: ${files.join(', ')}`);
@@ -176,7 +176,7 @@ if (cmd === 'device-app-alive') {
   const serials = args.slice(1);
   for (const s of serials) {
     const out = adb(s, 'shell', 'dumpsys', 'activity', 'activities');
-    if (!out.includes('me.knighthat.kreate.debug/it.fast4x.rimusic.MainActivity'))
+    if (!out.includes(`${process.env.LUMA_PKG || 'me.knighthat.kreate.debug'}/it.fast4x.rimusic.MainActivity`))
       fail(`${s}: Luma is not the resumed activity`);
   }
   ok('DEVICE_APP_ALIVE_OK');

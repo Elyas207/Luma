@@ -9,7 +9,10 @@
 import { execFileSync } from 'node:child_process';
 
 const ADB = process.env.ADB || `${process.env.HOME}/Android/Sdk/platform-tools/adb`;
-const PKG = 'me.knighthat.kreate.debug';
+// Overridable so the same oracles can be run against a release build, whose package
+// has no .debug suffix. A test suite that can only exercise the debug variant cannot
+// tell you whether the thing you are about to ship works.
+const PKG = process.env.LUMA_PKG || 'me.knighthat.kreate.debug';
 
 const fail = (m) => { console.error('FAIL: ' + m); process.exit(1); };
 const ok = (t) => { console.log(t); process.exit(0); };

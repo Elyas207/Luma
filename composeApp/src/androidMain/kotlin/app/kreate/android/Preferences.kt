@@ -978,8 +978,17 @@ sealed class Preferences<T>(
         val ENABLE_DISCOVER by lazy {
             Boolean( preferences, Key.ENABLE_DISCOVER, "discover", false )
         }
+        /**
+         * On by default.
+         *
+         * With this off — which it was — nothing about the current queue or playhead is written
+         * anywhere, so an app the OS kills three minutes into a two-hour recitation reopens on
+         * "Nothing playing yet" and the listener starts again from the beginning. Resuming exactly
+         * where you left off is one of the few things that make a media app feel like it is paying
+         * attention, and it costs one small transaction every twenty seconds while playing.
+         */
         val ENABLE_PERSISTENT_QUEUE by lazy {
-            Boolean( preferences, Key.ENABLE_PERSISTENT_QUEUE, "persistentQueue", false )
+            Boolean( preferences, Key.ENABLE_PERSISTENT_QUEUE, "persistentQueue", true )
         }
         val RESUME_PLAYBACK_ON_STARTUP by lazy {
             Boolean( preferences, Key.RESUME_PLAYBACK_ON_STARTUP, "resumePlaybackOnStart", false )

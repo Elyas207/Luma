@@ -96,7 +96,14 @@ fun NowScreen(
                          .lovedSongs()
                          .collectAsState( initial = emptyList() )
 
-    val hero = recents.firstOrNull()
+    // Where playback actually was, which is not the same as the last thing that finished. An app
+    // the OS kills mid-track leaves no history row at all, so without this the screen greets a
+    // listener who was 40 minutes into a recitation with "Nothing playing yet".
+    val inProgress by Database.queueTable
+                              .inProgress()
+                              .collectAsState( initial = null )
+
+    val hero = inProgress?.song ?: recents.firstOrNull()
 
     // Loved first, then merely recent, with the hero removed so the screen never offers the same
     // track twice.
