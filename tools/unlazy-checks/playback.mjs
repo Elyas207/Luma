@@ -121,7 +121,12 @@ function startFirstResult(serial, query) {
 }
 
 /** Poll the session until it plays, then confirm the playhead keeps moving. */
-function measure(serial, { settleMs = 45000, windowMs = 40000, minAdvanceMs = 15000 } = {}) {
+// settleMs is generous on purpose. Since playback state is restored at launch, a cold start now
+// does that *and* a full client sweep for whatever the test taps, and the sweep tries WEB_REMIX
+// before VISIONOS on every resolve. A window that only just fits on a warm run turns into a
+// spurious failure on a cold one, and a flaky oracle is worse than no oracle. Polling costs
+// nothing when the answer arrives early.
+function measure(serial, { settleMs = 90000, windowMs = 40000, minAdvanceMs = 15000 } = {}) {
   const deadline = Date.now() + settleMs;
   let first = null;
   while (Date.now() < deadline) {
@@ -165,14 +170,14 @@ if (cmd === 'plays') {
 if (cmd === 'sustained') {
   const query = rest[0] || 'maher';
   startFirstResult(serial, query);
-  measure(serial, { settleMs: 45000, windowMs: 90000, minAdvanceMs: 60000 });
+  measure(serial, { settleMs: 90000, windowMs: 90000, minAdvanceMs: 60000 });
   ok('PLAYBACK_SUSTAINED_OK');
 }
 
 if (cmd === 'transport') {
   const query = rest[0] || 'maher';
   startFirstResult(serial, query);
-  const before = measure(serial, { settleMs: 45000, windowMs: 15000, minAdvanceMs: 5000 });
+  const before = measure(serial, { settleMs: 90000, windowMs: 15000, minAdvanceMs: 5000 });
 
   // Pause must actually stop the playhead.
   shell(serial, ['cmd', 'media_session', 'dispatch', 'pause']);
@@ -201,7 +206,7 @@ if (cmd === 'transport') {
 if (cmd === 'focus') {
   const query = rest[0] || 'maher';
   startFirstResult(serial, query);
-  const before = measure(serial, { settleMs: 60000, windowMs: 15000, minAdvanceMs: 5000 });
+  const before = measure(serial, { settleMs: 90000, windowMs: 15000, minAdvanceMs: 5000 });
 
   adb(serial, ['emu', 'gsm', 'call', '5551234']);
   sleep(9000);

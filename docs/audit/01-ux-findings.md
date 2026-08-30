@@ -357,3 +357,24 @@ Deliberately spent on the surfaces I had looked at least, starting with the tabl
     ~8% to 5.7–6.9:1 on plain ground). Decoration loses to legibility.
 
 **Result:** tablet home worst case 1.97:1 → **5.22:1**; phone home → **6.50:1**. Both pass.
+
+---
+
+## Refinement pass 3 — findings
+
+48. **The skin capture script had been failing silently for every skin**, so `skins-distinct` was
+    passing against stale evidence. Its route tapped the *word* "Search", which only exists on an
+    empty Home; on a populated one it is an icon, and `set -e` aborted each run. Caught because a
+    batch of ten "successes" printed ten misses.
+    **P1 (evidence integrity).** — `FIXED` (routes via the destinations menu, which is now one tap
+    from Home). All ten skins re-captured; still distinct.
+49. **Very long items are slow to reach first audio.** A ~10-hour recitation intermittently failed
+    to start within the oracle's window while three-to-five minute tracks started reliably in
+    4-6 s. The deep URL validation probes at 40% of `clen`, which for a multi-hour file is an
+    enormous byte offset, and the first ranged fetch follows it.
+    **P1.** — `OPEN`, and honestly diagnosed rather than fixed: the probe offset should be capped
+    in absolute bytes rather than scaled with file length. Recorded in the final report as
+    outstanding.
+50. The oracle's settle window (45 s) was tuned before playback state was restored at launch. A
+    cold start now restores the queue *and* performs a full client sweep for whatever is tapped.
+    **P2 (harness).** — `FIXED` (90 s; polling costs nothing when the answer comes early).
