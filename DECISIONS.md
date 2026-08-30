@@ -88,12 +88,12 @@ They contain machine-specific absolute paths and local tooling state. Added to
 
 ## Assumptions to review
 
-1. **The repo named in the brief does not match the configured remote.** The brief says
-   `https://github.com/Elyas207/Luma`; `origin` is `https://github.com/Elyas207/Kreate.git`.
-   Assumption taken: push the branch to the remote that actually exists and is
-   authenticated, and flag the discrepancy rather than create a new repository
-   unprompted. Creating `Luma` and pushing a fork's full history into it is not
-   reversible by me and is a decision about where this project lives.
+1. ~~**The repo named in the brief does not match the configured remote.**~~ **Resolved,
+   no action needed from you.** `Elyas207/Kreate` no longer exists and `Elyas207/Luma`
+   does — the repository was renamed and the local `origin` URL was simply stale. Updated
+   the remote to `https://github.com/Elyas207/Luma.git` and pushed
+   `autonomous/2026-08-30` there, confirmed by querying the remote rather than by
+   trusting the command's exit code.
 2. **"Islamic media app" vs the actual catalogue.** All four prompts describe Luma as a
    Quran/nasheed/lecture app. The codebase is a general YouTube Music client with no
    content-class concept; the library in the test emulator contains mainstream music

@@ -5,7 +5,7 @@ Read this file first on resume; do not redo completed work.
 
 ## Current stage
 
-**Stage 1 — audit and plans.**
+**Stage 3 — intelligence engine.** UX Batches 1–3 partially landed; theme foundations in place.
 
 ## Done
 
@@ -34,8 +34,23 @@ Read this file first on resume; do not redo completed work.
 
 ## In progress
 
-Stage 1 write-ups: `01-ux-findings.md`, `02-intelligence-plan.md`,
-`docs/testing/00-state.md`, `docs/testing/01-plan.md`, `docs/theme/00-aero-study.md`.
+Test harness (injectable clock, fakes, synthetic logs, replay) then intelligence P0.
+
+## Landed since Stage 1
+
+| Step | Commit | Note |
+|---|---|---|
+| Stage 1 docs | `36a8e27ff` | 41 UX findings, theme study, testing plan, intelligence reconciliation |
+| Batch 1 tokens | `da69eb12a` | radius + depth + intensity scales; 89 radius literals migrated; `radius-scale` check |
+| Batch 2 navigation | `6c3ddb3ee` | all 8 destinations 1 tap from Home (was 4); Taste Centre inset + gutter |
+| Car Mode ornament | (in `abc165154` range) | intensity honoured by `SkinOrnamentLayer`; no photography in Car Mode on any skin |
+| Statistics | `abc165154` | grid widened 200→320dp (clipping), duration truncated to seconds |
+
+**Branch pushed** to `origin/autonomous/2026-08-30` and verified on the remote.
+
+### Findings status so far
+Fixed: 5, 16, 28, 29, 31, 32, 41. Rejected (my error): 17, replaced by 17b.
+Open: the rest.
 
 ## Blocked
 
