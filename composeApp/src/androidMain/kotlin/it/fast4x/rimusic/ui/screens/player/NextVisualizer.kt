@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
@@ -75,7 +77,7 @@ fun NextVisualizer(
                 BasicText(
                     text = stringResource(R.string.require_mic_permission),
                     modifier = Modifier.fillMaxWidth(0.75f),
-                    style = typography().xs.semiBold
+                    style = LumaType.Meta
                 )
                 /*
                 Spacer(modifier = Modifier.height(12.dp))

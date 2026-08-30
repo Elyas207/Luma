@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.component
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
@@ -53,8 +55,8 @@ class ItemSelector<E>(
                     remove( item )
             },
             colors = CheckboxDefaults.colors(
-                checkedColor = colorPalette().accent,
-                uncheckedColor = colorPalette().text
+                checkedColor = LumaColor.Ember,
+                uncheckedColor = LumaColor.Ink
             ),
             modifier = modifier
         )

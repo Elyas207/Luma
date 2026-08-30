@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.component
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.ScrollableState
@@ -63,7 +65,7 @@ class Search(
             Icon(
                 painter = painterResource( R.drawable.search ),
                 contentDescription = stringResource( android.R.string.search_go ),
-                tint = colorPalette().favoritesIcon,
+                tint = LumaColor.Ember,
                 modifier = Modifier.size( DECO_BOX_ICON_SIZE.dp )
             )
 
@@ -100,7 +102,7 @@ class Search(
         ) {
             super.SearchBar(
                 modifier.background(
-                    colorPalette().background4,
+                    LumaColor.Raised,
                     thumbnailShape()
                 )
             )

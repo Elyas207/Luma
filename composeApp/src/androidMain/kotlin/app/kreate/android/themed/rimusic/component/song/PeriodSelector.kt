@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.component.song
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -63,7 +65,7 @@ class PeriodSelector(override val menuState: MenuState): MenuIcon, Descriptive, 
             ) {
                 BasicText(
                     text = stringResource( R.string.header_view_top_of, size ),
-                    style = typography().m.semiBold,
+                    style = LumaType.Row,
                     modifier = Modifier.padding(
                         vertical = 8.dp,
                         horizontal = 24.dp

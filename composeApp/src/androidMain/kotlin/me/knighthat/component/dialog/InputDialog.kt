@@ -1,5 +1,7 @@
 package me.knighthat.component.dialog
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,12 +27,12 @@ interface InputDialog: InteractiveDialog {
         @JvmStatic
         fun defaultTextFieldColors(): TextFieldColors =
             TextFieldDefaults.colors(
-                focusedTextColor = colorPalette().text,
-                unfocusedTextColor = colorPalette().textDisabled,
-                focusedContainerColor = colorPalette().background1,
-                unfocusedContainerColor = colorPalette().background0,
-                focusedIndicatorColor = colorPalette().accent,
-                unfocusedIndicatorColor = colorPalette().textDisabled,
+                focusedTextColor = LumaColor.Ink,
+                unfocusedTextColor = LumaColor.InkFaint,
+                focusedContainerColor = LumaColor.Raised,
+                unfocusedContainerColor = LumaColor.Ground,
+                focusedIndicatorColor = LumaColor.Ember,
+                unfocusedIndicatorColor = LumaColor.InkFaint,
             )
     }
 
@@ -80,7 +82,7 @@ interface InputDialog: InteractiveDialog {
             modifier = InteractiveDialog.ButtonModifier()
                                         .weight( 1f )       // Let size be flexible
                                         .fillMaxWidth( .98f )       // Creates some space between buttons
-                                        .background( colorPalette().accent )
+                                        .background( LumaColor.Ember )
                                         .padding( vertical = 10.dp ),
             onConfirm = { onSet( value.text ) }
         )

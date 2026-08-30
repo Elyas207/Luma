@@ -1,5 +1,7 @@
 package me.knighthat.component.dialog
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,10 +34,10 @@ interface InteractiveDialog: Dialog {
             onConfirm: () -> Unit
         ) = BasicText(
             text = stringResource( R.string.confirm ),
-            style = typography().xs
+            style = LumaType.Meta
                                 .medium
                                 .copy(
-                                    color = colorPalette().onAccent,
+                                    color = LumaColor.Ground,
                                     textAlign = TextAlign.Center
                                 ),
             modifier = modifier.clickable( onClick = onConfirm )
@@ -48,7 +50,7 @@ interface InteractiveDialog: Dialog {
             onCancel: () -> Unit
         ) = BasicText(
             text = stringResource( android.R.string.cancel ),
-            style = typography().xs
+            style = LumaType.Meta
                                 .medium
                                 .copy(
                                     color = Color(android.graphics.Color.RED).copy( alpha = .3f ),

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
@@ -59,8 +61,8 @@ fun CircularSlider(
     val textMeasurer = rememberTextMeasurer()
     val style = TextStyle(
         fontSize = 25.sp,
-        color = colorPalette().text,
-        background = colorPalette().background4
+        color = LumaColor.Ink,
+        background = LumaColor.Raised
     )
     val textLayoutResult = remember(text, style) {
         textMeasurer.measure(AnnotatedString(text), style)

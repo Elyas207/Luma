@@ -1,6 +1,8 @@
 package it.fast4x.rimusic.ui.components.themed
 
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -815,7 +817,7 @@ fun MediaItemMenu(
                     IconButton(
                         onClick = { isViewingPlaylists = false },
                         icon = R.drawable.chevron_back,
-                        color = colorPalette().textSecondary,
+                        color = LumaColor.InkSoft,
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(20.dp)
@@ -833,7 +835,7 @@ fun MediaItemMenu(
                 if (pinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.pinned_playlists),
-                        style = typography().m.semiBold,
+                        style = LumaType.Row,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -861,7 +863,7 @@ fun MediaItemMenu(
                                     }
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = LumaColor.Ink,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -881,7 +883,7 @@ fun MediaItemMenu(
                 if (youtubePlaylists.isNotEmpty() && isNetworkConnected(context)) {
                     BasicText(
                         text = stringResource(R.string.ytm_playlists),
-                        style = typography().m.semiBold,
+                        style = LumaType.Row,
                         modifier = Modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -898,7 +900,7 @@ fun MediaItemMenu(
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = LumaColor.Ink,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -918,7 +920,7 @@ fun MediaItemMenu(
                 if (unpinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.playlists),
-                        style = typography().m.semiBold,
+                        style = LumaType.Row,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -935,7 +937,7 @@ fun MediaItemMenu(
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = LumaColor.Ink,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -971,7 +973,7 @@ fun MediaItemMenu(
                     Image(
                         painter = painterResource(R.drawable.chevron_down),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().text),
+                        colorFilter = ColorFilter.tint(LumaColor.Ink),
                         modifier = Modifier
                             .absoluteOffset(0.dp, -10.dp)
                             .align(Alignment.TopCenter)
@@ -1006,8 +1008,8 @@ fun MediaItemMenu(
                             //icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
                             icon = getLikeState(mediaItem.mediaId),
                             //icon = R.drawable.heart,
-                            color = colorPalette().favoritesIcon,
-                            //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
+                            color = LumaColor.Ember,
+                            //color = if (likedAt == null) LumaColor.InkFaint else LumaColor.Ink,
                             onClick = {
                                 CoroutineScope( Dispatchers.IO ).launch {
                                     YouTubeSync.toggleSongLike( context, mediaItem )
@@ -1020,7 +1022,7 @@ fun MediaItemMenu(
 
                         if (!isLocal) IconButton(
                             icon = R.drawable.share_social,
-                            color = colorPalette().text,
+                            color = LumaColor.Ink,
                             onClick = onShare,
                             modifier = Modifier
                                 .padding(all = 4.dp)
@@ -1039,7 +1041,7 @@ fun MediaItemMenu(
                             .padding(start = 12.dp, end = 12.dp)
                             .fillMaxWidth()
                             //.border(BorderStroke(1.dp, Color.Red))
-                            .background(colorPalette().background1)
+                            .background(LumaColor.Raised)
                     ) {
                         artistsList.forEach { artist ->
                             if (artist != null) {
@@ -1072,7 +1074,7 @@ fun MediaItemMenu(
                     modifier = Modifier
                         .alpha(0.5f)
                         .align(Alignment.CenterHorizontally)
-                        .background(colorPalette().textDisabled)
+                        .background(LumaColor.InkFaint)
                         .height(1.dp)
                         .fillMaxWidth(1f)
                 )
@@ -1197,7 +1199,7 @@ fun MediaItemMenu(
 
                                 BasicText(
                                     text = stringResource(R.string.set_sleep_timer),
-                                    style = typography().s.semiBold,
+                                    style = LumaType.Tile,
                                     modifier = Modifier
                                         .padding(vertical = 8.dp, horizontal = 24.dp)
                                 )
@@ -1219,11 +1221,11 @@ fun MediaItemMenu(
                                                 .clip(CircleShape)
                                                 .clickable(enabled = amount > 1) { amount-- }
                                                 .size(48.dp)
-                                                .background(colorPalette().background0)
+                                                .background(LumaColor.Ground)
                                         ) {
                                             BasicText(
                                                 text = "-",
-                                                style = typography().xs.semiBold
+                                                style = LumaType.Meta
                                             )
                                         }
 
@@ -1233,7 +1235,7 @@ fun MediaItemMenu(
                                                     R.string.left,
                                                     (amount * 5).toDuration( DurationUnit.MINUTES ).readableText()
                                                 ),
-                                                style = typography().s.semiBold,
+                                                style = LumaType.Tile,
                                                 modifier = Modifier
                                                     .clickable {
                                                         showCircularSlider = !showCircularSlider
@@ -1248,18 +1250,18 @@ fun MediaItemMenu(
                                                 .clip(CircleShape)
                                                 .clickable(enabled = amount < 60) { amount++ }
                                                 .size(48.dp)
-                                                .background(colorPalette().background0)
+                                                .background(LumaColor.Ground)
                                         ) {
                                             BasicText(
                                                 text = "+",
-                                                style = typography().xs.semiBold
+                                                style = LumaType.Meta
                                             )
                                         }
 
                                     } else {
                                         CircularSlider(
                                             stroke = 40f,
-                                            thumbColor = colorPalette().accent,
+                                            thumbColor = LumaColor.Ember,
                                             text = (amount * 5).toDuration( DurationUnit.MINUTES ).readableText(),
                                             modifier = Modifier
                                                 .size(300.dp),
@@ -1298,12 +1300,12 @@ fun MediaItemMenu(
                                     IconButton(
                                         onClick = { showCircularSlider = !showCircularSlider },
                                         icon = R.drawable.time,
-                                        color = colorPalette().text
+                                        color = LumaColor.Ink
                                     )
                                     IconButton(
                                         onClick = { isShowingSleepTimerDialog = false },
                                         icon = R.drawable.close,
-                                        color = colorPalette().text
+                                        color = LumaColor.Ink
                                     )
                                     IconButton(
                                         enabled = amount > 0,
@@ -1314,7 +1316,7 @@ fun MediaItemMenu(
                                             isShowingSleepTimerDialog = false
                                         },
                                         icon = R.drawable.checkmark,
-                                        color = colorPalette().accent
+                                        color = LumaColor.Ember
                                     )
                                 }
                             }
@@ -1336,10 +1338,10 @@ fun MediaItemMenu(
                                                 .plusSeconds(it / 1000)
                                                 .format(DateTimeFormatter.ofPattern("HH:mm:ss")) + " " +
                                             stringResource(R.string.sleeptimer_stop),
-                                    style = typography().xxs.medium,
+                                    style = LumaType.Numeral,
                                     modifier = modifier
                                         .background(
-                                            color = colorPalette().background0,
+                                            color = LumaColor.Ground,
                                             shape = RoundedCornerShape(16.dp)
                                         )
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -1374,7 +1376,7 @@ fun MediaItemMenu(
                                 painter = painterResource(R.drawable.chevron_forward),
                                 contentDescription = null,
                                 colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
-                                    colorPalette().textSecondary
+                                    LumaColor.InkSoft
                                 ),
                                 modifier = Modifier
                                     .size(16.dp)
@@ -1626,7 +1628,7 @@ fun AddToPlaylistItemMenu(
             IconButton(
                 onClick = onDismiss,
                 icon = R.drawable.chevron_back,
-                color = colorPalette().textSecondary,
+                color = LumaColor.InkSoft,
                 modifier = Modifier
                     .padding(all = 4.dp)
                     .size(20.dp)
@@ -1642,7 +1644,7 @@ fun AddToPlaylistItemMenu(
         if (pinnedPlaylists.isNotEmpty()) {
             BasicText(
                 text = stringResource(R.string.pinned_playlists),
-                style = typography().m.semiBold,
+                style = LumaType.Row,
                 modifier = Modifier.padding(start = 20.dp, top = 5.dp)
             )
 
@@ -1671,7 +1673,7 @@ fun AddToPlaylistItemMenu(
                             }
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -1691,7 +1693,7 @@ fun AddToPlaylistItemMenu(
         if (youtubePlaylists.isNotEmpty() && isNetworkConnected(context)) {
             BasicText(
                 text = stringResource(R.string.ytm_playlists),
-                style = typography().m.semiBold,
+                style = LumaType.Row,
                 modifier = Modifier.padding(start = 20.dp, top = 5.dp)
             )
 
@@ -1709,7 +1711,7 @@ fun AddToPlaylistItemMenu(
                         trailingContent = {
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -1729,7 +1731,7 @@ fun AddToPlaylistItemMenu(
         if (unpinnedPlaylists.isNotEmpty()) {
             BasicText(
                 text = stringResource(R.string.playlists),
-                style = typography().m.semiBold,
+                style = LumaType.Row,
                 modifier = Modifier.padding(start = 20.dp, top = 5.dp)
             )
 
@@ -1747,7 +1749,7 @@ fun AddToPlaylistItemMenu(
                         trailingContent = {
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -1840,7 +1842,7 @@ fun AddToPlaylistArtistSongsMenu(
             IconButton(
                 onClick = onDismiss,
                 icon = R.drawable.chevron_back,
-                color = colorPalette().textSecondary,
+                color = LumaColor.InkSoft,
                 modifier = Modifier
                     .padding(all = 4.dp)
                     .size(20.dp)
@@ -1856,7 +1858,7 @@ fun AddToPlaylistArtistSongsMenu(
         if (pinnedPlaylists.isNotEmpty()) {
             BasicText(
                 text = stringResource(R.string.pinned_playlists),
-                style = typography().m.semiBold,
+                style = LumaType.Row,
                 modifier = Modifier.padding(start = 20.dp, top = 5.dp)
             )
 
@@ -1889,7 +1891,7 @@ fun AddToPlaylistArtistSongsMenu(
                             }
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -1909,7 +1911,7 @@ fun AddToPlaylistArtistSongsMenu(
         if (youtubePlaylists.isNotEmpty() && isNetworkConnected(context)) {
             BasicText(
                 text = stringResource(R.string.ytm_playlists),
-                style = typography().m.semiBold,
+                style = LumaType.Row,
                 modifier = Modifier.padding(start = 20.dp, top = 5.dp)
             )
 
@@ -1931,7 +1933,7 @@ fun AddToPlaylistArtistSongsMenu(
                         trailingContent = {
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -1951,7 +1953,7 @@ fun AddToPlaylistArtistSongsMenu(
         if (unpinnedPlaylists.isNotEmpty()) {
             BasicText(
                 text = stringResource(R.string.playlists),
-                style = typography().m.semiBold,
+                style = LumaType.Row,
                 modifier = Modifier.padding(start = 20.dp, top = 5.dp)
             )
 
@@ -1973,7 +1975,7 @@ fun AddToPlaylistArtistSongsMenu(
                         trailingContent = {
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)

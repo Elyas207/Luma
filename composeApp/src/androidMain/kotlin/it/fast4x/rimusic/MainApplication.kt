@@ -50,9 +50,13 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
         setupLogging( koinLogger )
 
         Innertube.setProvider( InnertubeProvider() )
-        YouTube.cookie = Preferences.YOUTUBE_COOKIES.value
-        YouTube.visitorData = Preferences.YOUTUBE_VISITOR_DATA.value
-        YouTube.dataSyncId = Preferences.YOUTUBE_SYNC_ID.value
+        // These three preferences default to "", and every consumer tests them for *null* — so
+        // handing the empty string straight over makes a logged-out install look signed in.
+        // `isLoggedIn` then reads true, an empty `Cookie:` header is attached to googlevideo urls,
+        // and the client sweep judges login-required clients as if an account were present.
+        YouTube.cookie = Preferences.YOUTUBE_COOKIES.value.takeIf( String::isNotBlank )
+        YouTube.visitorData = Preferences.YOUTUBE_VISITOR_DATA.value.takeIf( String::isNotBlank )
+        YouTube.dataSyncId = Preferences.YOUTUBE_SYNC_ID.value.takeIf( String::isNotBlank )
 
         // Register network callback
         getSystemService<ConnectivityManager>()?.run {

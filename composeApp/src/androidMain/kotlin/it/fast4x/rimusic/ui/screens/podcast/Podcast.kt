@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.podcast
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
@@ -234,7 +236,7 @@ fun Podcast(
 
         Box(
             modifier = Modifier
-                .background(colorPalette().background0)
+                .background(LumaColor.Ground)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
@@ -254,7 +256,7 @@ fun Podcast(
                 //contentPadding = LocalPlayerAwareWindowInsets.current
                 //.only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette().background0)
+                    .background(LumaColor.Ground)
                     .fillMaxSize()
             ) {
 
@@ -283,11 +285,11 @@ fun Podcast(
 
                             AutoResizeText(
                                 text = podcastPage?.title ?: "",
-                                style = typography().l.semiBold,
+                                style = LumaType.Section,
                                 fontSizeRange = FontSizeRange(32.sp, 38.sp),
-                                fontWeight = typography().l.semiBold.fontWeight,
-                                fontFamily = typography().l.semiBold.fontFamily,
-                                color = typography().l.semiBold.color,
+                                fontWeight = LumaType.Section.fontWeight,
+                                fontFamily = LumaType.Section.fontFamily,
+                                color = LumaType.Section.color,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
@@ -301,7 +303,7 @@ fun Podcast(
                                 text = podcastPage!!.listEpisode.size.toString() + " "
                                         + stringResource(R.string.songs)
                                         + " - " + totalDuration,
-                                style = typography().xs.medium,
+                                style = LumaType.Meta,
                                 maxLines = 1,
                                 modifier = Modifier
                                     //.padding(top = 10.dp)
@@ -311,7 +313,7 @@ fun Podcast(
 
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 iconSize = 24.dp,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
@@ -341,7 +343,7 @@ fun Podcast(
 
                                 BasicText(
                                     text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                    style = typography().xs.medium,
+                                    style = LumaType.Meta,
                                     maxLines = 1,
                                     modifier = Modifier
                                     //.padding(top = 10.dp)
@@ -374,7 +376,7 @@ fun Podcast(
                             HeaderIconButton(
                                 onClick = { searching = !searching },
                                 icon = R.drawable.search_circle,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 iconSize = 24.dp,
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -382,7 +384,7 @@ fun Podcast(
 
                             HeaderIconButton(
                                 icon = R.drawable.downloaded,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -410,7 +412,7 @@ fun Podcast(
 
                             HeaderIconButton(
                                 icon = R.drawable.download,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -441,7 +443,7 @@ fun Podcast(
                             HeaderIconButton(
                                 icon = R.drawable.enqueue,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
-                                color =  if (podcastPage?.listEpisode?.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
+                                color =  if (podcastPage?.listEpisode?.isNotEmpty() == true) LumaColor.Ink else LumaColor.InkFaint,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -460,7 +462,7 @@ fun Podcast(
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
-                                color = if (podcastPage?.listEpisode?.isNotEmpty() ==true) colorPalette().text else colorPalette().textDisabled,
+                                color = if (podcastPage?.listEpisode?.isNotEmpty() ==true) LumaColor.Ink else LumaColor.InkFaint,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -485,7 +487,7 @@ fun Podcast(
                             HeaderIconButton(
                                 icon = R.drawable.radio,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -503,7 +505,7 @@ fun Podcast(
 
                             HeaderIconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -565,7 +567,7 @@ fun Podcast(
                             /*
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 onClick = {
                                     (playlistPage?.url ?: "https://music.youtube.com/playlist?list=${browseId.removePrefix("VL")}").let { url ->
                                         val sendIntent = Intent().apply {
@@ -583,7 +585,7 @@ fun Podcast(
                         } else {
                             BasicText(
                                 text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                style = typography().xxs.medium,
+                                style = LumaType.Numeral,
                                 maxLines = 1
                             )
                         }
@@ -607,7 +609,7 @@ fun Podcast(
                             BasicTextField(
                                 value = filter ?: "",
                                 onValueChange = { filter = it },
-                                textStyle = typography().xs.semiBold,
+                                textStyle = LumaType.Meta,
                                 singleLine = true,
                                 maxLines = 1,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -615,7 +617,7 @@ fun Podcast(
                                     if (filter.isNullOrBlank()) filter = ""
                                     focusManager.clearFocus()
                                 }),
-                                cursorBrush = SolidColor(colorPalette().text),
+                                cursorBrush = SolidColor(LumaColor.Ink),
                                 decorationBox = { innerTextField ->
                                     Box(
                                         contentAlignment = Alignment.CenterStart,
@@ -626,7 +628,7 @@ fun Podcast(
                                         IconButton(
                                             onClick = {},
                                             icon = R.drawable.search,
-                                            color = colorPalette().favoritesIcon,
+                                            color = LumaColor.Ember,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .size(16.dp)
@@ -647,7 +649,7 @@ fun Podcast(
                                                 text = stringResource( android.R.string.search_go ),
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,
-                                                style = typography().xs.semiBold.secondary.copy(color = colorPalette().textDisabled)
+                                                style = LumaType.Meta.secondary.copy(color = LumaColor.InkFaint)
                                             )
                                         }
 
@@ -658,7 +660,7 @@ fun Podcast(
                                     .height(30.dp)
                                     .fillMaxWidth()
                                     .background(
-                                        colorPalette().background4,
+                                        LumaColor.Raised,
                                         shape = thumbnailRoundness.shape
                                     )
                                     .focusRequester(focusRequester)

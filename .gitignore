@@ -35,3 +35,9 @@
 .env
 .secrets
 .vars
+
+# Local agent/tooling state (machine-specific, not portable)
+.claude/
+.unlazy/
+.agents/
+.unlazy-hook-state.json

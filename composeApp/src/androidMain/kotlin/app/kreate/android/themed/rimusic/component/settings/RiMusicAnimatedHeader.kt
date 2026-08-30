@@ -44,23 +44,39 @@ private fun SettingEntrySearch.AnimatedHeader() {
         if (target)
             SearchBar()
         else
-            HeaderText( TextAlign.End )
+            // Nothing. The page's name is the scaffold's headline; repeating it here was the
+            // duplication this header existed to create.
+            androidx.compose.foundation.layout.Spacer( Modifier.fillMaxWidth() )
     }
 }
 
+/**
+ * The settings page's own header.
+ *
+ * It used to draw an app-icon plus the page name, centred — "General" with a badge, directly under
+ * the scaffold's headline, which by then also said "General". Two titles for one page, one of them
+ * decorated with an icon of the app you are already inside.
+ *
+ * The *search* it carries is genuinely useful — a settings page this long is unusable without one —
+ * so only the duplicated title goes. Tapping the magnifier still opens the field, which now has the
+ * row to itself and is aligned with the rest of the page instead of floating in the middle of it.
+ */
 @Composable
 fun SettingEntrySearch.RiMusicAnimatedHeader() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.End,
         modifier = Modifier.fillMaxWidth()
                            .height( 40.dp )
-                           .padding( horizontal = 10.dp )
+                           .padding( horizontal = 22.dp )
     ) {
+        // Field first so it can grow, control last so it lands on the right where the other
+        // header controls on this screen already are.
+        androidx.compose.foundation.layout.Box( Modifier.weight( 1f ) ) { AnimatedHeader() }
+
         HeaderIcon(
-            Modifier.padding( end = AbstractSearch.DECO_BOX_ITEM_SPACING.dp )
+            Modifier.padding( start = AbstractSearch.DECO_BOX_ITEM_SPACING.dp )
                     .align( Alignment.CenterVertically )
         )
-        AnimatedHeader()
     }
 }

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.statistics
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -168,7 +170,7 @@ fun StatisticsPage(
 
     Box(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -197,23 +199,13 @@ fun StatisticsPage(
                     if(statisticsCategory == StatisticsCategory.Songs) 200.dp else PlaylistItem.thumbnailSize().width
                 ),
                 modifier = Modifier
-                    .background(colorPalette().background0)
+                    .background(LumaColor.Ground)
                     .fillMaxSize()
             ) {
 
-                item(
-                    key = "header",
-                    span = { GridItemSpan(maxLineSpan) }
-                ) {
-                    HeaderWithIcon(
-                        title = statisticsType.text,
-                        iconId = statisticsType.androidIconId,
-                        enabled = true,
-                        showIcon = true,
-                        modifier = Modifier,
-                        onClick = {}
-                    )
-                }
+                // The period ("Today", "This week", …) is the scaffold's headline and its
+                // switcher, so a second centred copy of it with an icon beside it said the same
+                // word twice and pushed the actual figures below the fold.
 
                 item(
                     key = "header_tabs",
@@ -252,7 +244,7 @@ fun StatisticsPage(
                                                    )
                                                    .fillMaxWidth()
                                                    .background(
-                                                       color = colorPalette().background4,
+                                                       color = LumaColor.Raised,
                                                        shape = thumbnailRoundness.shape
                                                    )
                                                    .padding( all =  12.dp )
@@ -261,25 +253,25 @@ fun StatisticsPage(
                                     BasicText(
                                         text = title,
                                         maxLines = 1,
-                                        style = typography().xs
+                                        style = LumaType.Meta
                                                             .semiBold
-                                                            .copy( colorPalette().text ),
+                                                            .copy( LumaColor.Ink ),
                                         modifier = Modifier.padding( bottom = 4.dp )
                                     )
 
                                     BasicText(
                                         text = subtitle,
                                         maxLines = 2,
-                                        style = typography().xs
+                                        style = LumaType.Meta
                                                             .semiBold
-                                                            .copy( colorPalette().textSecondary )
+                                                            .copy( LumaColor.InkSoft )
                                     )
                                 }
 
                                 Icon(
                                     painter = painterResource( R.drawable.musical_notes ),
                                     contentDescription = null,
-                                    tint = colorPalette().shimmer,
+                                    tint = LumaColor.Raised,
                                     modifier = Modifier.size( 34.dp )
                                 )
                             }
@@ -297,7 +289,7 @@ fun StatisticsPage(
                             thumbnailOverlay = {
                                 BasicText(
                                     text = "${index + 1}",
-                                    style = typography().s.semiBold.center.color(colorPalette().text),
+                                    style = LumaType.Tile.center.color(LumaColor.Ink),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.width( SongItem.thumbnailSize().width )

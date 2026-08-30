@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.menu
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -192,9 +194,9 @@ class ResetSongButton : MenuButton<MediaItem>(), ConfirmDialog, KoinComponent {
                     onCheckedChange = null,
                     modifier = Modifier.size( 20.dp ),
                     colors = CheckboxDefaults.colors(
-                        checkedColor = colorPalette().accent,
-                        uncheckedColor = colorPalette().textDisabled,
-                        checkmarkColor = colorPalette().onAccent,
+                        checkedColor = LumaColor.Ember,
+                        uncheckedColor = LumaColor.InkFaint,
+                        checkmarkColor = LumaColor.Ground,
                         disabledIndeterminateColor = Color.Transparent
                     )
                 )
@@ -204,7 +206,7 @@ class ResetSongButton : MenuButton<MediaItem>(), ConfirmDialog, KoinComponent {
                 BasicText(
                     text = menuIconTitle,
                     maxLines = 1,
-                    style = typography().xs.copy( color = colorPalette().text )
+                    style = LumaType.Meta.copy( color = LumaColor.Ink )
                 )
             }
         }

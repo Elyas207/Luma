@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -116,7 +118,7 @@ abstract class ChangeThumbnail(
 
         Icon(
             painter = painterResource( R.drawable.folder ),
-            tint = colorPalette().text,
+            tint = LumaColor.Ink,
             contentDescription = stringResource( R.string.description_select_from_device ),
             modifier = Modifier.clip(CircleShape )
                                .clickable {

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
@@ -373,7 +375,7 @@ fun MediaItemGridMenu (
 
                 BasicText(
                     text = stringResource(R.string.set_sleep_timer),
-                    style = typography().s.semiBold,
+                    style = LumaType.Tile,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -395,11 +397,11 @@ fun MediaItemGridMenu (
                                 .clip(CircleShape)
                                 .clickable(enabled = amount > 1) { amount-- }
                                 .size(48.dp)
-                                .background(colorPalette().background0)
+                                .background(LumaColor.Ground)
                         ) {
                             BasicText(
                                 text = "-",
-                                style = typography().xs.semiBold
+                                style = LumaType.Meta
                             )
                         }
 
@@ -409,7 +411,7 @@ fun MediaItemGridMenu (
                                     R.string.left,
                                     (amount * 5).toDuration( DurationUnit.MINUTES ).readableText()
                                 ),
-                                style = typography().s.semiBold,
+                                style = LumaType.Tile,
                                 modifier = Modifier
                                     .clickable {
                                         showCircularSlider = !showCircularSlider
@@ -424,18 +426,18 @@ fun MediaItemGridMenu (
                                 .clip(CircleShape)
                                 .clickable(enabled = amount < 60) { amount++ }
                                 .size(48.dp)
-                                .background(colorPalette().background0)
+                                .background(LumaColor.Ground)
                         ) {
                             BasicText(
                                 text = "+",
-                                style = typography().xs.semiBold
+                                style = LumaType.Meta
                             )
                         }
 
                     } else {
                         CircularSlider(
                             stroke = 40f,
-                            thumbColor = colorPalette().accent,
+                            thumbColor = LumaColor.Ember,
                             text = (amount * 5).toDuration( DurationUnit.MINUTES ).readableText(),
                             modifier = Modifier
                                 .size(300.dp),
@@ -474,12 +476,12 @@ fun MediaItemGridMenu (
                     IconButton(
                         onClick = { showCircularSlider = !showCircularSlider },
                         icon = R.drawable.time,
-                        color = colorPalette().text
+                        color = LumaColor.Ink
                     )
                     IconButton(
                         onClick = { isShowingSleepTimerDialog = false },
                         icon = R.drawable.close,
-                        color = colorPalette().text
+                        color = LumaColor.Ink
                     )
                     IconButton(
                         enabled = amount > 0,
@@ -490,7 +492,7 @@ fun MediaItemGridMenu (
                             isShowingSleepTimerDialog = false
                         },
                         icon = R.drawable.checkmark,
-                        color = colorPalette().accent
+                        color = LumaColor.Ember
                     )
                 }
             }
@@ -587,7 +589,7 @@ fun MediaItemGridMenu (
                     IconButton(
                         onClick = { isViewingPlaylists = false },
                         icon = R.drawable.chevron_back,
-                        color = colorPalette().textSecondary,
+                        color = LumaColor.InkSoft,
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(20.dp)
@@ -605,7 +607,7 @@ fun MediaItemGridMenu (
                 if (pinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.pinned_playlists),
-                        style = typography().m.semiBold,
+                        style = LumaType.Row,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -625,7 +627,7 @@ fun MediaItemGridMenu (
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = LumaColor.Ink,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -645,7 +647,7 @@ fun MediaItemGridMenu (
                 if (unpinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.playlists),
-                        style = typography().m.semiBold,
+                        style = LumaType.Row,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -665,7 +667,7 @@ fun MediaItemGridMenu (
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = LumaColor.Ink,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)

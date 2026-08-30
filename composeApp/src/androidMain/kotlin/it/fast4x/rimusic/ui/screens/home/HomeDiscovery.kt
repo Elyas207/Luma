@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.home
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -65,16 +67,16 @@ fun MoodItemColored(
             Box(
                 modifier = Modifier
                     .requiredWidth(150.dp)
-                    .background(color = colorPalette().background4)
+                    .background(color = LumaColor.Raised)
                     .fillMaxSize()
             ) {
 
                 BasicText(
                     text = mood.title,
                     style = TextStyle(
-                        color = colorPalette().text,
-                        fontStyle = typography().xs.semiBold.fontStyle,
-                        fontWeight = typography().xs.semiBold.fontWeight
+                        color = LumaColor.Ink,
+                        fontStyle = LumaType.Meta.fontStyle,
+                        fontWeight = LumaType.Meta.fontWeight
                     ),
                     modifier = Modifier.padding(horizontal = 10.dp).align(Alignment.CenterStart),
                     maxLines = 2,
@@ -123,16 +125,16 @@ fun MoodGridItemColored(
             ) {
                 Box(
                     modifier = Modifier
-                        .background(color = colorPalette().background4)
+                        .background(color = LumaColor.Raised)
                         .fillMaxSize()
                 ) {
 
                     BasicText(
                         text = mood.title,
                         style = TextStyle(
-                            color = colorPalette().text,
-                            fontStyle = typography().xs.semiBold.fontStyle,
-                            fontWeight = typography().xs.semiBold.fontWeight
+                            color = LumaColor.Ink,
+                            fontStyle = LumaType.Meta.fontStyle,
+                            fontWeight = LumaType.Meta.fontWeight
                         ),
                         modifier = Modifier.padding(horizontal = 10.dp)
                             .align(Alignment.CenterStart),
@@ -165,7 +167,7 @@ fun MoodItem(
         Box(
             modifier = Modifier
                 .requiredWidth(150.dp)
-                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape)
+                .background(color = LumaColor.Raised, shape = thumbnailRoundness.shape)
                 .fillMaxWidth(0.9f)
                 .padding(all = 10.dp)
         ){
@@ -173,10 +175,10 @@ fun MoodItem(
         BasicText(
             text = mood.title,
             style =  TextStyle(
-                color = colorPalette().text,
-                fontStyle = typography().xs.semiBold.fontStyle,
-                fontWeight = typography().xs.semiBold.fontWeight
-            ), //typography().xs.semiBold,
+                color = LumaColor.Ink,
+                fontStyle = LumaType.Meta.fontStyle,
+                fontWeight = LumaType.Meta.fontWeight
+            ), //LumaType.Meta,
             modifier = Modifier.padding(start = 4.dp),
             maxLines = 1,
 
@@ -199,14 +201,14 @@ fun MoodGridItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .size(thumbnailSizeDp,thumbnailSizeDp)
-            //.background(colorPalette().background1)
+            //.background(LumaColor.Raised)
             .clip(thumbnailRoundness.shape)
             .clickable { onClick() }
 
     ) {
         Box(
             modifier = Modifier
-                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape)
+                .background(color = LumaColor.Raised, shape = thumbnailRoundness.shape)
                 .fillMaxSize(0.9f)
                 .padding(horizontal = 10.dp)
                 .padding(vertical = 50.dp)
@@ -214,10 +216,10 @@ fun MoodGridItem(
             BasicText(
                 text = mood.title,
                 style = TextStyle(
-                    color = colorPalette().text,
-                    fontStyle = typography().xxl.semiBold.fontStyle,
-                    fontWeight = typography().xxl.semiBold.fontWeight,
-                    fontFamily = typography().xxl.fontFamily,
+                    color = LumaColor.Ink,
+                    fontStyle = LumaType.Title.fontStyle,
+                    fontWeight = LumaType.Title.fontWeight,
+                    fontFamily = LumaType.Title.fontFamily,
                     textAlign = TextAlign.Start
                 ),
                 modifier = modifier.padding(start = 4.dp),
@@ -234,7 +236,7 @@ fun MoodItemPlaceholder(
 ) {
     Spacer(
         modifier
-            .background(color = colorPalette().shimmer)
+            .background(color = LumaColor.Raised)
             .size(width, 64.dp)
     )
 }

@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.home
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -124,9 +126,12 @@ fun HomeSongsScreen(
         itemSelector.isActive = false
 
         mutableStateListOf<Button>() .apply {
+            // Order is priority order: whatever sits earliest is what stays visible once the
+            // toolbar caps itself. Shuffle is the most-reached-for action in a music library, so
+            // it ranks above navigational extras like the locator.
             this.add( search )
-            this.add( locator )
             this.add( shuffle )
+            this.add( locator )
             this.add( itemSelector )
             this.add( playNext )
             this.add( enqueue )
@@ -139,7 +144,7 @@ fun HomeSongsScreen(
     }
 
     Box(
-        modifier = Modifier.background( colorPalette().background0 )
+        modifier = Modifier.background( LumaColor.Ground )
             .fillMaxHeight()
             .fillMaxWidth(
                 if (NavigationBarPosition.Right.isCurrent())
@@ -149,10 +154,8 @@ fun HomeSongsScreen(
             )
     ) {
         Column( Modifier.fillMaxSize() ) {
-            // Sticky tab's title
-            TabHeader( R.string.songs ) {
-                HeaderInfo( itemsOnDisplayState.size.toString(), R.drawable.musical_notes )
-            }
+            // No section heading: the library rail above already names the section, and this
+            // was the second of three places the word "Songs" appeared on one screen.
 
             // Sticky tab's tool bar
             TabToolBar.Buttons( buttons )

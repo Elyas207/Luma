@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.utils
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -43,9 +45,9 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     background(
         brush = Brush.linearGradient(
             colors = listOf(
-                colorPalette().background1,
-                colorPalette().shimmer.copy( alpha = .3f ),
-                colorPalette().background1
+                LumaColor.Raised,
+                LumaColor.Raised.copy( alpha = .3f ),
+                LumaColor.Raised
             ),
             start = Offset(startOffsetX, 0f),
             end = Offset(startOffsetX + size.width.toFloat(), size.height.toFloat())

@@ -1,5 +1,7 @@
 package me.knighthat.component.player
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationResult
 import androidx.compose.animation.core.AnimationVector1D
@@ -177,7 +179,7 @@ class SleepTimer private constructor(
         ) {
             val spacing = 4.dp
 
-            val arrowColor = colorPalette().text
+            val arrowColor = LumaColor.Ink
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowUp,
                 contentDescription = "arrow_up",
@@ -193,7 +195,7 @@ class SleepTimer private constructor(
                     .offset { IntOffset(x = 0, y = coercedAnimatedOffset.roundToInt()) }
             ) {
                 val baseLabelModifier = Modifier.align(Alignment.Center)
-                ProvideTextStyle(typography().m) {
+                ProvideTextStyle(LumaType.Row) {
                     Label(
                         text = (animatedStateValue - 1).toString(),
                         modifier = baseLabelModifier

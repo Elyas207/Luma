@@ -169,6 +169,25 @@ object PlayerConfigStore {
 
     fun knownHashes(): Set<String> = mergedConfigs.keys
 
+    /** Whether the cipher can be driven for this player at all. */
+    fun hasConfig( hash: String ): Boolean = mergedConfigs.containsKey( hash )
+
+    /**
+     * The newest player we hold a cipher config for, by `signatureTimestamp`.
+     *
+     * Used when YouTube rotates to a player we cannot decipher. YouTube keeps old players served —
+     * every configured hash still returns 200 — and the `sts` sent with the request selects which
+     * player's cipher the server signs for, so asking for an older one is a supported operation
+     * rather than a trick.
+     *
+     * Newest rather than any: the further back you pin, the more likely that player is eventually
+     * withdrawn or starts being treated as suspicious.
+     */
+    fun newestConfiguredHash(): String? =
+        mergedConfigs.entries
+                     .maxByOrNull { it.value.signatureTimestamp ?: 0 }
+                     ?.key
+
     /** Test-only: swaps the in-memory table without touching disk, context, or network. */
     internal fun setTableForTest(configs: Map<String, FunctionNameExtractor.HardcodedPlayerConfig>) {
         mergedConfigs = configs

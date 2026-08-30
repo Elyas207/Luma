@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
@@ -28,7 +30,7 @@ fun IconInfo (
         Image(
             painter = icon,
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette().text),
+            colorFilter = ColorFilter.tint(LumaColor.Ink),
             modifier = Modifier
                 .size(iconSize)
         )
@@ -36,8 +38,8 @@ fun IconInfo (
         BasicText(
             text = title,
             style = TextStyle(
-                color = colorPalette().text,
-                fontStyle = typography().l.fontStyle
+                color = LumaColor.Ink,
+                fontStyle = LumaType.Section.fontStyle
             ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

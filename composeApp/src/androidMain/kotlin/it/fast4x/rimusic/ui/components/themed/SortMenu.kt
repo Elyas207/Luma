@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -61,7 +63,7 @@ fun SortMenu (
             if (title != null) {
                 BasicText(
                     text = title,
-                    style = typography().m.semiBold,
+                    style = LumaType.Row,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -262,7 +264,7 @@ fun FilterMenu (
             if (title != null) {
                 BasicText(
                     text = title,
-                    style = typography().m.semiBold,
+                    style = LumaType.Row,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )

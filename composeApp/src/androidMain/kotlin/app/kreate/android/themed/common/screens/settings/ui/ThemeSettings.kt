@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings.ui
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -157,7 +159,7 @@ fun IndividualColorSection( search: SettingEntrySearch ) =
                 Icon(
                     painter = painterResource( R.drawable.trash ),
                     contentDescription = stringResource( R.string.settings_reset ),
-                    tint = colorPalette().text,
+                    tint = LumaColor.Ink,
                 )
             }
         if( search appearsIn R.string.color_background_1  )
@@ -222,7 +224,7 @@ fun IndividualColorSection( search: SettingEntrySearch ) =
                 Icon(
                     painter = painterResource( R.drawable.trash ),
                     contentDescription = stringResource( R.string.settings_reset ),
-                    tint = colorPalette().text,
+                    tint = LumaColor.Ink,
                 )
             }
         if( search appearsIn R.string.color_background_1  )

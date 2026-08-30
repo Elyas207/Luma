@@ -9,9 +9,12 @@ import kotlinx.coroutines.withContext
 
 enum class NavRoutes {
     home,
-    games,
-    gamePacman,
-    gameSnake,
+    now,
+    library,
+    carMode,
+    appearance,
+    listening,
+    handoff,
     history,
     localPlaylist,
     mood,

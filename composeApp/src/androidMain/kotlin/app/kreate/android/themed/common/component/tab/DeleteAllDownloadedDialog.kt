@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.tab
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -73,7 +75,7 @@ class DeleteAllDownloadedDialog(
 
             BasicText(
                 text = stringResource( R.string.dialog_text_this_action_is_irreversible ),
-                style = typography().s.bold.copy( colorResource( R.color.red_warning ) )
+                style = LumaType.Tile.copy( colorResource( R.color.red_warning ) )
             )
         }
     }

@@ -45,6 +45,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.exoplayer.offline.Download
 import app.kreate.android.Preferences
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Visual
@@ -333,20 +335,34 @@ object SongItem: Visual() {
         modifier: Modifier = Modifier,
         trailingContent: @Composable RowScope.() -> Unit = {}
     ) =
+        /*
+         * Retyping this row was not going to be enough on its own — a row of
+         * `[thumb][title][artist][duration][download]` is still that row in a different font, and
+         * that exact observation has already been made about this project once.
+         *
+         * So the row's proportions change too. It breathes: roughly twice the vertical padding, and
+         * a wider gap between the artwork and the text. A screen of six generous rows is a visibly
+         * different object from a screen of twelve dense ones, which is a difference a squint test
+         * registers and a font change is not.
+         *
+         * The density this gives up is deliberate. Fitting more rows on screen only helps if you
+         * are scanning for one known item, and that is what search is for; browsing a list you can
+         * actually see is the common case.
+         */
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy( 12.dp ),
+            horizontalArrangement = Arrangement.spacedBy( 16.dp ),
             modifier = modifier.fillMaxWidth()
                                .padding(
-                                   vertical = Dimensions.itemsVerticalPadding,
-                                   horizontal = 16.dp
+                                   vertical = Dimensions.itemsVerticalPadding * 2,
+                                   horizontal = 22.dp
                                )
         ) {
             thumbnail()
 
             Column(
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy( 4.dp ),
+                verticalArrangement = Arrangement.spacedBy( 3.dp ),
                 modifier = Modifier.weight( 1f )
             ) {
                 Row( verticalAlignment = Alignment.CenterVertically, content = firstLine )
@@ -614,7 +630,7 @@ object SongItem: Visual() {
                         values = values,
                         modifier = Modifier.padding( all = 4.dp )
                                            .background(
-                                               color = colorPalette().overlay,
+                                               color = LumaColor.Ground,
                                                shape = itemShape
                                            )
                                            .padding( horizontal = 4.dp, vertical = 2.dp )
@@ -688,23 +704,49 @@ object SongItem: Visual() {
                 )
             }
 
+            /**
+             * Three ranks of information, set as three ranks of type.
+             *
+             * The title and the artist used to share one style — `xs.semiBold`, byte for byte —
+             * separated only by a slightly dimmer grey. Two lines of identical weight read as one
+             * block, so scanning a list meant reading every row instead of skimming the titles,
+             * and the row carried no hierarchy for a theme to express.
+             *
+             * Now the title leads (larger, medium weight — heavy enough to anchor the row, not so
+             * heavy it shouts on a screen of forty), the artist supports it a size down at normal
+             * weight, and the duration recedes to the disabled colour: it is reference detail you
+             * consult, never something you scan for.
+             */
             fun from( colorPalette: ColorPalette, typography: Typography ) =
                 Values(
-                    nowPlayingOverlayColor = colorPalette.favoritesOverlay,
-                    nowPlayingIndicatorColor = colorPalette.onOverlay,
-                    titleTextStyle = typography.xs.semiBold,
-                    titleColor = colorPalette.text,
-                    artistsTextStyle = typography.xs.semiBold,
-                    artistsColor = colorPalette.textSecondary,
-                    durationTextStyle = typography.xxs.medium,
-                    durationColor = colorPalette.textSecondary,
-                    uncachedColor = colorPalette.textDisabled,
-                    cachedColor = colorPalette.text,
-                    downloadedColor = colorPalette.text,
-                    recommendedBadgeColor = colorPalette.accent,
-                    inPlaylistBadgeColor = colorPalette.accent,
+                    // The inherited "favourites overlay" was a khaki wash that belonged to the old
+                    // palette; over Luma's warm black it reads as a stain rather than a highlight.
+                    // A low-alpha wash of the app's own accent marks the playing row without
+                    // repainting it, which is all a highlight has to do.
+                    nowPlayingOverlayColor = LumaColor.Ember.copy( alpha = 0.16f ),
+                    nowPlayingIndicatorColor = LumaColor.Ember,
+                    // The title carries the app's identity here, because this row is the single
+                    // most repeated object in the interface — it is in search results, every
+                    // library section, every album, playlist, artist, the history and the queue.
+                    // A sans title in this one component is enough to make the whole app read as
+                    // stock, however the screens around it are composed.
+                    titleTextStyle = LumaType.Tile,
+                    titleColor = LumaColor.Ink,
+                    artistsTextStyle = LumaType.Meta,
+                    artistsColor = LumaColor.InkSoft,
+                    // Wide-tracked micro caps rather than a right-aligned column of digits. The
+                    // duration is reference detail you consult once, never something you scan a
+                    // list for, and setting it as a number in the same family as the title gave it
+                    // a visual weight it has not earned.
+                    durationTextStyle = LumaType.Numeral,
+                    durationColor = LumaColor.InkFaint,
+                    uncachedColor = LumaColor.InkFaint,
+                    cachedColor = LumaColor.InkSoft,
+                    downloadedColor = LumaColor.Ink,
+                    recommendedBadgeColor = LumaColor.Ember,
+                    inPlaylistBadgeColor = LumaColor.Ember,
                     explicitBadgeColor = Color.White,
-                    likedIconColor = colorPalette.favoritesIcon
+                    likedIconColor = LumaColor.Ember
                 )
 
             fun from( appearance: Appearance ) =

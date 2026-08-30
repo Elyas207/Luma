@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -46,7 +48,7 @@ fun GridMenu(
         modifier = modifier
             .padding(top = 48.dp)
             .fillMaxWidth()
-            .background(colorPalette().background1)
+            .background(LumaColor.Raised)
             .padding(top = 2.dp)
             .padding(vertical = 8.dp),
     ) {

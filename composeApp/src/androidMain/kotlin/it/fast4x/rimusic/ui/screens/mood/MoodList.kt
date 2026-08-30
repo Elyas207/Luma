@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.mood
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -80,7 +82,7 @@ fun MoodList(
 
     Column (
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -108,7 +110,7 @@ fun MoodList(
                     //contentPadding = LocalPlayerAwareWindowInsets.current
                     //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                     modifier = Modifier
-                        .background(colorPalette().background0)
+                        .background(LumaColor.Ground)
                         .fillMaxSize()
                 ) {
                     item(
@@ -131,7 +133,7 @@ fun MoodList(
                         item {
                             BasicText(
                                 text = item.title,
-                                style = typography().m.semiBold,
+                                style = LumaType.Row,
                                 modifier = sectionTextModifier
                             )
                         }
@@ -154,7 +156,7 @@ fun MoodList(
             onFailure = {
                 BasicText(
                     text = stringResource(R.string.page_not_been_loaded),
-                    style = typography().s.secondary.center,
+                    style = LumaType.Tile.center,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(all = 16.dp)

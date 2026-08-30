@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.navigation.nav
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.updateTransition
@@ -95,7 +97,7 @@ class HorizontalNavigationBar(
         buttons { index, text, iconId ->
 
             val color by transition.animateColor(label = "") {
-                if (it == index) colorPalette().text else colorPalette().textDisabled
+                if (it == index) LumaColor.Ink else LumaColor.InkFaint
             }
 
             val button: Button =
@@ -173,7 +175,7 @@ class HorizontalNavigationBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(roundedCornerShape)
-                        .background(colorPalette().background1)
+                        .background(LumaColor.Raised)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

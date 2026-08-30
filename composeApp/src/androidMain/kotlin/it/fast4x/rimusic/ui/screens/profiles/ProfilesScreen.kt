@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.profiles
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.clickable
@@ -193,7 +195,7 @@ fun ProfileScreen(
         ) {
             BasicText(
                 text = stringResource(R.string.this_profile_alreaty_exist),
-                style = typography().xs.medium.center,
+                style = LumaType.Meta.center,
                 modifier = Modifier
                     .padding(all = 16.dp)
             )
@@ -313,7 +315,7 @@ private fun ProfileItem(
     ) {
         BasicText(
             text = title,
-            style = typography().s.semiBold.copy(color = colorPalette().text),
+            style = LumaType.Tile.copy(color = LumaColor.Ink),
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 24.dp, vertical = 4.dp)

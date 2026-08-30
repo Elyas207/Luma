@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
@@ -25,11 +27,11 @@ fun Switch(
     val transition = updateTransition(targetState = isChecked, label = null)
 
     val backgroundColor by transition.animateColor(label = "") {
-        if (it) colorPalette().accent else colorPalette().background1
+        if (it) LumaColor.Ember else LumaColor.Raised
     }
 
     val color by transition.animateColor(label = "") {
-        if (it) colorPalette().onAccent else colorPalette().textDisabled
+        if (it) LumaColor.Ground else LumaColor.InkFaint
     }
 
     val offset by transition.animateDp(label = "") {

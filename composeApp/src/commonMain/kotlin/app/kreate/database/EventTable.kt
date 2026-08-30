@@ -28,6 +28,24 @@ interface EventTable: DatabaseTable<Event> {
     fun allWithSong( limit: Int = Int.MAX_VALUE ): Flow<List<EventWithSong>>
 
     /**
+     * Most recently played songs, newest first, one row per song.
+     *
+     * [allWithSong] cannot serve this: it has no `ORDER BY`, so its "DISTINCT *" is distinct over
+     * whole history rows rather than over songs, and the order is whatever SQLite happens to
+     * return. Grouping by song and ordering by the newest play of each is what actually produces
+     * a "jump back in" list.
+     */
+    @Query("""
+        SELECT s.*
+        FROM songs s
+        JOIN playback_history h ON h.song_id = s.id
+        GROUP BY s.id
+        ORDER BY MAX(h.created_at) DESC
+        LIMIT :limit
+    """)
+    fun recentlyPlayed( limit: Int = 12 ): Flow<List<Song>>
+
+    /**
      * Return a list of songs that were listened to by user.
      *
      * Songs must be listened at least once within [from] and [to]

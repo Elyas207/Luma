@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.tab.toolbar
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import it.fast4x.rimusic.colorPalette
@@ -21,7 +23,7 @@ interface DynamicColor: Icon {
      */
     val secondColor: Color
         @Composable
-        get() = colorPalette().textDisabled
+        get() = LumaColor.InkFaint
 
     /**
      * The condition determines which color to display.

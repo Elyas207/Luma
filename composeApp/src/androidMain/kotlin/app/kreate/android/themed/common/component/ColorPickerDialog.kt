@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.FloatRange
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -120,7 +122,7 @@ class ColorPickerDialog(
             thumb = {
                 Box(
                     Modifier.size( 10.dp, 24.dp )
-                            .border( 2.dp, colorPalette().text, RoundedCornerShape(2.dp) )
+                            .border( 2.dp, LumaColor.Ink, RoundedCornerShape(2.dp) )
                 )
             }
         )
@@ -188,13 +190,13 @@ class ColorPickerDialog(
             Row {
                 BasicText(
                     text = "$letter:",
-                    style = typography().s.copy( colorPalette().text, textAlign = TextAlign.Center ),
+                    style = LumaType.Tile.copy( LumaColor.Ink, textAlign = TextAlign.Center ),
                     modifier = Modifier.weight( 1f )
                 )
 
                 BasicText(
                     text = value,
-                    style = typography().m.copy( colorPalette().text ),
+                    style = LumaType.Row.copy( LumaColor.Ink ),
                     maxLines = 1,
                     modifier = Modifier.weight( 1f )
                 )
@@ -287,11 +289,11 @@ class ColorPickerDialog(
                         // Prefix "#" with reactive color (showing currently selected color)
                         BasicText(
                             text = "#",
-                            style = typography().m.semiBold.copy( color )
+                            style = LumaType.Row.copy( color )
                         )
                     },
                     colors = InputDialog.defaultTextFieldColors().copy(
-                        unfocusedContainerColor = colorPalette().background1,
+                        unfocusedContainerColor = LumaColor.Raised,
                         unfocusedIndicatorColor = Color.Transparent
                     )
                 )

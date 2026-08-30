@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,11 +63,11 @@ abstract class AbstractSearch(
             text = stringResource( android.R.string.search_go ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = typography().xs
+            style = LumaType.Meta
                                 .semiBold
                                 .secondary
                                 .copy(
-                                    color = colorPalette().textDisabled
+                                    color = LumaColor.InkFaint
                                 ),
             // Hide placeholder once text from user appears
             modifier = Modifier.conditional( isNotBlank() ) { alpha( 0f ) }
@@ -76,7 +78,7 @@ abstract class AbstractSearch(
         Icon(
             painter = painterResource( R.drawable.backspace_outline ),
             contentDescription = stringResource( R.string.clear ),
-            tint = colorPalette().text
+            tint = LumaColor.Ink
                                  .copy( alpha = .8f ),     // A little dimmer to prevent eye-candy
             modifier = Modifier.size( DECO_BOX_ICON_SIZE.dp )
                                .clickable( onClick = ::onClearSearchClick )
@@ -115,7 +117,7 @@ abstract class AbstractSearch(
                     selection = it.selection
                 )
             },
-            textStyle = typography().xs.semiBold,
+            textStyle = LumaType.Meta,
             singleLine = true,
             keyboardOptions = KeyboardOptions( imeAction = ImeAction.Search ),
             keyboardActions = KeyboardActions(onSearch = {
@@ -123,7 +125,7 @@ abstract class AbstractSearch(
                 isFocused = false
                 keyboardController?.hide()
             }),
-            cursorBrush = SolidColor( colorPalette().text ),
+            cursorBrush = SolidColor( LumaColor.Ink ),
             decorationBox = { DecorationBox( it ) },
             modifier = modifier.height( SEARCH_BOX_HEIGHT.dp )
                                .fillMaxWidth()

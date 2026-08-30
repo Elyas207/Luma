@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player.components.controls
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -120,7 +122,7 @@ fun InfoAlbumAndArtistModern(
             if (playerInfoShowIcon) {
                 IconButton(
                     icon = if ( albumId == null && !mediaItem.isLocal ) R.drawable.logo_youtube else R.drawable.album,
-                    color = if (albumId == null) colorPalette().textDisabled else colorPalette().text,
+                    color = if (albumId == null) LumaColor.InkFaint else LumaColor.Ink,
                     enabled = albumId != null,
                     onClick = {
                         if (albumId != null) {
@@ -165,7 +167,7 @@ fun InfoAlbumAndArtistModern(
                 if ( mediaItem.isExplicit )
                     IconButton(
                         icon = R.drawable.explicit,
-                        color = colorPalette().text,
+                        color = LumaColor.Ink,
                         enabled = true,
                         onClick = {},
                         modifier = Modifier
@@ -178,14 +180,14 @@ fun InfoAlbumAndArtistModern(
                     text = mediaItem.mediaMetadata.title.toString(),
                     style = TextStyle(
                         color = if (albumId == null)
-                            /*if (showthumbnail) colorPalette().textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette().textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
-                        else colorPalette().text,*/
-                            if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) colorPalette().textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
-                        else colorPalette().text,
-                        fontStyle = typography().l.bold.fontStyle,
-                        fontWeight = typography().l.bold.fontWeight,
-                        fontSize = typography().l.bold.fontSize,
-                        fontFamily = typography().l.bold.fontFamily
+                            /*if (showthumbnail) LumaColor.InkFaint else if (colorPaletteMode == ColorPaletteMode.Light) LumaColor.InkFaint.copy(0.35f).compositeOver(Color.Black) else LumaColor.InkFaint.copy(0.35f).compositeOver(Color.White)
+                        else LumaColor.Ink,*/
+                            if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) LumaColor.InkFaint.copy(0.35f).compositeOver(Color.Black) else LumaColor.InkFaint.copy(0.35f).compositeOver(Color.White)
+                        else LumaColor.Ink,
+                        fontStyle = LumaType.Section.fontStyle,
+                        fontWeight = LumaType.Section.fontWeight,
+                        fontSize = LumaType.Section.fontSize,
+                        fontFamily = LumaType.Section.fontFamily
                     ),
                     maxLines = 1,
                     modifier = modifierTitle
@@ -196,10 +198,10 @@ fun InfoAlbumAndArtistModern(
                         drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                         color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                         else Color.Black,
-                        fontStyle = typography().l.bold.fontStyle,
-                        fontWeight = typography().l.bold.fontWeight,
-                        fontSize = typography().l.bold.fontSize,
-                        fontFamily = typography().l.bold.fontFamily
+                        fontStyle = LumaType.Section.fontStyle,
+                        fontWeight = LumaType.Section.fontWeight,
+                        fontSize = LumaType.Section.fontSize,
+                        fontFamily = LumaType.Section.fontFamily
                     ),
                     maxLines = 1,
                     modifier = modifierTitle
@@ -213,7 +215,7 @@ fun InfoAlbumAndArtistModern(
                         .weight(0.1f)
                 ){
                     IconButton(
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         icon = getLikeState( mediaItem.mediaId ),
                         onClick = {
                             CoroutineScope( Dispatchers.IO ).launch {
@@ -229,7 +231,7 @@ fun InfoAlbumAndArtistModern(
                     if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
                         Icon(
                             painter = Preferences.LIKE_ICON.value.neutralIcon,
-                            tint = colorPalette().text,
+                            tint = LumaColor.Ink,
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(start = 5.dp)
@@ -272,7 +274,7 @@ fun InfoAlbumAndArtistModern(
         if (playerInfoShowIcon) {
             IconButton(
                 icon = if ( artistIds?.isEmpty() == true && !mediaItem.isLocal ) R.drawable.logo_youtube else R.drawable.people,
-                color = if (artistIds?.isEmpty() == true) colorPalette().textDisabled else colorPalette().text,
+                color = if (artistIds?.isEmpty() == true) LumaColor.InkFaint else LumaColor.Ink,
                 onClick = {
                     if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
                         showSelectDialog = true
@@ -317,14 +319,14 @@ fun InfoAlbumAndArtistModern(
                 text = mediaItem.mediaMetadata.artist.toString(),
                 style = TextStyle(
                     color = if (albumId == null)
-                        /*if (showthumbnail) colorPalette().textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette().textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
-                    else colorPalette().text,*/
-                        if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) colorPalette().textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
-                    else colorPalette().text,
-                    fontStyle = typography().m.bold.fontStyle,
-                    fontSize = typography().m.bold.fontSize,
-                    fontWeight = typography().m.bold.fontWeight,
-                    fontFamily = typography().m.bold.fontFamily
+                        /*if (showthumbnail) LumaColor.InkFaint else if (colorPaletteMode == ColorPaletteMode.Light) LumaColor.InkFaint.copy(0.35f).compositeOver(Color.Black) else LumaColor.InkFaint.copy(0.35f).compositeOver(Color.White)
+                    else LumaColor.Ink,*/
+                        if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) LumaColor.InkFaint.copy(0.35f).compositeOver(Color.Black) else LumaColor.InkFaint.copy(0.35f).compositeOver(Color.White)
+                    else LumaColor.Ink,
+                    fontStyle = LumaType.Row.fontStyle,
+                    fontSize = LumaType.Row.fontSize,
+                    fontFamily = LumaType.Row.fontFamily,
+                    fontWeight = LumaType.Row.fontWeight,
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
@@ -336,10 +338,10 @@ fun InfoAlbumAndArtistModern(
                     drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                     color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                     else Color.Black,
-                    fontStyle = typography().m.bold.fontStyle,
-                    fontSize = typography().m.bold.fontSize,
-                    fontWeight = typography().m.bold.fontWeight,
-                    fontFamily = typography().m.bold.fontFamily
+                    fontStyle = LumaType.Row.fontStyle,
+                    fontSize = LumaType.Row.fontSize,
+                    fontFamily = LumaType.Row.fontFamily,
+                    fontWeight = LumaType.Row.fontWeight,
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
@@ -371,7 +373,7 @@ fun ControlsModern(
 
   if (playerPlayButtonType != PlayerPlayButtonType.Disabled) {
       CustomElevatedButton(
-          backgroundColor = colorPalette().background2.copy(0.95f),
+          backgroundColor = LumaColor.Raised.copy(0.95f),
           onClick = {},
           modifier = Modifier
               .size(55.dp)
@@ -392,7 +394,7 @@ fun ControlsModern(
           Image(
               painter = painterResource(R.drawable.play_skip_back),
               contentDescription = null,
-              colorFilter = ColorFilter.tint(colorPalette().text),
+              colorFilter = ColorFilter.tint(LumaColor.Ink),
               modifier = Modifier
                   .padding(10.dp)
                   .size(26.dp)
@@ -435,7 +437,7 @@ fun ControlsModern(
               }
               Image(
                   painter = painterResource(R.drawable.a13shape),
-                  colorFilter = ColorFilter.tint(colorPalette().background2.copy(0.95f)),
+                  colorFilter = ColorFilter.tint(LumaColor.Raised.copy(0.95f)),
                   modifier = Modifier
                       .rotate(rotationAngle)
                       .dropShadow(
@@ -453,7 +455,7 @@ fun ControlsModern(
               Image(
                   painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                   contentDescription = null,
-                  colorFilter = ColorFilter.tint(colorPalette().text),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                  colorFilter = ColorFilter.tint(LumaColor.Ink),  //ColorFilter.tint(LumaColor.Ember),
                   modifier = Modifier
                       .rotate(rotationAngle)
                       .align(Alignment.Center)
@@ -463,7 +465,7 @@ fun ControlsModern(
       }
       else {
           CustomElevatedButton(
-              backgroundColor = colorPalette().background2.copy(0.95f),
+              backgroundColor = LumaColor.Raised.copy(0.95f),
               onClick = {},
               modifier = Modifier
                   .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
@@ -492,9 +494,9 @@ fun ControlsModern(
                 painter = painterResource(R.drawable.a13shape),
                 colorFilter = ColorFilter.tint(
                     when (colorPaletteName) {
-                        ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette().background4
-                        else -> if (isGradientBackgroundEnabled) colorPalette().background1
-                        else colorPalette().background2
+                        ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> LumaColor.Raised
+                        else -> if (isGradientBackgroundEnabled) LumaColor.Raised
+                        else LumaColor.Raised
                     }
                 ),
                 modifier = Modifier
@@ -508,7 +510,7 @@ fun ControlsModern(
               Image(
                   painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                   contentDescription = null,
-                  colorFilter = ColorFilter.tint(colorPalette().text),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                  colorFilter = ColorFilter.tint(LumaColor.Ink),  //ColorFilter.tint(LumaColor.Ember),
                   modifier = Modifier
                       .rotate(rotationAngle)
                       .align(Alignment.Center)
@@ -526,9 +528,9 @@ fun ControlsModern(
                       BasicText(
                           text = fmtSpeed,
                           style = TextStyle(
-                              color = colorPalette().text,
-                              fontStyle = typography().xxxs.semiBold.fontStyle,
-                              fontSize = typography().xxxs.semiBold.fontSize
+                              color = LumaColor.Ink,
+                              fontStyle = LumaType.Numeral.fontStyle,
+                              fontSize = LumaType.Numeral.fontSize
                           ),
                           maxLines = 1,
                           modifier = Modifier
@@ -539,7 +541,7 @@ fun ControlsModern(
       }
 
     CustomElevatedButton(
-        backgroundColor = colorPalette().background2.copy(0.95f),
+        backgroundColor = LumaColor.Raised.copy(0.95f),
         onClick = {},
         modifier = Modifier
             .size(55.dp)
@@ -561,7 +563,7 @@ fun ControlsModern(
           Image(
               painter = painterResource(R.drawable.play_skip_forward),
               contentDescription = null,
-              colorFilter = ColorFilter.tint(colorPalette().text),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+              colorFilter = ColorFilter.tint(LumaColor.Ink),  //ColorFilter.tint(LumaColor.Ember),
               modifier = Modifier
                   .padding(10.dp)
                   .size(26.dp)
@@ -595,7 +597,7 @@ fun ControlsModern(
               Image(
                   painter = painterResource(R.drawable.play_skip_back),
                   contentDescription = null,
-                  colorFilter = ColorFilter.tint(colorPalette().accent),
+                  colorFilter = ColorFilter.tint(LumaColor.Ember),
                   modifier = Modifier
                       .padding(10.dp)
                       .size(34.dp)
@@ -630,7 +632,7 @@ fun ControlsModern(
               Image(
                   painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                   contentDescription = null,
-                  colorFilter = ColorFilter.tint(colorPalette().accent),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                  colorFilter = ColorFilter.tint(LumaColor.Ember),  //ColorFilter.tint(LumaColor.Ember),
                   modifier = Modifier
                       .rotate(rotationAngle)
                       .size(44.dp)
@@ -669,7 +671,7 @@ fun ControlsModern(
               Image(
                   painter = painterResource(R.drawable.play_skip_forward),
                   contentDescription = null,
-                  colorFilter = ColorFilter.tint(colorPalette().accent),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                  colorFilter = ColorFilter.tint(LumaColor.Ember),  //ColorFilter.tint(LumaColor.Ember),
                   modifier = Modifier
                       .padding(10.dp)
                       .size(34.dp)

@@ -1,6 +1,8 @@
 package it.fast4x.rimusic.ui.screens.home
 
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -43,6 +45,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.EmptyState
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
@@ -61,7 +64,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
 import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -159,7 +161,7 @@ fun HomeArtists(
     ) {
         Box (
             modifier = Modifier
-                .background(colorPalette().background0)
+                .background(LumaColor.Ground)
                 .fillMaxHeight()
                 .fillMaxWidth(
                     if( NavigationBarPosition.Right.isCurrent() )
@@ -169,10 +171,7 @@ fun HomeArtists(
                 )
         ) {
             Column( Modifier.fillMaxSize() ) {
-                // Sticky tab's title
-                TabHeader( R.string.artists ) {
-                    HeaderInfo(items.size.toString(), R.drawable.people)
-                }
+                // No section heading: the library rail above already names the section.
 
                 // Sticky tab's tool bar
                 TabToolBar.Buttons( sort, search, randomizer, shuffle, itemSize )
@@ -249,10 +248,21 @@ fun HomeArtists(
                     ArtistItem.Values.from( colorPalette, typography )
                 }
 
+                // A blank grid is indistinguishable from a screen that failed to draw. Same
+                // reasoning as the songs list: name the state and offer the way out of it.
+                if ( itemsOnDisplay.isEmpty() )
+                    EmptyState(
+                        iconId = R.drawable.people,
+                        titleId = R.string.empty_artists_title,
+                        descriptionId = R.string.empty_artists_description,
+                        actionLabelId = R.string.empty_action_find_music,
+                        onAction = { NavRoutes.search.navigateHere( navController ) }
+                    )
+                else
                 LazyVerticalGrid(
                     state = lazyGridState,
                     columns = GridCells.Adaptive( itemSize.size.dp ),
-                    modifier = Modifier.background( colorPalette().background0 )
+                    modifier = Modifier.background( LumaColor.Ground )
                                        .fillMaxSize(),
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
                     verticalArrangement = Arrangement.spacedBy( ArtistItem.ROW_SPACING.dp )

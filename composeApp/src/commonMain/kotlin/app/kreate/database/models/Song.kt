@@ -40,7 +40,17 @@ data class Song(
     val isExplicit: Boolean = false,
 
     @ColumnInfo(name = "is_local")
-    val isLocal: Boolean = false
+    val isLocal: Boolean = false,
+
+    /**
+     * Whether this item has a video track worth offering.
+     *
+     * Persisted rather than carried in `MediaMetadata.extras`, because extras do not survive a
+     * round trip through this table — which is why the same content used to offer video when it
+     * came from search and audio-only when it came from the library.
+     */
+    @ColumnInfo(name = "is_video", defaultValue = "0")
+    val isVideo: Boolean = false
 ) {
 
     val formattedTotalPlayTime: String

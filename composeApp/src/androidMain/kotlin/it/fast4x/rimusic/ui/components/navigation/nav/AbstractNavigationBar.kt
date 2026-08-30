@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.navigation.nav
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
@@ -27,7 +29,7 @@ abstract class AbstractNavigationBar(
     @ReadOnlyComposable
     @Composable
     internal open fun BackButton(): NavigationButton {
-        val button = NavigationButton( navController, R.drawable.chevron_back, colorPalette().favoritesIcon )
+        val button = NavigationButton( navController, R.drawable.chevron_back, LumaColor.Ember )
         button.clickEvent {
             if ( navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED )
                 navController.popBackStack()
@@ -41,7 +43,7 @@ abstract class AbstractNavigationBar(
         return NavigationButton(
             navController,
             R.drawable.settings,
-            colorPalette().favoritesIcon,
+            LumaColor.Ember,
             NavRoutes.settings.name
         )
     }
@@ -52,7 +54,7 @@ abstract class AbstractNavigationBar(
         return NavigationButton(
             navController,
             R.drawable.stats_chart,
-            colorPalette().textSecondary,
+            LumaColor.InkSoft,
             NavRoutes.statistics.name
         )
     }
@@ -63,7 +65,7 @@ abstract class AbstractNavigationBar(
         return NavigationButton(
             navController,
             R.drawable.search,
-            colorPalette().textSecondary,
+            LumaColor.InkSoft,
             NavRoutes.search.name
         )
     }

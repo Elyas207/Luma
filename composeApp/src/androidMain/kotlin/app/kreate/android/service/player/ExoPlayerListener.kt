@@ -8,17 +8,22 @@ import androidx.annotation.MainThread
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapIndexed
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException
 import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
 import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaSession
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.service.taste.TasteEngine
 import app.kreate.database.models.PersistentQueue
+import app.kreate.di.clearCachedStreamUrlOf
+import com.metrolist.music.utils.YTPlayerUtils
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.NotificationButtons
 import it.fast4x.rimusic.enums.QueueLoopType
@@ -58,6 +63,14 @@ class ExoPlayerListener(
     private var volumeNormalizationJob: Job = Job()
     private var errorTimestamp = 0L
     private var lastErrorMessage = ""
+
+    /**
+     * Media id whose stream URL has already been invalidated and re-resolved once for the current
+     * error. Guards against a re-prepare loop when the fresh URL fails the same way. Cleared as
+     * soon as anything reaches [Player.STATE_READY], so a later session-expiry on the same song
+     * still gets its own recovery attempt.
+     */
+    private var recoveryAttemptedFor: String? = null
 
     var loudnessEnhancer: LoudnessEnhancer? = null
         private set
@@ -154,6 +167,42 @@ class ExoPlayerListener(
             else -> t.cause?.let( ::traverseErrorStack ) ?: t
         }
 
+    /**
+     * HTTP status of the failed load, or `null` when the failure wasn't an HTTP response.
+     *
+     * Walks the whole cause chain rather than reusing [traverseErrorStack], which stops early on
+     * the app's own exception types and would hide the response code underneath them.
+     */
+    private fun findResponseCode( t: Throwable? ): Int? = when( t ) {
+        null -> null
+        is InvalidResponseCodeException -> t.responseCode
+        else -> findResponseCode( t.cause )
+    }
+
+    /**
+     * A resolved CDN url that answers 403/410 is expired or was minted for a client YouTube has
+     * since rejected. Both are recoverable: drop the cached url so the next resolve refetches, and
+     * stop [YTPlayerUtils] handing back the same unvalidated `WEB_REMIX` url it just gave us.
+     *
+     * @return `true` when recovery was started, so the caller must not skip the track
+     */
+    @MainThread
+    private fun tryRecoverStream( error: PlaybackException ): Boolean {
+        val responseCode = findResponseCode( error ) ?: return false
+        if( responseCode != 403 && responseCode != 410 ) return false
+
+        val mediaId = player.currentMediaItem?.mediaId ?: return false
+        // Already re-resolved this one and it still fails — let the caller skip instead of looping
+        if( recoveryAttemptedFor == mediaId ) return false
+
+        recoveryAttemptedFor = mediaId
+        clearCachedStreamUrlOf( mediaId )
+        YTPlayerUtils.markWebRemixFailed( mediaId )
+        player.prepare()
+
+        return true
+    }
+
     @MainThread
     private fun printErrorMessage( errMsg: String )  {
         // If the same error is set within 10s, it'll be ignored.
@@ -185,6 +234,45 @@ class ExoPlayerListener(
         onMediaTransition( mediaItem )
     }
 
+    /**
+     * Report how the outgoing track was left to [TasteEngine].
+     *
+     * This callback rather than [onMediaItemTransition] because it is the only one that carries the
+     * *old* position: by the time a transition is reported the playhead has already moved, and
+     * "how far in did they get" is precisely the thing the learning depends on.
+     *
+     * The reason also separates intent cleanly — `AUTO_TRANSITION` means the track ran out on its
+     * own, `SEEK` means something deliberately moved to another item, which in this app means the
+     * user skipped.
+     */
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        if ( reason != Player.DISCONTINUITY_REASON_AUTO_TRANSITION &&
+             reason != Player.DISCONTINUITY_REASON_SEEK
+        ) return
+
+        // A seek *within* a track says nothing about whether the user liked it.
+        if ( oldPosition.mediaItemIndex == newPosition.mediaItemIndex ) return
+
+        val departing = oldPosition.mediaItem ?: return
+
+        val duration = runCatching {
+            player.currentTimeline
+                  .getWindow( oldPosition.mediaItemIndex, Timeline.Window() )
+                  .durationMs
+        }.getOrDefault( C.TIME_UNSET )
+
+        TasteEngine.recordDeparture(
+            songId = departing.mediaId,
+            positionMs = oldPosition.positionMs,
+            durationMs = duration,
+            wasManualSkip = reason == Player.DISCONTINUITY_REASON_SEEK
+        )
+    }
+
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
         if ( reason == Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED )
             saveQueueToDatabase()
@@ -202,6 +290,10 @@ class ExoPlayerListener(
     }
 
     override fun onPlayerError( error: PlaybackException ) {
+        // Recover silently where possible — a stale url that re-resolves is not worth a toast,
+        // and skipping the track the user just picked is the worst possible answer to it.
+        if ( tryRecoverStream( error ) ) return
+
         val rootCause = traverseErrorStack( error )
 
         when( rootCause ) {
@@ -211,8 +303,6 @@ class ExoPlayerListener(
 
             else -> rootCause.message ?: context.getString( R.string.error_unknown )
         }.also( ::printErrorMessage )
-
-        // TODO: Add additional recovery step if type of error allows it
 
         if ( Preferences.PLAYBACK_SKIP_ON_ERROR.value && player.hasNextMediaItem() )
             player.playNext()
@@ -225,6 +315,11 @@ class ExoPlayerListener(
                 Player.EVENT_PLAY_WHEN_READY_CHANGED
             )
         ) {
+            // Anything that reaches READY proves the pipeline recovered, so re-arm recovery for
+            // the next failure instead of leaving it latched to the id that last failed.
+            if ( player.playbackState == Player.STATE_READY )
+                recoveryAttemptedFor = null
+
             val isBufferingOrReady =
                 player.playbackState == Player.STATE_BUFFERING || player.playbackState == Player.STATE_READY
             if (isBufferingOrReady && player.playWhenReady) {

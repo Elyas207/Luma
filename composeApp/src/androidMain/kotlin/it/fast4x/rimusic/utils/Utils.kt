@@ -183,7 +183,9 @@ val Song.asMediaItem: MediaItem
                 .setIsPlayable( true )
                 .setExtras(
                     bundleOf(
-                        EXPLICIT_BUNDLE_TAG to isExplicit
+                        EXPLICIT_BUNDLE_TAG to isExplicit,
+                        // Carried back out of the database so a library song offers video too
+                        "isVideo" to isVideo
                     )
                 )
                 .build()
@@ -219,7 +221,9 @@ val MediaItem.asSong: Song
         artistsText = mediaMetadata.artist.toString(),
         durationText = mediaMetadata.durationMs?.let { DateUtils.formatElapsedTime(it / 1000) },
         thumbnailUrl = mediaMetadata.artworkUri.toString(),
-        isLocal = isLocal
+        isLocal = isLocal,
+        // Persist the flag on the way in, so it is still there on the way back out
+        isVideo = isVideo
     )
 
 val MediaItem.isVideo: Boolean

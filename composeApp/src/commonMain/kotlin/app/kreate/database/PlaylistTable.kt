@@ -79,6 +79,10 @@ interface PlaylistTable: DatabaseTable<Playlist> {
 
     /**
      * @return all playlists from this table with number of songs they carry
+     *
+     * `thumbnailUrl` used to be left unselected, so it was always `null` and every playlist in the
+     * app drew as an empty tile. It now resolves to the cover of the playlist's first track, which
+     * is the only artwork a playlist can honestly claim.
      */
     @Query("""
         SELECT DISTINCT 
@@ -87,12 +91,37 @@ interface PlaylistTable: DatabaseTable<Playlist> {
                 SELECT COUNT(song_id)
                 FROM song_playlist_map
                 WHERE playlist_id = id
-            ) as songCount
+            ) as songCount,
+            (
+                SELECT S.thumbnail_url
+                FROM song_playlist_map spm
+                JOIN songs S ON S.id = spm.song_id
+                WHERE spm.playlist_id = id AND S.thumbnail_url IS NOT NULL
+                ORDER BY spm.position
+                LIMIT 1
+            ) as thumbnailUrl
         FROM playlists
         ORDER BY ROWID
         LIMIT :limit
     """)
     fun allAsPreview( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
+
+    /**
+     * @return covers of the first [limit] tracks in a playlist, in playlist order
+     *
+     * Feeds the mosaic tile: a playlist is a set, and a single borrowed cover claims it is one
+     * record. Four covers say "a collection" without a word of explanation, and they make two
+     * playlists distinguishable at a glance even when both start with the same track.
+     */
+    @Query("""
+        SELECT S.thumbnail_url
+        FROM song_playlist_map spm
+        JOIN songs S ON S.id = spm.song_id
+        WHERE spm.playlist_id = :playlistId AND S.thumbnail_url IS NOT NULL
+        ORDER BY spm.position
+        LIMIT :limit
+    """)
+    fun coverUrls( playlistId: Long, limit: Int = 4 ): Flow<List<String>>
 
     /**
      * @return all playlists from this table with number of songs they carry in randomized order

@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.menu
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Context
 import androidx.annotation.CallSuper
 import androidx.compose.animation.AnimatedVisibility
@@ -81,7 +83,7 @@ abstract class TextInputDialog<T>(
     override fun LeadingIcon() =
         Icon(
             painter = painterResource( iconId ),
-            tint = colorPalette().text,
+            tint = LumaColor.Ink,
             // Icon not clickable
             contentDescription = null,
             modifier = Modifier.size( 20.dp )
@@ -108,8 +110,8 @@ abstract class TextInputDialog<T>(
                                },
             colors = InputDialog.defaultTextFieldColors()
                                 .copy(
-                                    errorTextColor = colorPalette().text,
-                                    errorContainerColor = colorPalette().background1,
+                                    errorTextColor = LumaColor.Ink,
+                                    errorContainerColor = LumaColor.Raised,
                                     errorIndicatorColor = Color.Red
                                 ),
             isError = errorMessage.isNotEmpty()
@@ -121,7 +123,7 @@ abstract class TextInputDialog<T>(
         ) {
             BasicText(
                 text = errorMessage,
-                style = typography().xs.copy( color = Color(android.graphics.Color.RED) ),
+                style = LumaType.Meta.copy( color = Color(android.graphics.Color.RED) ),
                 modifier = Modifier.fillMaxWidth( .7f )
                                    .padding( top = Dialog.VERTICAL_PADDING.dp )
             )

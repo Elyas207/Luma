@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,13 +59,13 @@ inline fun InputTextField(
     Column(
         modifier = modifier
             .padding(all = 10.dp)
-            .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+            .background(color = LumaColor.Raised, shape = RoundedCornerShape(8.dp))
             .padding(vertical = 16.dp)
             .defaultMinSize(Dp.Unspecified, 190.dp)
     ) {
         BasicText(
             text = title,
-            style = typography().s.semiBold,
+            style = LumaType.Tile,
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 24.dp)
         )
@@ -79,15 +81,15 @@ inline fun InputTextField(
                     //.padding(horizontal = 30.dp)
                     .fillMaxWidth(0.7f),
                 colors = TextFieldDefaults.colors(
-                    focusedPlaceholderColor = colorPalette().textDisabled,
-                    unfocusedPlaceholderColor = colorPalette().textDisabled,
-                    cursorColor = colorPalette().text,
-                    focusedTextColor = colorPalette().text,
-                    unfocusedTextColor = colorPalette().text,
-                    focusedContainerColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
-                    unfocusedContainerColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
-                    focusedIndicatorColor = colorPalette().accent,
-                    unfocusedIndicatorColor = colorPalette().textDisabled
+                    focusedPlaceholderColor = LumaColor.InkFaint,
+                    unfocusedPlaceholderColor = LumaColor.InkFaint,
+                    cursorColor = LumaColor.Ink,
+                    focusedTextColor = LumaColor.Ink,
+                    unfocusedTextColor = LumaColor.Ink,
+                    focusedContainerColor = if (txtFieldError.value.isEmpty()) LumaColor.Raised else LumaColor.Alarm,
+                    unfocusedContainerColor = if (txtFieldError.value.isEmpty()) LumaColor.Raised else LumaColor.Alarm,
+                    focusedIndicatorColor = LumaColor.Ember,
+                    unfocusedIndicatorColor = LumaColor.InkFaint
                 ),
                 leadingIcon = {
 /*

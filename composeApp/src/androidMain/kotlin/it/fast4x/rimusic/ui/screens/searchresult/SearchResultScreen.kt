@@ -28,6 +28,18 @@ import androidx.media3.datasource.cache.Cache
 import androidx.navigation.NavController
 import app.kreate.android.LocalBottomMenu
 import app.kreate.android.Preferences
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import app.kreate.android.R
 import app.kreate.android.constant.MenuPage
 import app.kreate.android.service.player.StatefulPlayer
@@ -102,20 +114,46 @@ fun SearchResultScreen(
     val isVideoEnabled by Preferences.PLAYER_ACTION_TOGGLE_VIDEO
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
 
+    /*
+     * This was two stacked headings — "Search results for:" and then the query, both at heading
+     * size — sitting directly beneath the screen's own headline. Three ranks of large text in a
+     * row, two of which restate what the third already said.
+     *
+     * The section headline ("Songs", "Albums", …) is now the page's subject, so the query is
+     * context rather than a title: one quiet line of micro caps, tappable to edit. Saying it in
+     * fewer, smaller words also stops the results being pushed a third of the way down the screen
+     * before the first one appears.
+     */
     val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit = {
-        Title(
-            title = stringResource(R.string.search_results_for),
-            verticalPadding = 4.dp
-        )
-        Title(
-            title = query,
-            icon = R.drawable.pencil,
-            onClick = {
-                navController.navigate( "${NavRoutes.search}?text=${Uri.encode( query )}")
-            },
-            verticalPadding = 4.dp
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    navController.navigate( "${NavRoutes.search}?text=${Uri.encode( query )}" )
+                }
+                .padding( horizontal = 22.dp, vertical = 6.dp )
+        ) {
+            Text(
+                text = "Results for “$query”".uppercase(),
+                style = LumaType.Label,
+                color = LumaColor.InkFaint,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight( 1f, fill = false )
+            )
+
+            Spacer( Modifier.width( 10.dp ) )
+
+            Icon(
+                painter = painterResource( R.drawable.pencil ),
+                contentDescription = stringResource( R.string.search_results_for ),
+                tint = LumaColor.InkFaint,
+                modifier = Modifier.size( 15.dp )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
     }
 
     val emptyItemsText = stringResource(R.string.no_results_found)

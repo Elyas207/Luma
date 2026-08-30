@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
@@ -36,7 +38,7 @@ fun NowPlayingSongIndicator (
             .size(containerSize)
     ) {
             MusicAnimation(
-                color = colorPalette().onOverlay,
+                color = LumaColor.Ink,
                 modifier = Modifier
                     .height(containerSize / 2)
             )

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -17,9 +19,19 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.colorPalette
 
+/**
+ * The overflow menu, and every menu built on it.
+ *
+ * It was drawing on a transparent container, so it inherited Material's default surface and sat on
+ * the screen as a plain grey rectangle with default sans labels — the one place in the app where
+ * stock Android showed through completely. It is also reached from every screen, which makes it one
+ * of the most-seen surfaces there is.
+ */
 class DropdownMenu(
     val expanded: Boolean,
-    val containerColor: Color = Color.Transparent,
+    // Transparent meant "whatever Material decides", which was a grey that belongs to no palette
+    // here. The raised surface is the same one the mini player and every sheet sits on.
+    val containerColor: Color = LumaColor.Raised,
     val modifier: Modifier = Modifier,
     val onDismissRequest: () -> Unit
 ) {
@@ -42,6 +54,7 @@ class DropdownMenu(
             onDismissRequest = onDismissRequest,
             containerColor = containerColor,
             modifier = modifier,
+            shape = androidx.compose.foundation.shape.RoundedCornerShape( 18.dp ),
             content = { components().forEach { it() } }
         )
     }
@@ -61,12 +74,12 @@ class DropdownMenu(
             @Composable
             fun colors(): MenuItemColors {
                 return MenuItemColors(
-                    leadingIconColor =  colorPalette().favoritesIcon,
-                    trailingIconColor =  colorPalette().favoritesIcon,
-                    textColor = colorPalette().textSecondary,
-                    disabledTextColor = colorPalette().text,
-                    disabledLeadingIconColor = colorPalette().text,
-                    disabledTrailingIconColor = colorPalette().text,
+                    leadingIconColor =  LumaColor.Ember,
+                    trailingIconColor =  LumaColor.Ember,
+                    textColor = LumaColor.Ink,
+                    disabledTextColor = LumaColor.Ink,
+                    disabledLeadingIconColor = LumaColor.Ink,
+                    disabledTrailingIconColor = LumaColor.Ink,
                 )
             }
         }
@@ -84,7 +97,13 @@ class DropdownMenu(
             DropdownMenuItem(
                 enabled = true,
                 colors = colors ?: colors(),
-                text = { Text( stringResource(textId) ) },
+                // Serif, so a menu reads as part of Luma rather than as a system popup.
+                text = {
+                    Text(
+                        text = stringResource( textId ),
+                        style = LumaType.Tile
+                    )
+                },
                 leadingIcon = icon,
                 onClick = onClick
             )

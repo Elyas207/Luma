@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.newreleases
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -59,7 +61,7 @@ fun NewAlbums(
 
     Column(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -83,7 +85,7 @@ fun NewAlbums(
                 columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
                 //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette().background0)
+                    .background(LumaColor.Ground)
                 //.fillMaxSize()
             ) {
                 item(

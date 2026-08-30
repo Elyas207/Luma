@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.localplaylist
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -392,7 +394,7 @@ fun LocalPlaylistSongs(
 
     Box(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -407,7 +409,7 @@ fun LocalPlaylistSongs(
             state = reorderingState.lazyListState,
             contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer),
             modifier = Modifier
-                .background(colorPalette().background0)
+                .background(LumaColor.Ground)
                 .fillMaxSize()
         ) {
             item(
@@ -437,10 +439,10 @@ fun LocalPlaylistSongs(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        //.background(colorPalette().background4)
+                        //.background(LumaColor.Raised)
                         .fillMaxSize(0.99F)
                         .background(
-                            color = colorPalette().background1,
+                            color = LumaColor.Raised,
                             shape = thumbnailRoundness.shape
                         )
                 ) {
@@ -495,7 +497,7 @@ fun LocalPlaylistSongs(
                         HeaderIconButton(
                             icon = R.drawable.smart_shuffle,
                             enabled = true,
-                            color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
+                            color = if (isRecommendationEnabled) LumaColor.Ink else LumaColor.InkFaint,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
@@ -603,7 +605,7 @@ fun LocalPlaylistSongs(
 
                             IconButton(
                                 icon = R.drawable.reorder,
-                                color = colorPalette().textDisabled,
+                                color = LumaColor.InkFaint,
                                 indication = rippleIndication,
                                 onClick = {},
                                 modifier = Modifier
@@ -669,8 +671,8 @@ fun LocalPlaylistSongs(
                                 if ( viewModel.sort.sortBy == PlaylistSongSortBy.TOTAL_PLAY_TIME ) {
                                     BasicText(
                                         text = song.formattedTotalPlayTime,
-                                        style = typography().xxs.semiBold.center.color(
-                                            colorPalette().onOverlay
+                                        style = LumaType.Numeral.center.color(
+                                            LumaColor.Ink
                                         ),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
@@ -680,7 +682,7 @@ fun LocalPlaylistSongs(
                                                 brush = Brush.verticalGradient(
                                                     colors = listOf(
                                                         Color.Transparent,
-                                                        colorPalette().overlay
+                                                        LumaColor.Ground
                                                     )
                                                 ),
                                                 shape = thumbnailShape()

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Indication
@@ -49,7 +51,7 @@ fun DownloadStateIconButton(
         /*
         CircularProgressIndicator(
             strokeWidth = 2.dp,
-            color = colorPalette().text,
+            color = LumaColor.Ink,
             modifier = Modifier
                 .size(16.dp)
 

@@ -1,6 +1,8 @@
 package it.fast4x.rimusic.ui.screens.player
 
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -234,7 +236,7 @@ fun Queue(
                     .asPaddingValues(),
                 modifier = Modifier.weight( 1f )
                                    .background(
-                                       colorPalette().background0.copy( alpha = backgroundAlpha )
+                                       LumaColor.Ground.copy( alpha = backgroundAlpha )
                                    )
 
             ) {
@@ -265,7 +267,7 @@ fun Queue(
 
                                 IconButton(
                                     icon = R.drawable.reorder,
-                                    color = colorPalette().textDisabled,
+                                    color = LumaColor.InkFaint,
                                     indication = rippleIndication,
                                     onClick = {},
                                     modifier = Modifier.reorder(
@@ -350,13 +352,13 @@ fun Queue(
             // Search box
             Box(
                 modifier = Modifier.fillMaxWidth()
-                                   .background( colorPalette().background1 ),
+                                   .background( LumaColor.Raised ),
             ) { search.SearchBar() }
 
             Box(
                 modifier = Modifier.fillMaxWidth()
                                    .clickable { onDismiss( repeat.type ) }
-                                   .background (colorPalette().background1 )
+                                   .background (LumaColor.Raised )
                                    .height( 60.dp ) //bottom bar queue
             ) {
                 if( !isLandscape ) {
@@ -373,7 +375,7 @@ fun Queue(
                     Image(
                         painter = painterResource( R.drawable.horizontal_bold_line_rounded ),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().text),
+                        colorFilter = ColorFilter.tint(LumaColor.Ink),
                         modifier = Modifier.absoluteOffset( 0.dp, (-10).dp )
                                            .align( Alignment.TopCenter )
                                            .size( 30.dp )
@@ -398,14 +400,14 @@ fun Queue(
                         Icon(
                             painter = painterResource( R.drawable.musical_notes ),
                             contentDescription = "Number of songs in queue",
-                            tint = colorPalette().text,
+                            tint = LumaColor.Ink,
                             modifier = Modifier.padding( end = 2.dp )
                         )
                         BasicText(
                             text = player.mediaItemCount.toString(),
                             style = TextStyle(
-                                color = colorPalette().text,
-                                fontStyle = typography().l.fontStyle
+                                color = LumaColor.Ink,
+                                fontStyle = LumaType.Section.fontStyle
                             ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.utils
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
@@ -38,4 +40,4 @@ inline val TextStyle.right: TextStyle
 inline val TextStyle.secondary: TextStyle
     @Composable
     @ReadOnlyComposable
-    get() = color(colorPalette().textSecondary)
+    get() = color(LumaColor.InkSoft)

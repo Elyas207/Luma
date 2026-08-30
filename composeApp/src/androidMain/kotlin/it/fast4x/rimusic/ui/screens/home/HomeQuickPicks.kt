@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.home
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -367,7 +369,7 @@ fun HomeQuickPicks(
 
             Column(
                 modifier = Modifier
-                    .background(colorPalette().background0)
+                    .background(LumaColor.Ground)
                     .fillMaxHeight()
                     .verticalScroll(scrollState)
             ) {
@@ -495,7 +497,7 @@ fun HomeQuickPicks(
 
                     BasicText(
                         text = playEventType.text,
-                        style = typography().xxs.secondary,
+                        style = LumaType.Numeral,
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
                             .padding(bottom = 8.dp)
@@ -600,7 +602,7 @@ fun HomeQuickPicks(
 
                             BasicText(
                                 text = stringResource(R.string.new_albums_of_your_artists),
-                                style = typography().l.semiBold,
+                                style = LumaType.Section,
                                 modifier = sectionTextModifier
                             )
 
@@ -643,7 +645,7 @@ fun HomeQuickPicks(
                     relatedInit?.albums?.let { albums ->
                         BasicText(
                             text = stringResource(R.string.related_albums),
-                            style = typography().l.semiBold,
+                            style = LumaType.Section,
                             modifier = sectionTextModifier
                         )
 
@@ -664,7 +666,7 @@ fun HomeQuickPicks(
                     relatedInit?.artists?.let { artists ->
                         BasicText(
                             text = stringResource(R.string.similar_artists),
-                            style = typography().l.semiBold,
+                            style = LumaType.Section,
                             modifier = sectionTextModifier
                         )
 
@@ -689,7 +691,7 @@ fun HomeQuickPicks(
                     relatedInit?.playlists?.let { playlists ->
                         BasicText(
                             text = stringResource(R.string.playlists_you_might_like),
-                            style = typography().l.semiBold,
+                            style = LumaType.Section,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .padding(top = 24.dp, bottom = 8.dp)
@@ -767,7 +769,7 @@ fun HomeQuickPicks(
                         if (playlists.isNotEmpty()) {
                             BasicText(
                                 text = stringResource(R.string.monthly_playlists),
-                                style = typography().l.semiBold,
+                                style = LumaType.Section,
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(top = 24.dp, bottom = 8.dp)
@@ -837,7 +839,7 @@ fun HomeQuickPicks(
 
                             BasicText(
                                 text = section.title!!,
-                                style = typography().l.semiBold,
+                                style = LumaType.Section,
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(top = 24.dp, bottom = 8.dp)
@@ -897,8 +899,8 @@ fun HomeQuickPicks(
                                                 ) {
                                                     BasicText(
                                                         text = "${index + 1}",
-                                                        style = typography().l.bold.center.color(
-                                                            colorPalette().text
+                                                        style = LumaType.Section.center.color(
+                                                            LumaColor.Ink
                                                         ),
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis
@@ -947,8 +949,8 @@ fun HomeQuickPicks(
                                                 ) {
                                                     BasicText(
                                                         text = artist.rank,
-                                                        style = typography().l.bold.center.color(
-                                                            colorPalette().text
+                                                        style = LumaType.Section.center.color(
+                                                            LumaColor.Ink
                                                         ),
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis
@@ -1001,7 +1003,7 @@ fun HomeQuickPicks(
 
                         BasicText(
                             text = it.title,
-                            style = typography().l.semiBold.color(colorPalette().text),
+                            style = LumaType.Section.color(LumaColor.Ink),
                             modifier = Modifier.padding(horizontal = 16.dp).padding(vertical = 4.dp)
                         )
 
@@ -1014,7 +1016,7 @@ fun HomeQuickPicks(
                     }
                 } ?: if (!isYouTubeLoggedIn()) BasicText(
                     text = stringResource(R.string.log_in_to_ytm),
-                    style = typography().xs.center,
+                    style = LumaType.Meta.center,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
@@ -1050,7 +1052,7 @@ fun HomeQuickPicks(
                 relatedPageResult?.exceptionOrNull()?.let {
                     BasicText(
                         text = stringResource(R.string.page_not_been_loaded),
-                        style = typography().s.secondary.center,
+                        style = LumaType.Tile.center,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(all = 16.dp)

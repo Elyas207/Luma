@@ -1,5 +1,7 @@
 package me.knighthat.component.playlist
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
@@ -61,7 +63,7 @@ class NewPlaylistDialog private constructor(
     @Composable
     override fun LeadingIcon() = Icon(
         imageVector = Icons.Outlined.Edit,
-        tint = colorPalette().accent,
+        tint = LumaColor.Ember,
         contentDescription = "new playlist name"
     )
 

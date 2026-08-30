@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.component.playlist
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -24,7 +26,7 @@ class PlaylistSongsSort(
 
         BasicText(
             text = this.sortBy.text,
-            style = typography().s.semiBold,
+            style = LumaType.Tile,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.clickable { super.onLongClick() }

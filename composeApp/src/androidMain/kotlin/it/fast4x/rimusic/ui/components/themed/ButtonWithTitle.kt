@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,7 +42,7 @@ fun ButtonWithTitle(
             modifier = Modifier
                 .size(48.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(colorPalette().favoritesIcon)
+                .background(LumaColor.Ember)
                 .clickable(onClick = onClick)
         ) {
             Icon(
@@ -52,7 +54,7 @@ fun ButtonWithTitle(
 
         Text(
             text = title,
-            style = typography().xxs.semiBold,
+            style = LumaType.Numeral,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

@@ -1,5 +1,7 @@
 package me.knighthat.component.dialog
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -109,7 +111,7 @@ interface Dialog {
                                        maxHeight = screenHeightDp * maxHeight
                                    )
                                    .background(
-                                       color = colorPalette().background0,
+                                       color = LumaColor.Ground,
                                        shape = RoundedCornerShape( 8.dp )
                                    )
                                    .padding( vertical = VERTICAL_PADDING.dp ),
@@ -121,7 +123,7 @@ interface Dialog {
                 ) {
                     BasicText(
                         text = dialogTitle,
-                        style = typography().m.bold,
+                        style = LumaType.Row,
                     )
                 }
 

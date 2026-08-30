@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -90,7 +92,7 @@ fun ScaffoldTB(
 
     androidx.compose.material3.Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-       containerColor = colorPalette().background0,
+       containerColor = LumaColor.Ground,
         topBar = {
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
@@ -174,7 +176,7 @@ fun ScaffoldTB(
 
         Row(
             modifier = modifier
-                .background(colorPalette().background0)
+                .background(LumaColor.Ground)
                 .fillMaxSize()
         ) {
             AnimatedContent(

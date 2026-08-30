@@ -1,5 +1,7 @@
 package me.knighthat.component.menu
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -82,7 +84,7 @@ object GridMenu {
         Text(
             text = text,
             overflow = TextOverflow.Ellipsis,
-            color = colorPalette().text,
+            color = LumaColor.Ink,
             style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             maxLines = 1,

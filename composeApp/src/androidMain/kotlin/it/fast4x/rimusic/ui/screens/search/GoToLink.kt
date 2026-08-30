@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.search
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -88,7 +90,7 @@ fun GoToLink(
 
     Box(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -140,21 +142,21 @@ fun GoToLink(
                     IconButton(
                         onClick = onAction1,
                         icon = R.drawable.globe,
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         modifier = Modifier
                             .size(24.dp)
                     )
                     IconButton(
                         onClick = onAction2,
                         icon = R.drawable.library,
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         modifier = Modifier
                             .size(24.dp)
                     )
                     IconButton(
                         onClick = onAction3,
                         icon = R.drawable.link,
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         modifier = Modifier
                             .size(24.dp)
                     )
@@ -162,7 +164,7 @@ fun GoToLink(
                     IconButton(
                         onClick = onAction4,
                         icon = R.drawable.chevron_back,
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         modifier = Modifier
                             .size(24.dp)
                     )
@@ -179,7 +181,7 @@ fun GoToLink(
 
                 BasicText(
                     text = stringResource(R.string.you_can_put_a_complete_link),
-                    style = typography().s.semiBold,
+                    style = LumaType.Tile,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )

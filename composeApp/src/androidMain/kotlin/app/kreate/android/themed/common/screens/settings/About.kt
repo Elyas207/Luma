@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.res.Resources
 import androidx.annotation.RawRes
 import androidx.compose.foundation.Image
@@ -122,7 +124,7 @@ fun About(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.background( colorPalette().background0 )
+        modifier = Modifier.background( LumaColor.Ground )
                            .padding( paddingValues )
                            .fillMaxHeight()
                            .fillMaxWidth(
@@ -143,7 +145,7 @@ fun About(
         ) {
             BasicText(
                 text = "v${getVersionName()} by ",
-                style = typography().s.secondary,
+                style = LumaType.Tile,
             )
             Row(
                 Modifier.clickable {
@@ -157,7 +159,7 @@ fun About(
                 )
                 BasicText(
                     text = Repository.OWNER,
-                    style = typography().s.secondary.copy(
+                    style = LumaType.Tile.copy(
                         textDecoration = TextDecoration.Underline
                     ),
                     modifier = Modifier.align( Alignment.CenterVertically )

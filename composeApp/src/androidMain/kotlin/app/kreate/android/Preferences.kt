@@ -839,6 +839,25 @@ sealed class Preferences<T>(
         val COLOR_PALETTE by lazy {
             Enum( preferences, Key.COLOR_PALETTE, "colorPaletteName", ColorPaletteName.Dynamic )
         }
+
+        /**
+         * Selected skin, by [app.kreate.android.themed.skin.SkinId] name.
+         *
+         * Blank means "none" and leaves the legacy [COLOR_PALETTE] behaviour untouched, so an
+         * existing install keeps exactly the appearance it had until the user opts in.
+         */
+        val SKIN by lazy {
+            String( preferences, Key.SKIN, "skinId", "" )
+        }
+
+        /**
+         * Whether the app learns from listening behaviour. On by default, because a player that
+         * keeps offering things you always skip is the worse default — but switchable, and the
+         * control centre makes what it learned visible either way.
+         */
+        val TASTE_LEARNING_ENABLED by lazy {
+            Boolean( preferences, Key.TASTE_LEARNING, "tasteLearning", true )
+        }
         val THEME_MODE by lazy {
             Enum( preferences, Key.THEME_MODE, "colorPaletteMode", ColorPaletteMode.Dark )
         }
@@ -1925,6 +1944,8 @@ sealed class Preferences<T>(
         const val MENU_STYLE = "MenuStyle"
         const val MAIN_THEME = "MainTheme"
         const val COLOR_PALETTE = "ColorPalette"
+        const val SKIN = "Skin"
+        const val TASTE_LEARNING = "TasteLearning"
         const val THEME_MODE = "ThemeMode"
         const val STARTUP_SCREEN = "StartupScreen"
         const val FONT = "Font"

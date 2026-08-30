@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.tab
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,7 +45,7 @@ private fun Title( titleId: Int ) {
         style = TextStyle(
             fontSize = fontStyle.fontSize,
             fontWeight = fontStyle.fontWeight,
-            color = colorPalette().text,
+            color = LumaColor.Ink,
             textAlign = alignment
         ),
         modifier = Modifier.padding( start = sPadding, end = ePadding )
@@ -69,8 +71,8 @@ interface TabHeader {
         @Composable
         fun style(): TextStyle =
             when( UiType.current() ) {
-                UiType.RiMusic -> typography().xl.bold
-                UiType.ViMusic -> typography().xxxl.bold
+                UiType.RiMusic -> LumaType.Section
+                UiType.ViMusic -> LumaType.Hero
             }
 
         @Composable

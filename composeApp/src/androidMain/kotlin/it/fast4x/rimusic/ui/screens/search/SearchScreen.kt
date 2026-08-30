@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.search
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -88,7 +90,7 @@ fun SearchScreen(
                             IconButton(
                                 onClick = {},
                                 icon = R.drawable.search,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     //.align(Alignment.CenterStart)
                                     .size(20.dp)
@@ -111,7 +113,7 @@ fun SearchScreen(
                         BasicText(
                             text = stringResource( android.R.string.search_go ),
                             maxLines = 1,
-                            style = typography().l.secondary,
+                            style = LumaType.Section.secondary,
 
                         )
                     }
@@ -132,7 +134,7 @@ fun SearchScreen(
                         IconButton(
                             onClick = { onTextFieldValueChanged(TextFieldValue("")) },
                             icon = R.drawable.close,
-                            color = colorPalette().favoritesIcon,
+                            color = LumaColor.Ember,
                             modifier = Modifier
                                 .size(24.dp)
                         )

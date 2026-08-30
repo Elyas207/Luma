@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.home
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,6 +36,9 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.LocalBottomMenu
 import app.kreate.android.Preferences
+import app.kreate.android.R
+import app.kreate.android.themed.common.component.EmptyState
+import it.fast4x.rimusic.enums.NavRoutes
 import app.kreate.android.constant.MenuPage
 import app.kreate.android.service.player.StatefulPlayer
 import app.kreate.android.themed.common.component.BottomMenu
@@ -80,7 +85,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HiddenSongs
 import org.koin.compose.koinInject
@@ -142,7 +147,9 @@ fun HomeSongs(
      * > This variable should **_NOT_** be set to `false` while inside **first** phrase,
      * and should **_NOT_** be set to `true` while in **second** phrase.
      */
-    var isLoading by rememberSaveable { mutableStateOf(false) }
+    // Starts *true*: the very first composition happens before the query has been asked, and a
+    // false start let the empty state ("No songs yet") render over a full library for a frame.
+    var isLoading by rememberSaveable { mutableStateOf(true) }
 
     // This phrase loads all songs across types into [items]
     // No filtration applied to this stage, only sort
@@ -204,9 +211,40 @@ fun HomeSongs(
 
         retrievedSongs.flowOn( Dispatchers.IO )
                       .distinctUntilChanged()
-                      // Scroll list to top to prevent weird artifacts
-                      .onEach { lazyListState.scrollToItem( 0, 0 ) }
-                      .collect { items = it }
+                      .collect {
+                          items = it
+
+                          /*
+                           * Scrolling to the top is a *consequence* of new data, never a
+                           * precondition for it.
+                           *
+                           * As an `onEach` upstream of this `collect` it suspended until the list
+                           * had been laid out. That is fine while the list is on screen and fatal
+                           * when it is not: the empty state below returns early instead of
+                           * composing the `LazyColumn`, so on a first visit there was no layout to
+                           * wait for, the collection never resumed, `items` never arrived, and the
+                           * empty state kept itself alive. Opening the library showed "no songs"
+                           * over a full database until a filter chip was tapped.
+                           *
+                           * Launched separately so a suspended scroll can never block delivery
+                           * again, and swallowing failures because a scroll that cannot happen is
+                           * not worth losing the data over.
+                           */
+                          launch { runCatching { lazyListState.scrollToItem( 0, 0 ) } }
+
+                          /*
+                           * Loading ends when the data arrives — not when [items] happens to
+                           * change value.
+                           *
+                           * Clearing this was previously left to the filtering effect below,
+                           * which is keyed on `items`. If a category resolved to a list equal to
+                           * the one already held, that effect never re-ran, so the flag stayed
+                           * latched and the screen showed skeleton placeholders forever. Two
+                           * empty categories in a row was enough to trigger it, which is exactly
+                           * the case a new user hits first.
+                           */
+                          isLoading = false
+                      }
     }
 
     LaunchedEffect( items, search.input ) {
@@ -223,15 +261,22 @@ fun HomeSongs(
             itemsOnDisplay.clear()
             itemsOnDisplay.addAll( it )
 
-            isLoading = false
+            // Deliberately does not clear [isLoading]. This effect also runs on the first
+            // composition, when `items` is still empty, and clearing the flag there let the empty
+            // state render before the query had even been asked. Only the collector above knows
+            // whether the data has actually arrived.
         }
     }
 
     LaunchedEffect( builtInPlaylist ) {
         val firstButton = if( builtInPlaylist == BuiltInPlaylist.Top ) topPlaylists else songSort
         buttons.add( 0, firstButton )
-        buttons.add( 3, downloadAllDialog )
-        buttons.add( 4, deleteDownloadsDialog )
+        // Appended rather than pushed to positions 3 and 4. These are bulk operations — one of
+        // them deletes every download — and they were outranking Shuffle for prime toolbar space.
+        // Rare and destructive belongs in the labelled menu, where it is also read before it is
+        // tapped.
+        buttons.add( downloadAllDialog )
+        buttons.add( deleteDownloadsDialog )
         buttons.add( exportDialog )
     }
 
@@ -244,6 +289,33 @@ fun HomeSongs(
     val currentMediaItem by player.currentMediaItemState.collectAsState()
     val songItemValues = remember( colorPalette, typography ) {
         SongItem.Values.from( colorPalette, typography )
+    }
+
+    // An empty list used to render as blank space, which reads as "broken" or "still loading"
+    // rather than "nothing here yet". Each category explains itself and, where there is a sensible
+    // next step, offers it.
+    if( !isLoading && itemsOnDisplay.isEmpty() ) {
+        val copy: Pair<Int, Int> = when( builtInPlaylist ) {
+            BuiltInPlaylist.Favorites  -> R.string.empty_favorites_title to R.string.empty_favorites_description
+            BuiltInPlaylist.Offline    -> R.string.empty_cached_title to R.string.empty_cached_description
+            BuiltInPlaylist.Downloaded -> R.string.empty_downloaded_title to R.string.empty_downloaded_description
+            BuiltInPlaylist.Top        -> R.string.empty_top_title to R.string.empty_top_description
+            BuiltInPlaylist.OnDevice   -> R.string.empty_on_device_title to R.string.empty_on_device_description
+            BuiltInPlaylist.All        -> R.string.empty_songs_title to R.string.empty_songs_description
+        }
+        val (titleId, descriptionId) = copy
+
+        EmptyState(
+            iconId = R.drawable.musical_notes,
+            titleId = titleId,
+            descriptionId = descriptionId,
+            // "On device" is filled by the filesystem, not by the app, so search would be a dead
+            // end there — every other category is something searching can actually populate.
+            actionLabelId = R.string.empty_action_find_music.takeIf { builtInPlaylist != BuiltInPlaylist.OnDevice },
+            onAction = { NavRoutes.search.navigateHere( navController ) }
+        )
+
+        return
     }
 
     LazyColumn(
@@ -294,18 +366,18 @@ fun HomeSongs(
                     thumbnailOverlay = {
                         if ( songSort.sortBy == SongSortBy.TOTAL_PLAY_TIME || builtInPlaylist == BuiltInPlaylist.Top ) {
                             var text = song.formattedTotalPlayTime
-                            var typography = typography().xxs
+                            var typography = LumaType.Numeral
                             var alignment = Alignment.BottomCenter
 
                             if( builtInPlaylist == BuiltInPlaylist.Top ) {
                                 text = (index + 1).toString()
-                                typography = typography().m
+                                typography = LumaType.Row
                                 alignment = Alignment.Center
                             }
 
                             BasicText(
                                 text = text,
-                                style = typography.semiBold.center.color(colorPalette().onOverlay),
+                                style = typography.semiBold.center.color(LumaColor.Ink),
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier
@@ -316,7 +388,7 @@ fun HomeSongs(
                                         brush = Brush.verticalGradient(
                                             colors = listOf(
                                                 Color.Transparent,
-                                                colorPalette().overlay
+                                                LumaColor.Ground
                                             )
                                         ),
                                         shape = thumbnailShape()

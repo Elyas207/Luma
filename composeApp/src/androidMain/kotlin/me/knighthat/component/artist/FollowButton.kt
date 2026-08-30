@@ -1,5 +1,7 @@
 package me.knighthat.component.artist
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -97,7 +99,7 @@ class FollowButton private constructor(
         ) {
             BasicText(
                 text = stringResource( buttonProps.first ),
-                style = typography().s.copy( color = buttonProps.third ),
+                style = LumaType.Tile.copy( color = buttonProps.third ),
             )
         }
     }

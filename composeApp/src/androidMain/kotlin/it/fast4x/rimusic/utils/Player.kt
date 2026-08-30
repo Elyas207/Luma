@@ -112,10 +112,13 @@ fun Player.forcePlay(mediaItem: MediaItem) {
     playWhenReady = true
 }
 
-fun Player.playVideo(mediaItem: MediaItem) {
-    setMediaItem(mediaItem, true)
-    pause()
-}
+/**
+ * Video is now played by this player rather than by a separate WebView, so it starts exactly like
+ * audio does. The old `setMediaItem(); pause()` left the player holding an unprepared item — it
+ * never resolved a stream, so duration, position and the queue had nothing to report while the
+ * WebView played something else entirely.
+ */
+fun Player.playVideo(mediaItem: MediaItem) = forcePlay( mediaItem )
 
 fun Player.playAtIndex(mediaItemIndex: Int) {
     seekTo(mediaItemIndex, C.TIME_UNSET)

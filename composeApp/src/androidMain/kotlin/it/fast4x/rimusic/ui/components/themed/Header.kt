@@ -1,6 +1,8 @@
 package it.fast4x.rimusic.ui.components.themed
 
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -53,7 +55,7 @@ fun Header(
         titleContent = {
             BasicText(
                 text = title,
-                style = typography().xxl.medium,
+                style = LumaType.Title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.scrollingText()
@@ -101,12 +103,12 @@ fun HeaderPlaceholder(
     ) {
         Box(
             modifier = Modifier
-                .background(colorPalette().shimmer)
+                .background(LumaColor.Raised)
                 .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
         ) {
             BasicText(
                 text = "",
-                style = typography().xxl.medium,
+                style = LumaType.Title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -172,10 +174,13 @@ fun HeaderWithIcon (
         BasicText(
             text = title,
             style = TextStyle(
-                fontSize = typography().xxl.bold.fontSize,
-                fontWeight = typography().xxl.bold.fontWeight,
-                color = colorPalette().text,
-                textAlign = if( UiType.ViMusic.isNotCurrent()) TextAlign.Center else TextAlign.End
+                fontSize = LumaType.Title.fontSize,
+                fontFamily = LumaType.Title.fontFamily,
+                fontWeight = LumaType.Title.fontWeight,
+                color = LumaColor.Ink,
+                // Left, like every other heading in the app. Centring made this the only title
+                // that moved horizontally as its text changed, so the eye had to re-find it.
+                textAlign = TextAlign.Start
 
             ),
             maxLines = 1,
@@ -206,7 +211,7 @@ fun HalfHeader(
         titleContent = {
             BasicText(
                 text = title,
-                style = typography().xxl.medium,
+                style = LumaType.Title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -249,16 +254,16 @@ fun HeaderInfo (
     Image(
         painter = painterResource( iconId ),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette().textSecondary),
+        colorFilter = ColorFilter.tint(LumaColor.InkSoft),
         modifier = Modifier.size( 12.dp )
     )
     BasicText(
         text = title,
         style = TextStyle(
-            color = colorPalette().textSecondary,
-            fontStyle = typography().xxxs.semiBold.fontStyle,
-            fontWeight = typography().xxxs.semiBold.fontWeight,
-            fontSize = typography().xxxs.semiBold.fontSize
+            color = LumaColor.InkSoft,
+            fontStyle = LumaType.Numeral.fontStyle,
+            fontWeight = LumaType.Numeral.fontWeight,
+            fontSize = LumaType.Numeral.fontSize
         ),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,

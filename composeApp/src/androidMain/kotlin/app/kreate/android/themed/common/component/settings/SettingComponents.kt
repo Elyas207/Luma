@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.settings
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.IntRange
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
@@ -88,13 +90,11 @@ object SettingComponents {
         BasicText(
             text = text,
             maxLines = 2,
-            style = typography().xs
-                                .semiBold
-                                .copy(
+            style = LumaType.Meta.copy(
                                     if( isImportant )
-                                        colorPalette().red
+                                        LumaColor.Alarm
                                     else
-                                        colorPalette().textSecondary
+                                        LumaColor.InkSoft
                                 ),
             modifier = modifier.padding( horizontal = DEFAULT_HORIZONTAL_PADDING.dp )
         )
@@ -131,9 +131,10 @@ object SettingComponents {
                 BasicText(
                     text = title,
                     maxLines = 1,
-                    style = typography().xs
-                                        .semiBold
-                                        .copy( colorPalette().text ),
+                    // The entry name is the thing you are looking for on this page, so it gets the
+                    // serif; the explanation under it stays sans so the two ranks stay distinct at
+                    // a glance down a long list.
+                    style = LumaType.Tile.copy( LumaColor.Ink ),
                     modifier = Modifier.padding( bottom = 4.dp )
                                        .scrollingText()
                 )
@@ -142,9 +143,7 @@ object SettingComponents {
                     BasicText(
                         text = subtitle,
                         maxLines = 2,
-                        style = typography().xs
-                                            .semiBold
-                                            .copy( colorPalette().textSecondary )
+                        style = LumaType.Meta.copy( LumaColor.InkSoft )
                     )
             }
 
@@ -227,7 +226,7 @@ object SettingComponents {
 
                                 BasicText(
                                     text = getName( it ),
-                                    style = if( selected == it ) typography().xs.semiBold else typography().xs
+                                    style = if( selected == it ) LumaType.Meta else LumaType.Meta
                                 )
                             }
                         }
@@ -238,8 +237,8 @@ object SettingComponents {
                     if( action == Action.RESTART_APP )
                         BasicText(
                             text = stringResource( R.string.restarting_rimusic_is_required ),
-                            style = typography().xs.copy(
-                                colorPalette().red.copy( .8f )
+                            style = LumaType.Meta.copy(
+                                LumaColor.Alarm.copy( .8f )
                             ),
                             modifier = Modifier.fillMaxWidth( .9f )
                         )
@@ -587,10 +586,10 @@ object SettingComponents {
                 steps = steps,
                 onValueChangeFinished = { onValueChangeFinished( preference, realtimeValue ) },
                 colors = SliderColors(
-                    thumbColor = colorPalette().onAccent,
-                    activeTrackColor = colorPalette().accent,
+                    thumbColor = LumaColor.Ground,
+                    activeTrackColor = LumaColor.Ember,
                     activeTickColor = Color.Transparent,
-                    inactiveTrackColor = colorPalette().text.copy( 0.75f ),
+                    inactiveTrackColor = LumaColor.Ink.copy( 0.75f ),
                     inactiveTickColor = Color.Transparent,
                     disabledThumbColor = Color.Unspecified,
                     disabledActiveTrackColor = Color.Unspecified,
@@ -607,14 +606,14 @@ object SettingComponents {
             ) {
                BasicText(
                    text = onTextDisplay( valueRange.start ),
-                   style = typography().xxs.copy( colorPalette().textSecondary )
+                   style = LumaType.Numeral.copy( LumaColor.InkSoft )
                )
 
                 BasicText(
                     text = onTextDisplay( realtimeValue ),
-                    style = typography().xxs
+                    style = LumaType.Numeral
                                         .copy(
-                                            color = colorPalette().text,
+                                            color = LumaColor.Ink,
                                             textAlign = TextAlign.Center
                                         ),
                     modifier = Modifier.weight( 1f )
@@ -622,7 +621,7 @@ object SettingComponents {
 
                 BasicText(
                     text = onTextDisplay( valueRange.endInclusive ),
-                    style = typography().xxs.copy( colorPalette().textSecondary )
+                    style = LumaType.Numeral.copy( LumaColor.InkSoft )
                 )
             }
         }

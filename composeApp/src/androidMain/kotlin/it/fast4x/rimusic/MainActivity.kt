@@ -1,5 +1,7 @@
 package it.fast4x.rimusic
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
@@ -78,6 +80,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import app.kreate.android.BuildConfig
@@ -121,15 +124,19 @@ import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.CrossfadeContainer
 import it.fast4x.rimusic.ui.screens.AppNavigation
+import app.kreate.android.themed.player.LumaPlayer
+import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.screens.player.MiniPlayer
 import it.fast4x.rimusic.ui.screens.player.Player
-import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
+import it.fast4x.rimusic.ui.screens.player.components.VideoSurface
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
 import it.fast4x.rimusic.ui.styling.Appearance
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.applyPitchBlack
 import it.fast4x.rimusic.ui.styling.colorPaletteOf
+import app.kreate.android.themed.skin.LocalSkin
+import app.kreate.android.themed.skin.Skins
 import it.fast4x.rimusic.ui.styling.customColorPalette
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
 import it.fast4x.rimusic.ui.styling.typographyOf
@@ -340,6 +347,11 @@ MainActivity :
             var customColor by Preferences.CUSTOM_COLOR
             val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
 
+            // Read as state so picking a skin recomputes [appearance] below. Without this the
+            // preference changes but the remembered appearance is never invalidated, and the skin
+            // only appears after a restart.
+            val skinId by Preferences.SKIN
+
 
             LocalePreferences.preference =
                 LocalePreferenceItem(
@@ -349,6 +361,7 @@ MainActivity :
 
             var appearance by rememberSaveable(
                 !lightTheme,
+                skinId,
                 stateSaver = Appearance.Companion
             ) {
                 with(preferences) {
@@ -375,6 +388,11 @@ MainActivity :
                             !lightTheme
                         )
                     }
+
+                    // A skin owns the whole appearance, so it wins over the legacy palette choice.
+                    // Keying off a blank preference means existing installs are untouched until
+                    // someone actually picks one.
+                    Skins.byIdOrNull( skinId )?.also { colorPalette = it.palette }
 
                     setSystemBarAppearance(colorPalette.isDark)
 
@@ -405,6 +423,15 @@ MainActivity :
                             animatedGradient == AnimatedGradient.FluidCoverColorGradient
 
                 if (!isDynamicPalette) return
+
+                // A selected skin owns the whole appearance — the same rule applied where the
+                // palette is first built. Without this the artwork quietly replaced the skin's
+                // colours as soon as a track started, while the skin kept drawing its own
+                // backdrop: on Aurora that put a *dark* palette's pale text over a bright
+                // photographic sky, so the title and queue were nearly invisible while playing and
+                // fine the moment playback stopped. `COLOR_PALETTE` defaults to Dynamic and
+                // choosing a skin never cleared it, so every light skin had this.
+                if (Skins.byIdOrNull(Preferences.SKIN.value) != null) return
 
                 val colorPaletteMode by Preferences.THEME_MODE
                 coroutineScope.launch(Dispatchers.Main) {
@@ -449,6 +476,25 @@ MainActivity :
 
 
             val player: StatefulPlayer = koinInject()
+
+            // Settings whose effect is baked in at activity creation, so changing one has to
+            // restart the activity.
+            val restartKeys = remember {
+                listOf<Pair<String, Any>>(
+                    Preferences.Key.MAIN_THEME to Preferences.MAIN_THEME.defaultValue,
+                    Preferences.Key.NAVIGATION_BAR_POSITION to Preferences.NAVIGATION_BAR_POSITION.defaultValue,
+                    Preferences.Key.NAVIGATION_BAR_TYPE to Preferences.NAVIGATION_BAR_TYPE.defaultValue,
+                    Preferences.Key.MINI_PLAYER_TYPE to Preferences.MINI_PLAYER_TYPE.defaultValue
+                )
+            }
+            // What each of those keys held when this activity was built. SharedPreferences notifies
+            // on every *write*, including one that stores the value already there, and on a fresh
+            // install these keys are persisted for the first time as the first song starts — which
+            // recreated the activity mid-play, stopping the player and unbinding the service, so
+            // the first song after an install never played while every later one did. Comparing
+            // against this snapshot keeps the restart for real changes only.
+            val appliedRestartValues = remember { mutableMapOf<String, Any?>() }
+
             DisposableEffect(player, !lightTheme) {
                 val listener =
                     SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -457,8 +503,12 @@ MainActivity :
                             Preferences.Key.NAVIGATION_BAR_POSITION,
                             Preferences.Key.NAVIGATION_BAR_TYPE,
                             Preferences.Key.MINI_PLAYER_TYPE -> {
-                                this@MainActivity.recreate()
-                                println("MainActivity.recreate()")
+                                val current = sharedPreferences.all[key]
+                                if( appliedRestartValues[key] != current ) {
+                                    appliedRestartValues[key] = current
+                                    this@MainActivity.recreate()
+                                    println("MainActivity.recreate()")
+                                }
                             }
 
                             Preferences.Key.COLOR_PALETTE,
@@ -542,6 +592,12 @@ MainActivity :
                                         )
                                     }
 
+                                    // Same rule as everywhere else: a chosen skin owns the colours,
+                                    // so changing theme mode or a custom colour must not quietly
+                                    // replace them and leave the skin drawing a backdrop that no
+                                    // longer matches its own text.
+                                    Skins.byIdOrNull( Preferences.SKIN.value )?.also { colorPalette = it.palette }
+
                                     setSystemBarAppearance(colorPalette.isDark)
 
                                     appearance = appearance.copy(
@@ -587,6 +643,15 @@ MainActivity :
                     }
 
                 with(preferences) {
+                    // Seed before listening, so the first notification for a key is judged against
+                    // what the activity was actually built with. An unset key is not "no value" —
+                    // the activity was built with its *default*, so that is what a first write has
+                    // to be compared against, otherwise storing the default reads as a change.
+                    restartKeys.forEach { ( key, default ) ->
+                        appliedRestartValues[key] =
+                            all[key] ?: ( default as? Enum<*> )?.name ?: default
+                    }
+
                     registerOnSharedPreferenceChangeListener(listener)
 
                     val colorPaletteName by Preferences.COLOR_PALETTE
@@ -700,6 +765,11 @@ MainActivity :
                         val bottomMenu = remember { BottomMenu() }
 
                         // FIXME: Why is this block getting called twice on start?
+                        // Point Luma's colour roles at the active skin. Without this every Luma
+                        // surface renders against the default dark palette regardless of which of
+                        // the ten skins is selected.
+                        app.kreate.android.themed.luma.SyncLumaPalette( appearance.colorPalette )
+
                         CompositionLocalProvider(
                             LocalAppearance provides appearance,
                             LocalIndication provides ripple(bounded = true),
@@ -710,6 +780,10 @@ MainActivity :
                             LocalPlayerSheetState provides playerState,
                             LocalMonetCompat provides monet,
                             LocalBottomMenu provides bottomMenu,
+                            // Material, motion and shape tokens for the selected skin. Falls back
+                            // to Obsidian so anything reading them without a skin chosen still
+                            // renders rather than crashing.
+                            LocalSkin provides ( Skins.byIdOrNull( skinId ) ?: Skins.OBSIDIAN ),
                         ) {
                             // This block gets called twice on startup, first run resets
                             // [intent.action] to empty string, second run sets
@@ -756,20 +830,24 @@ MainActivity :
                             val isVideo = player.currentMediaItem?.isVideo ?: false
                             val isVideoEnabled by Preferences.PLAYER_ACTION_TOGGLE_VIDEO
 
+                            // Car Mode is a full-screen surface with its own now-playing view, so
+                            // the app's normal player sheets must not slide over the top of it.
+                            // These sheets live above the nav host and would otherwise open on any
+                            // play action — replacing the car interface with the phone one at the
+                            // exact moment the user is least able to deal with it.
+                            val backStackEntry by navController.currentBackStackEntryAsState()
+                            val inCarMode = backStackEntry?.destination?.route == NavRoutes.carMode.name
+
+                            // Video now renders from the same ExoPlayer that drives audio, so this
+                            // is a surface rather than a second player. No video id is captured
+                            // here: the player already knows what it is playing.
                             val youtubePlayer: @Composable () -> Unit = {
-                                player.currentMediaItem?.mediaId?.let {
-                                    YoutubePlayer(
-                                        ytVideoId = it,
-                                        lifecycleOwner = LocalLifecycleOwner.current,
-                                        onCurrentSecond = {},
-                                        showPlayer = showPlayer,
-                                        onSwitchToAudioPlayer = {
-                                            showPlayer = false
-                                            switchToAudioPlayer = true
-                                        }
-                                    )
-                                }
+                                VideoSurface( player )
                             }
+
+                            // Captured here rather than inside the callback: `onOpenMenu` is a
+                            // plain lambda and cannot read a CompositionLocal.
+                            val playerMenuState = LocalMenuState.current
 
                             PipEventContainer(
                                 enable = true,
@@ -779,39 +857,52 @@ MainActivity :
                                 }
                             ) {
                                 CustomModalBottomSheet(
-                                    showSheet = switchToAudioPlayer || showPlayer,
+                                    showSheet = ( switchToAudioPlayer || showPlayer ) && !inCarMode,
                                     onDismissRequest = {
                                         showPlayer = false
                                         switchToAudioPlayer = false
                                     },
-                                    containerColor = colorPalette().background0,
-                                    contentColor = colorPalette().background0,
+                                    containerColor = LumaColor.Ground,
+                                    contentColor = LumaColor.Ground,
                                     modifier = Modifier.fillMaxWidth(),
                                     sheetState = playerState,
                                     dragHandle = {
                                         Surface(
                                             modifier = Modifier.padding(vertical = 0.dp),
-                                            color = colorPalette().background0,
+                                            color = LumaColor.Ground,
                                             shape = thumbnailShape()
                                         ) {}
                                     },
                                     shape = thumbnailRoundness.shape
                                 ) {
-                                    Player( navController ) { showPlayer = false }
+                                    LumaPlayer(
+                                        navController = navController,
+                                        onDismiss = { showPlayer = false },
+                                        onOpenMenu = { item ->
+                                            playerMenuState.display {
+                                                PlayerMenu(
+                                                    navController = navController,
+                                                    mediaItem = item,
+                                                    onDismiss = playerMenuState::hide,
+                                                    onClosePlayer = { showPlayer = false }
+                                                )
+                                            }
+                                        }
+                                    )
                                 }
                             }
 
                             CustomModalBottomSheet(
-                                showSheet = isVideo && isVideoEnabled && showPlayer,
+                                showSheet = isVideo && isVideoEnabled && showPlayer && !inCarMode,
                                 onDismissRequest = { showPlayer = false },
-                                containerColor = colorPalette().background0,
-                                contentColor = colorPalette().background0,
+                                containerColor = LumaColor.Ground,
+                                contentColor = LumaColor.Ground,
                                 modifier = Modifier.fillMaxWidth(),
                                 sheetState = playerState,
                                 dragHandle = {
                                     Surface(
                                         modifier = Modifier.padding(vertical = 0.dp),
-                                        color = colorPalette().background0,
+                                        color = LumaColor.Ground,
                                         shape = thumbnailShape()
                                     ) {}
                                 },

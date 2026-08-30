@@ -10,7 +10,10 @@ enum class BuiltInPlaylist(
     @field:StringRes override val androidTextId: Int
 ): Drawable, TextView {
 
-    All( R.drawable.musical_notes, R.string.songs ),
+    // Labelled "All", not "Songs". These chips filter *within* the songs section, and the
+    // section rail above already says "Songs" — the old label made the same word appear twice on
+    // one screen for two different jobs.
+    All( R.drawable.musical_notes, R.string.all ),
 
     Favorites( R.drawable.heart, R.string.favorites ),
 

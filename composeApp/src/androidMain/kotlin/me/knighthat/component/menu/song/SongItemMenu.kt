@@ -1,5 +1,7 @@
 package me.knighthat.component.menu.song
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -195,16 +197,16 @@ class SongItemMenu private constructor(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colorPalette().background0)
+                .background(LumaColor.Ground)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.background( colorPalette().background1 )
+                modifier = Modifier.background( LumaColor.Raised )
             ) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "Arrow Down",
-                    tint = colorPalette().textSecondary,
+                    tint = LumaColor.InkSoft,
                     modifier = Modifier.size( 24.dp )
                 )
 
@@ -239,7 +241,7 @@ class SongItemMenu private constructor(
                         ) {
                             IconButton(
                                 icon = if ( isLiked ) R.drawable.heart else R.drawable.heart_outline,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 onClick = {
                                     CoroutineScope( Dispatchers.IO ).launch {
                                         YouTubeSync.toggleSongLike( context, song.asMediaItem )
@@ -251,7 +253,7 @@ class SongItemMenu private constructor(
                             if( !song.isLocal )
                                 IconButton(
                                     icon = R.drawable.share_social,
-                                    color = colorPalette().text,
+                                    color = LumaColor.Ink,
                                     onClick = {
                                         val intent = Intent(Intent.ACTION_SEND).apply {
                                             type = "text/plain"

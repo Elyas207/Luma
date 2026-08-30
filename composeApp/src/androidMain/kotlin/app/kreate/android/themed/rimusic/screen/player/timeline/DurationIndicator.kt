@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.player.timeline
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -86,7 +88,7 @@ private fun RowScope.SkipTimeButton(
 
     Icon(
         painter = painterResource( R.drawable.play_forward ),
-        tint = colorPalette().favoritesIcon,
+        tint = LumaColor.Ember,
         contentDescription = contentDescription,
         modifier = modifier.size( DURATION_INDICATOR_HEIGHT.dp )
                            .align( Alignment.CenterVertically )
@@ -126,7 +128,7 @@ private fun OutlinedText( text: String, outlineColor: Color ) {
     // Main text
     BasicText(
         text = text,
-        style = typography().xxs.semiBold,
+        style = LumaType.Numeral,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
@@ -134,7 +136,7 @@ private fun OutlinedText( text: String, outlineColor: Color ) {
     // Outline
     BasicText(
         text = text,
-        style = typography().xxs
+        style = LumaType.Numeral
                             .semiBold
                             .merge(
                                 TextStyle(

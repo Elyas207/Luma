@@ -1,5 +1,7 @@
 package me.knighthat.utils
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -82,9 +84,9 @@ object PathUtils {
 
         Icon(
             imageVector = Icons.Default.Home,
-            tint = colorPalette().textDisabled,
+            tint = LumaColor.InkFaint,
             contentDescription = null,
-            modifier = Modifier.size( typography().xs.fontSize.value.dp )
+            modifier = Modifier.size( LumaType.Meta.fontSize.value.dp )
                                .clickable {
                                    onSpecificAddressClick( findCommonPath( paths ) )
                                }
@@ -108,14 +110,14 @@ object PathUtils {
         visible.fastForEachIndexed { index, name ->
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                tint = colorPalette().accent,
+                tint = LumaColor.Ember,
                 contentDescription = null
             )
 
             BasicText(
                 text = name,
-                style = typography().xs.copy(
-                    color = colorPalette().text,
+                style = LumaType.Meta.copy(
+                    color = LumaColor.Ink,
                     fontWeight = FontWeight.Bold
                 ),
                 overflow = TextOverflow.StartEllipsis,

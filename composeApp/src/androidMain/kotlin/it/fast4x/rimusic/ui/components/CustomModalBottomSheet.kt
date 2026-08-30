@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -72,8 +74,8 @@ fun CustomModalBottomSheet(
 //        }
 //        ModalBottomSheetLayout(
 //            sheetState =  mbSheetState,
-//            sheetContentColor = colorPalette().background0,
-//            sheetBackgroundColor = colorPalette().background0,
+//            sheetContentColor = LumaColor.Ground,
+//            sheetBackgroundColor = LumaColor.Ground,
 //            sheetShape = shape,
 //            sheetElevation = tonalElevation,
 //            scrimColor = scrimColor,
