@@ -484,14 +484,24 @@ private fun Artwork(
 ) {
     var failed by remember( thumbnailUrl ) { mutableStateOf( false ) }
 
+    val hasArtwork = !( thumbnailUrl.isNullOrBlank() || failed )
+
     Box(
-        modifier.background( LumaColor.Raised ),
+        // An empty slot has to recede. `Raised` is *lighter than the page* on the light skins, so a
+        // shelf of artists with no images rendered as a row of near-white discs that were the
+        // brightest thing on screen — the eye went to the placeholders and the rows with real
+        // artwork fell below the fold (finding 14). Absence should be quiet.
+        modifier.background( if ( hasArtwork ) LumaColor.Raised else LumaColor.Raised.copy( alpha = 0.7f ) ),
         contentAlignment = Alignment.Center
     ) {
-        if ( thumbnailUrl.isNullOrBlank() || failed )
+        if ( !hasArtwork )
             Text(
                 text = title.trim().take( 1 ).uppercase(),
-                style = LumaType.Title,
+                // Smaller than the title style — a monogram is a stand-in, not a headline — but
+                // still InkSoft rather than InkFaint. A first pass used InkFaint on a 45%-alpha
+                // plate and the contrast check measured the letters at 2.36:1, well under the 3:1
+                // large text needs. Receding must not mean unreadable.
+                style = LumaType.Section,
                 color = LumaColor.InkSoft
             )
         else

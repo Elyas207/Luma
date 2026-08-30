@@ -98,7 +98,13 @@ Status key: `OPEN` · `FIXED` · `DEFERRED` (with reason) · `REJECTED` (with re
     *Why it's wrong:* the eye is drawn to the largest, emptiest elements, and the actual
     content is what gets cut off.
     **P1.** *Fix:* use real artwork where it exists; shrink the placeholder scale
-    substantially; lead with content that has imagery. — `OPEN`
+    substantially; lead with content that has imagery. — `PARTLY FIXED` (re-diagnosed: the
+    sizes are reasonable at 104/144dp — the defect is that an *empty* slot filled with
+    `LumaColor.Raised`, which is lighter than the page on light skins, so the emptiest
+    elements were the brightest. Placeholders now sit at 0.7 alpha with a smaller monogram.
+    A first attempt at 0.45 alpha on `InkFaint` measured 2.36:1 and was caught by the
+    contrast check; the shipped version measures 5.46:1. Using real artist imagery where
+    the API provides it is still open.)
 15. **No back affordance.** **P1.** — `OPEN`
 
 ## S7. Car Mode (`themed/car/CarModeScreen.kt`)
