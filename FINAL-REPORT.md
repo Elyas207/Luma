@@ -211,10 +211,17 @@ All on an emulator. The mid-range 60 fps gate is **untested**, not passed.
 
 ## 8. Delivery
 
-- Branch `autonomous/2026-08-30` pushed to `github.com/Elyas207/Luma`, verified on the
-  remote. The brief named a repository that did not resolve — `Elyas207/Kreate` no longer
-  exists because it was **renamed to Luma**, and the local remote was stale. Updated, not
-  recreated.
+- Branch `autonomous/2026-08-30` pushed to `github.com/Elyas207/Luma`, verified against
+  the remote (`712606bc2`, 0 unpushed).
+- **The PR does not target `main`, and that needs your decision.** `Luma` is not a rename
+  of the fork: its `main` is a single "Initial commit" sharing no history with this
+  codebase, so GitHub refuses a PR against it and force-pushing the fork's history onto
+  `main` is forbidden by the brief. I pushed the unmodified starting commit
+  (`f02577e86`) as `baseline/pre-autonomous-2026-08-30` and opened
+  [PR #1](https://github.com/Elyas207/Luma/pull/1) against that, so the PR shows exactly
+  this run's diff. Deciding what `main` should contain is yours.
+- Release `autonomous-2026-08-30` created with the APK attached (18,216,496 bytes,
+  `state=uploaded`, verified by querying the release rather than trusting the upload).
 - **The APK is debug-signed.** No release keystore exists in this checkout and creating a
   signing identity is not a decision I should make unprompted. It installs and plays, but
   it cannot be shipped to users or upgraded over a real release build.
