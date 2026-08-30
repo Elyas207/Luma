@@ -230,6 +230,27 @@ class ExoPlayerListener(
     override fun onMediaItemTransition( mediaItem: MediaItem?, reason: Int ) {
         if ( player.playerError != null ) player.prepare()
 
+        // Bind why this item started to the item itself, at the moment it becomes current. Reading
+        // the ambient declaration later would attribute a long track's own skip to "unknown",
+        // because the declaration ages out while the track is still playing.
+        mediaItem?.mediaId?.let { id ->
+            if ( reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO )
+                // The app advanced by itself. Say so explicitly rather than letting the previous
+                // declaration age out into "unknown": both are safe, but only one is informative,
+                // and autoplay is the provenance whose evidence has to be discounted by name.
+                app.kreate.android.service.intelligence.PlaybackIntent.declare(
+                    app.kreate.android.service.intelligence.Provenance.AUTOPLAY
+                )
+
+            app.kreate.android.service.intelligence.PlaybackIntent.attribute( id )
+
+            app.kreate.android.service.intelligence.Intelligence.record(
+                type = app.kreate.android.service.intelligence.EventType.PLAY_START,
+                itemId = id,
+                source = app.kreate.android.service.intelligence.PlaybackIntent.provenanceFor( id )
+            )
+        }
+
         loadFromRadio(reason)
         onMediaTransition( mediaItem )
     }
@@ -265,11 +286,29 @@ class ExoPlayerListener(
                   .durationMs
         }.getOrDefault( C.TIME_UNSET )
 
+        val wasManualSkip = reason == Player.DISCONTINUITY_REASON_SEEK
+
         TasteEngine.recordDeparture(
             songId = departing.mediaId,
             positionMs = oldPosition.positionMs,
             durationMs = duration,
-            wasManualSkip = reason == Player.DISCONTINUITY_REASON_SEEK
+            wasManualSkip = wasManualSkip
+        )
+
+        // The same departure, recorded as evidence rather than as a counter. This callback is the
+        // right place for both: it is the only one carrying the *old* position, and the reason code
+        // already separates "the track ran out" from "something moved off it deliberately".
+        app.kreate.android.service.intelligence.Intelligence.record(
+            type = if ( wasManualSkip )
+                       app.kreate.android.service.intelligence.EventType.SKIP_NEXT
+                   else
+                       app.kreate.android.service.intelligence.EventType.PLAY_END,
+            itemId = departing.mediaId,
+            positionMs = oldPosition.positionMs,
+            durationMs = duration.takeIf { it != C.TIME_UNSET },
+            // The provenance this item *started* under, not whatever is ambient now.
+            source = app.kreate.android.service.intelligence.PlaybackIntent
+                        .provenanceFor( departing.mediaId )
         )
     }
 

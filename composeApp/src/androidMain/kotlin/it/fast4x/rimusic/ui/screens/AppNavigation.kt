@@ -206,7 +206,14 @@ fun AppNavigation(
         composable(route = NavRoutes.now.name) {
             val player: StatefulPlayer = koinInject()
             NowScreen(
-                onPlaySong = { song -> player.forcePlay( song.asMediaItem ) },
+                onPlaySong = { song ->
+                    // Declared before the call, so the event this produces records that a person
+                    // chose it rather than that the app did.
+                    app.kreate.android.service.intelligence.PlaybackIntent.declare(
+                        app.kreate.android.service.intelligence.Provenance.MANUAL_BROWSE
+                    )
+                    player.forcePlay( song.asMediaItem )
+                },
                 onOpenLibrary = { NavRoutes.library.navigateHere( navController ) },
                 onOpenSearch = { NavRoutes.search.navigateHere( navController ) },
                 onOpenCarMode = { NavRoutes.carMode.navigateHere( navController ) },
@@ -219,7 +226,14 @@ fun AppNavigation(
         composable(route = NavRoutes.library.name) {
             val player: StatefulPlayer = koinInject()
             LibraryScreen(
-                onPlaySong = { song -> player.forcePlay( song.asMediaItem ) },
+                onPlaySong = { song ->
+                    // Declared before the call, so the event this produces records that a person
+                    // chose it rather than that the app did.
+                    app.kreate.android.service.intelligence.PlaybackIntent.declare(
+                        app.kreate.android.service.intelligence.Provenance.MANUAL_BROWSE
+                    )
+                    player.forcePlay( song.asMediaItem )
+                },
                 onOpenSection = { tabIndex ->
                     Preferences.HOME_TAB_INDEX.value = tabIndex
                     NavRoutes.home.navigateHere( navController )

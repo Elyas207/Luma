@@ -236,6 +236,11 @@ fun SearchResultScreen(
                                     isPlaying = song.shallowCompare( currentMediaItem ),
                                     values = songItemValues,
                                     onClick = {
+                                        // Opened from search: intent, and it names what they were
+                                        // looking for — a stronger signal than an idle browse.
+                                        app.kreate.android.service.intelligence.PlaybackIntent.declare(
+                                            app.kreate.android.service.intelligence.Provenance.SEARCH
+                                        )
                                         player.startRadio( mediaItem, false, song.info?.endpoint )
                                     },
                                     onLongClick = {
@@ -533,6 +538,11 @@ fun SearchResultScreen(
                                         if (isVideoEnabled)
                                             player.playVideo(video.asMediaItem)
                                         else
+                                            // Opened from search: intent, and it names what they
+                                            // were looking for — a stronger signal than a browse.
+                                            app.kreate.android.service.intelligence.PlaybackIntent.declare(
+                                                app.kreate.android.service.intelligence.Provenance.SEARCH
+                                            )
                                             player.forcePlay(video.asMediaItem)
                                     }
                                 )
