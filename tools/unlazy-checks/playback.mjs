@@ -24,16 +24,37 @@ function adb(serial, args, opts = {}) {
 }
 const shell = (s, cmd) => adb(s, ['shell', ...cmd]);
 
-/** Current position of Luma's media session, or null when it has none. */
+/**
+ * Current position of Luma's *live* media session, or null when it has none.
+ *
+ * `dumpsys media_session` keeps entries for sessions that are gone: after a run of force-stops this
+ * device listed seven mentions of the package, one PLAYING at 64s and three stale ERROR(7) rows at
+ * position 0. Reading the first match — which this did — meant the oracle reported a hard failure
+ * while audio was plainly playing, and it reported it *reproducibly*, which is exactly how a broken
+ * test gets believed.
+ *
+ * So: parse every state block, and take the one the framework updated most recently. `updated=` is
+ * a monotonic timestamp, so the freshest row is the session that is actually running.
+ */
 function session(serial) {
   let out = '';
   try { out = shell(serial, ['dumpsys', 'media_session']); } catch { return null; }
-  const idx = out.indexOf(PKG);
-  if (idx < 0) return null;
-  const tail = out.slice(idx, idx + 4000);
-  const m = tail.match(/state=PlaybackState \{state=([A-Z]+)\((\d)\), position=(-?\d+), buffered position=(-?\d+)/);
-  if (!m) return null;
-  return { state: m[1], code: Number(m[2]), position: Number(m[3]), buffered: Number(m[4]) };
+
+  const candidates = [];
+  for (const m of out.matchAll(
+    /state=PlaybackState \{state=([A-Z]+)\((\d)\), position=(-?\d+), buffered position=(-?\d+)[^}]*?updated=(\d+)/g
+  )) {
+    // Only states belonging to this package: look back a little for the package name.
+    const before = out.slice(Math.max(0, m.index - 3000), m.index);
+    if (!before.includes(PKG)) continue;
+    candidates.push({
+      state: m[1], code: Number(m[2]), position: Number(m[3]),
+      buffered: Number(m[4]), updated: Number(m[5])
+    });
+  }
+  if (!candidates.length) return null;
+  candidates.sort((a, b) => b.updated - a.updated);
+  return candidates[0];
 }
 
 function uiTexts(serial) {
