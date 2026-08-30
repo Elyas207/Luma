@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.dialog
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.annotation.CallSuper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -142,7 +144,7 @@ abstract class Dialog {
                                    )
                                    .background(
                                        color = colorPalette.background1,
-                                       shape = RoundedCornerShape( 8.dp )
+                                       shape = RoundedCornerShape( LumaRadius.Panel )
                                    )
                                    .padding( vertical = VERTICAL_PADDING.dp )
             ) {

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.activity.compose.BackHandler
@@ -179,7 +181,7 @@ fun MultiFloatingActionsButton (
 
                             }
                         }
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape( LumaRadius.Card ))
                         //.background(LumaColor.Ember)
                         .background(LumaColor.Raised)
                         //.padding(all = 20.dp)

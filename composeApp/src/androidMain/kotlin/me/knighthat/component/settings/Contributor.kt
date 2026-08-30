@@ -1,5 +1,7 @@
 package me.knighthat.component.settings
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,7 +42,7 @@ abstract class Contributor {
 
         const val AVATAR_SIZE = 40
         val SM_ARRANGEMENT_SPACE = Arrangement.spacedBy( 5.dp )
-        val CARD_SHAPE = RoundedCornerShape( 15.dp )
+        val CARD_SHAPE = RoundedCornerShape( LumaRadius.Card )
     }
 
     abstract val username: String

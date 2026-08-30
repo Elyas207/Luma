@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.utils
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
@@ -118,7 +120,7 @@ fun GetSeekBar(
                 },
                 color = LumaColor.Ember,
                 backgroundColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape( LumaRadius.Panel ),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
@@ -143,7 +145,7 @@ fun GetSeekBar(
                 },
                 color = LumaColor.Ember,
                 backgroundColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape( LumaRadius.Panel ),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
@@ -168,7 +170,7 @@ fun GetSeekBar(
                 },
                 color = LumaColor.Ember,
                 backgroundColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape( LumaRadius.Panel ),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
@@ -217,7 +219,7 @@ fun GetSeekBar(
                 color = LumaColor.Ember,
                 isActive = player.isPlaying,
                 backgroundColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape( LumaRadius.Panel ),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
         }
@@ -259,7 +261,7 @@ fun GetSeekBar(
                 },
                 color = LumaColor.Ember,
                 backgroundColor = LumaColor.InkSoft,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape( LumaRadius.Panel )
             )
 
 

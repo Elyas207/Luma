@@ -1,5 +1,7 @@
 package app.kreate.android.themed.car
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -49,7 +51,7 @@ fun CarArtwork(
             // available width, fails to fit, and collapses to a fraction of the space it was
             // given. That is why the cover rendered postage-stamp sized on a 2560x1600 display.
             .aspectRatio( 1f, matchHeightConstraintsFirst = true )
-            .clip( RoundedCornerShape( 24.dp ) )
+            .clip( RoundedCornerShape( LumaRadius.Large ) )
             .background( LumaColor.Raised ),
         contentAlignment = Alignment.Center
     ) {

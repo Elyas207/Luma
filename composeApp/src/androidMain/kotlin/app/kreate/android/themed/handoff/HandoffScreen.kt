@@ -1,5 +1,7 @@
 package app.kreate.android.themed.handoff
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import android.graphics.Bitmap
@@ -156,7 +158,7 @@ private fun QrCode( payload: String, sizePx: Int = 720 ) {
             // Always on white, never on the skin's background. A QR code on a dark or tinted
             // surface is measurably harder for a camera to lock onto, and this is the one element
             // in the app where legibility to a *machine* outranks visual consistency.
-            .clip( RoundedCornerShape( 16.dp ) )
+            .clip( RoundedCornerShape( LumaRadius.Card ) )
             .background( androidx.compose.ui.graphics.Color.White )
             .padding( 12.dp ),
         contentAlignment = Alignment.Center

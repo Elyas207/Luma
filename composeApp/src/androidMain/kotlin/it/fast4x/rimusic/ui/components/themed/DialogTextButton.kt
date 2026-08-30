@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
@@ -35,7 +37,7 @@ fun DialogTextButton(
         text = text,
         style = LumaType.Meta.color(textColor),
         modifier = modifier
-            .clip(RoundedCornerShape(36.dp))
+            .clip(RoundedCornerShape( LumaRadius.Full ))
             .background(if (primary) LumaColor.Ember else Color.Transparent)
             //.background(if (primary) colorPalette.accent else colorPalette.background4)
             .clickable(enabled = enabled, onClick = onClick)

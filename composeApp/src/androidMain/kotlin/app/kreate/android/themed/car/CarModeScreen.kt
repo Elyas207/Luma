@@ -1,5 +1,7 @@
 package app.kreate.android.themed.car
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -178,7 +180,7 @@ fun CarModeScreen(
                         modifier = Modifier
                             .fillMaxHeight()
                             .aspectRatio( 16f / 9f, matchHeightConstraintsFirst = true )
-                            .clip( RoundedCornerShape( 24.dp ) )
+                            .clip( RoundedCornerShape( LumaRadius.Large ) )
                     )
                 else
                     CarArtwork(
@@ -392,7 +394,7 @@ fun CarConnectionBanner(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip( RoundedCornerShape( 16.dp ) )
+                .clip( RoundedCornerShape( LumaRadius.Card ) )
                 .background( LumaColor.Alarm.copy( alpha = 0.16f ) )
                 .padding( horizontal = 24.dp, vertical = 16.dp ),
             verticalAlignment = Alignment.CenterVertically

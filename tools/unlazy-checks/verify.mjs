@@ -230,7 +230,11 @@ if (cmd === 'skins-distinct') {
 if (cmd === 'no-fixed-scrims') {
   const offenders = [];
   for (const p of walk(SRC)) {
+    // The material-recipe layer: gloss highlights, bevels and drop shadows legitimately use fixed
+    // white and black, because they model light rather than back text. Everywhere else, a fixed
+    // gradient stop behind text is the defect this check exists for.
     if (p.includes('/themed/skin/')) continue;
+    if (p.endsWith('/themed/luma/LumaSurface.kt')) continue;
     const src = read(p);
     const live = src.split('\n')
       .map(l => l.replace(/^\s*\/\/.*$/, '').replace(/\/\/.*$/, ''))
@@ -294,6 +298,30 @@ if (cmd === 'skins-hold') {
   }
   if (bad.length) fail(`skins lost their palette during playback:\n  ${bad.join('\n  ')}`);
   ok(`SKINS_HOLD_WHILE_PLAYING_OK (${rows.length} skins)`);
+}
+
+// Corner radius must come from the scale, not from a literal. The audit counted 17 distinct radii
+// across 92 uses with no scale at all; without a check this drifts straight back, because picking a
+// number is always easier than choosing a step.
+//
+// Two exemptions, both deliberate: a true rectangle (0.dp) is a shape, not a radius, and the enum
+// that lets a *user* choose thumbnail roundness legitimately enumerates its own values.
+if (cmd === 'radius-scale') {
+  const offenders = [];
+  for (const p of walk(SRC)) {
+    if (p.includes('/themed/luma/LumaSurface.kt')) continue;
+    if (p.endsWith('ThumbnailRoundness.kt')) continue;
+    const live = read(p).split('\n')
+      .map(l => l.replace(/^\s*\/\/.*$/, '').replace(/\/\/.*$/, ''))
+      .join('\n');
+    for (const m of live.matchAll(/RoundedCornerShape\(\s*([0-9.]+)\.dp/g)) {
+      if (parseFloat(m[1]) === 0) continue;
+      const line = live.slice(0, m.index).split('\n').length;
+      offenders.push(`${p.slice(ROOT.length + 1)}:${line}: RoundedCornerShape(${m[1]}.dp) — use LumaRadius`);
+    }
+  }
+  if (offenders.length) fail(`corner radii bypassing the scale:\n  ${offenders.slice(0, 20).join('\n  ')}`);
+  ok('RADIUS_SCALE_OK');
 }
 
 fail(`unknown subcommand: ${cmd}`);

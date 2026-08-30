@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
@@ -1661,7 +1663,7 @@ fun Player(
                                                            alpha = (2f - startOffset) / 2f
                                                        }
                                                    }
-                                                   .clip(RoundedCornerShape(20.dp))
+                                                   .clip(RoundedCornerShape( LumaRadius.Sleeve ))
                                                    .combinedClickable(
                                                        interactionSource = remember { MutableInteractionSource() },
                                                        indication = null,

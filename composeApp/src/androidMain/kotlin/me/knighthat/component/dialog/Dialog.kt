@@ -1,5 +1,7 @@
 package me.knighthat.component.dialog
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
@@ -112,7 +114,7 @@ interface Dialog {
                                    )
                                    .background(
                                        color = LumaColor.Ground,
-                                       shape = RoundedCornerShape( 8.dp )
+                                       shape = RoundedCornerShape( LumaRadius.Panel )
                                    )
                                    .padding( vertical = VERTICAL_PADDING.dp ),
                 horizontalAlignment = Alignment.CenterHorizontally

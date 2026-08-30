@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.navigation.nav
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
@@ -107,7 +109,7 @@ class HorizontalNavigationBar(
                     TextIconButton( text, iconId, color, 0.dp, Dimensions.navigationRailIconOffset * 3 )
 
             val contentModifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape( LumaRadius.Panel ))
                 .clickable(onClick = { onTabChanged(index) })
 
             addButton( button, contentModifier )

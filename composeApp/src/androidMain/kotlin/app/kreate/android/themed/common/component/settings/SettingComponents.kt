@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.settings
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.IntRange
@@ -676,7 +678,7 @@ object SettingComponents {
             Box(
                 Modifier
                     .size(24.dp)
-                    .background(dialog.color, RoundedCornerShape(3.dp))
+                    .background(dialog.color, RoundedCornerShape( LumaRadius.Hairline ))
             )
         }
     }

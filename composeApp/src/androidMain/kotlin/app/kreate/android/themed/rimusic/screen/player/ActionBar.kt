@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.player
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import android.content.ActivityNotFoundException
@@ -312,7 +314,7 @@ fun BoxScope.ActionBar(
                                         contentDescription = "song_pos_$index",
                                         modifier = Modifier
                                             .padding(end = 5.dp)
-                                            .clip(RoundedCornerShape(5.dp))
+                                            .clip(RoundedCornerShape( LumaRadius.Tight ))
                                             .size(30.dp)
                                     )
                                 }

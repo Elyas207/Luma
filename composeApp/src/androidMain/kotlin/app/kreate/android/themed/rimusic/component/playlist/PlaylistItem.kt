@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.component.playlist
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -270,7 +272,7 @@ object PlaylistItem: Visual(), MultiplatformItem {
             modifier = modifier
                 .background(
                     color = values.songCountBackgroundColor,
-                    shape = RoundedCornerShape(4.dp)
+                    shape = RoundedCornerShape( LumaRadius.Tight )
                 )
                 .padding(all = 4.dp)
         )

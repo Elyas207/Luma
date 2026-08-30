@@ -1,5 +1,7 @@
 package app.kreate.android.themed.taste
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
@@ -157,7 +159,7 @@ fun TasteCentreScreen( modifier: Modifier = Modifier ) {
             Box( Modifier.padding( horizontal = 20.dp ) ) {
                 Box(
                     Modifier
-                        .clip( RoundedCornerShape( 14.dp ) )
+                        .clip( RoundedCornerShape( LumaRadius.Card ) )
                         .background( LumaColor.Raised )
                         .clickable {
                             // Two taps, not a dialog. A modal for a reversible preference is
@@ -235,7 +237,7 @@ private fun TasteRow(
     Box(
         Modifier
             .size( 48.dp )
-            .clip( RoundedCornerShape( 8.dp ) )
+            .clip( RoundedCornerShape( LumaRadius.Panel ) )
             .background( LumaColor.Raised )
     ) {
         song.cleanThumbnailUrl()?.also {
@@ -271,7 +273,7 @@ private fun TasteRow(
         Spacer( Modifier.size( 8.dp ) )
         Box(
             Modifier
-                .clip( RoundedCornerShape( 20.dp ) )
+                .clip( RoundedCornerShape( LumaRadius.Sleeve ) )
                 .background( LumaColor.Ember )
                 .clickable( onClick = onAction )
                 .padding( horizontal = 14.dp, vertical = 8.dp )
@@ -284,7 +286,7 @@ private fun TasteRow(
 
     Box(
         Modifier
-            .clip( RoundedCornerShape( 20.dp ) )
+            .clip( RoundedCornerShape( LumaRadius.Sleeve ) )
             .background( LumaColor.Raised )
             .clickable( onClick = onForget )
             .padding( horizontal = 14.dp, vertical = 8.dp )

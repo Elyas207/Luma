@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
@@ -194,7 +196,7 @@ fun MiniPlayer(
     SwipeToDismissBox(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape( LumaRadius.Panel )),
         state = dismissState,
         backgroundContent = {
             /*
@@ -280,7 +282,7 @@ fun MiniPlayer(
                 // floats clear of the edges reads as the player *shrunk*, which is what it is.
                 .padding( horizontal = 12.dp )
                 .fillMaxWidth()
-                .clip( androidx.compose.foundation.shape.RoundedCornerShape( 22.dp ) )
+                .clip( androidx.compose.foundation.shape.RoundedCornerShape( LumaRadius.Sleeve ) )
                 .background( app.kreate.android.themed.luma.LumaColor.Raised )
                 .drawBehind {
                     if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {

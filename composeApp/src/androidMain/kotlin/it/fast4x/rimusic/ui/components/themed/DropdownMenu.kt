@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.size
@@ -54,7 +56,7 @@ class DropdownMenu(
             onDismissRequest = onDismissRequest,
             containerColor = containerColor,
             modifier = modifier,
-            shape = androidx.compose.foundation.shape.RoundedCornerShape( 18.dp ),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape( LumaRadius.Card ),
             content = { components().forEach { it() } }
         )
     }

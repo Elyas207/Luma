@@ -1,5 +1,7 @@
 package app.kreate.android.themed.library
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -155,7 +157,7 @@ fun LibraryScreen(
                             title = album.title.orEmpty(),
                             subtitle = album.authorsText,
                             thumbnailUrl = album.thumbnailUrl,
-                            shape = RoundedCornerShape( 4.dp ),
+                            shape = RoundedCornerShape( LumaRadius.Tight ),
                             size = tileSize,
                             onClick = { onOpenAlbum( album ) }
                         )
@@ -213,7 +215,7 @@ fun LibraryScreen(
                         color = LumaColor.InkSoft,
                         modifier = Modifier
                             .padding( horizontal = 12.dp )
-                            .clip( RoundedCornerShape( 10.dp ) )
+                            .clip( RoundedCornerShape( LumaRadius.Panel ) )
                             .clickable { onOpenSection( TAB_SONGS ) }
                             .padding( horizontal = 12.dp, vertical = 14.dp )
                     )
@@ -281,7 +283,7 @@ private fun ShelfHeader(
     Modifier
         .fillMaxWidth()
         .padding( horizontal = 12.dp )
-        .clip( RoundedCornerShape( 12.dp ) )
+        .clip( RoundedCornerShape( LumaRadius.Panel ) )
         .clickable { onOpenSection( tabIndex ) }
         .padding( start = 12.dp, end = 12.dp, top = 10.dp, bottom = 14.dp ),
     verticalAlignment = Alignment.CenterVertically
@@ -445,7 +447,7 @@ private fun SongLine( song: Song, onPlay: () -> Unit ) = Row(
         thumbnailUrl = song.cleanThumbnailUrl(),
         modifier = Modifier
             .size( 52.dp )
-            .clip( RoundedCornerShape( 10.dp ) )
+            .clip( RoundedCornerShape( LumaRadius.Panel ) )
     )
 
     Spacer( Modifier.width( 16.dp ) )

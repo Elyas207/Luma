@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import android.app.SearchManager
@@ -647,7 +649,7 @@ fun Lyrics(
                                 isPicking = true
                             },
                             modifier = Modifier
-                                .background(shape = RoundedCornerShape(4.dp), color = Color.White)
+                                .background(shape = RoundedCornerShape( LumaRadius.Tight ), color = Color.White)
                                 .padding(all = 4.dp)
                                 .size(24.dp)
                                 .align(Alignment.CenterVertically)
@@ -753,7 +755,7 @@ fun Lyrics(
                                             },
                                             modifier = Modifier
                                                 .background(
-                                                    shape = RoundedCornerShape(4.dp),
+                                                    shape = RoundedCornerShape( LumaRadius.Tight ),
                                                     color = Color.White
                                                 )
                                                 .padding(all = 4.dp)
@@ -1318,7 +1320,7 @@ fun Lyrics(
                                                 ) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(
                                                     0.5f
                                                 ) else Color.Transparent else Color.Transparent,
-                                                RoundedCornerShape(6.dp)
+                                                RoundedCornerShape( LumaRadius.Tight )
                                             )
                                             .conditional(lyricsHighlight != LyricsHighlight.None) { fillMaxWidth() }
                                     )
@@ -1784,7 +1786,7 @@ fun Lyrics(
                         Box(modifier = Modifier
                             .align(Alignment.Center)
                             .size(45.dp)
-                            .background(LumaColor.Ember, RoundedCornerShape(15.dp))
+                            .background(LumaColor.Ember, RoundedCornerShape( LumaRadius.Card ))
                         ){}
                         Image(
                             painter = painterResource(if (player.isPlaying == true) R.drawable.pause else R.drawable.play),

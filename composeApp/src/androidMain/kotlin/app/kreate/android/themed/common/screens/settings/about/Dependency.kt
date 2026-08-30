@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings.about
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -111,7 +113,7 @@ data class Dependency(
                                .border(
                                    width = 2.dp,
                                    color = colorPalette.textDisabled,
-                                   shape = RoundedCornerShape(5.dp)
+                                   shape = RoundedCornerShape( LumaRadius.Tight )
                                )
                                .padding( all = 10.dp )
         ) {

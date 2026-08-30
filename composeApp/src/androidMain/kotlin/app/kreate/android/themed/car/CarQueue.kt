@@ -1,5 +1,7 @@
 package app.kreate.android.themed.car
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -125,7 +127,7 @@ private fun CarQueueRow(
         modifier = Modifier
             .fillMaxWidth()
             .height( CarDimensions.QUEUE_ROW_HEIGHT )
-            .clip( RoundedCornerShape( 16.dp ) )
+            .clip( RoundedCornerShape( LumaRadius.Card ) )
             .background(
                 if ( isCurrent ) LumaColor.Ember.copy( alpha = 0.18f )
                 else LumaColor.Raised

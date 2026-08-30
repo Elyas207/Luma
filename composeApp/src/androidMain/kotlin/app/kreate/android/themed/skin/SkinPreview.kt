@@ -1,5 +1,7 @@
 package app.kreate.android.themed.skin
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -97,14 +99,14 @@ fun SkinPreview(
                         Modifier
                             .height( 4.dp )
                             .weight( 1f )
-                            .clip( RoundedCornerShape( 2.dp ) )
+                            .clip( RoundedCornerShape( LumaRadius.Hairline ) )
                             .background( skin.palette.background3 )
                     ) {
                         Box(
                             Modifier
                                 .fillMaxWidth( 0.45f )
                                 .fillMaxHeight()
-                                .clip( RoundedCornerShape( 2.dp ) )
+                                .clip( RoundedCornerShape( LumaRadius.Hairline ) )
                                 .background( skin.palette.accent )
                         )
                     }
@@ -138,6 +140,6 @@ private fun MiniBar( color: Color, width: androidx.compose.ui.unit.Dp ) =
         Modifier
             .width( width )
             .height( 5.dp )
-            .clip( RoundedCornerShape( 3.dp ) )
+            .clip( RoundedCornerShape( LumaRadius.Hairline ) )
             .background( color.copy( alpha = 0.75f ) )
     )

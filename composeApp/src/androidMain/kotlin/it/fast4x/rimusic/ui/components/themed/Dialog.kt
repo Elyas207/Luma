@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.core.EaseInOut
@@ -329,7 +331,7 @@ inline fun DefaultDialog(
                 .padding(all = 10.dp)
                 .background(
                     color = LumaColor.Raised,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape( LumaRadius.Panel )
                 )
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             content = content
@@ -353,7 +355,7 @@ fun <T> ValueSelectorDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette.background1, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
@@ -456,7 +458,7 @@ inline fun SelectorDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = LumaColor.Raised, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
@@ -666,7 +668,7 @@ inline fun InputNumericDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = LumaColor.Raised, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
                 .requiredHeight(190.dp)
         ) {
@@ -800,7 +802,7 @@ inline fun InputTextDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = LumaColor.Raised, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
                 .defaultMinSize(Dp.Unspecified, 190.dp)
         ) {
@@ -946,7 +948,7 @@ inline fun StringListDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = LumaColor.Raised, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
                 .defaultMinSize(Dp.Unspecified, 190.dp)
         ) {
@@ -1079,7 +1081,7 @@ inline fun GenericDialog(
         Column(
             modifier = modifier
                 .padding(all = 48.dp)
-                .background(color = LumaColor.Raised, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
@@ -1589,7 +1591,7 @@ fun AppearancePresetDialog(
                         Box(
                             modifier = Modifier
                                 .padding(4.dp)
-                                .clip(RoundedCornerShape(2.dp))
+                                .clip(RoundedCornerShape( LumaRadius.Hairline ))
                                 .background(color)
                                 .weight(lineWeight.value)
                                 .size(5.dp)
@@ -1730,7 +1732,7 @@ fun SongMatchingDialog(
             modifier = Modifier
                 .fillMaxWidth(if (isLandscape) 0.5f else 0.9f)
                 .fillMaxHeight(if (isLandscape) 0.9f else 0.7f)
-                .background(color = LumaColor.Raised,shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised,shape = RoundedCornerShape( LumaRadius.Panel ))
         ) {
             fun filteredText(text : String): String{
                 val filteredText = text
@@ -1769,7 +1771,7 @@ fun SongMatchingDialog(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, LumaColor.Ink, shape = RoundedCornerShape(8.dp))
+                    .border(1.dp, LumaColor.Ink, shape = RoundedCornerShape( LumaRadius.Panel ))
                     .padding(horizontal = 5.dp)
                     .padding(vertical = 10.dp)
             ) {
@@ -1778,7 +1780,7 @@ fun SongMatchingDialog(
                         thumbnailUrl = songToRematch.asMediaItem.mediaMetadata.artworkUri.toString(),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.padding( end = 5.dp )
-                                           .clip( RoundedCornerShape(5.dp) )
+                                           .clip( RoundedCornerShape( LumaRadius.Tight ) )
                                            .size( 40.dp )
                     )
                     if (songToRematch.likedAt != null) {
@@ -1869,7 +1871,7 @@ fun SongMatchingDialog(
                         startSearch = true
                     },
                     modifier = Modifier
-                        .background(shape = RoundedCornerShape(4.dp),color = Color.White)
+                        .background(shape = RoundedCornerShape( LumaRadius.Tight ),color = Color.White)
                         .padding(all = 4.dp)
                         .size(24.dp)
                         .align(Alignment.CenterVertically)
@@ -1939,7 +1941,7 @@ fun SongMatchingDialog(
                                         thumbnailUrl = song.asMediaItem.mediaMetadata.artworkUri.toString(),
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier.padding( end = 5.dp )
-                                                          .clip( RoundedCornerShape(5.dp) )
+                                                          .clip( RoundedCornerShape( LumaRadius.Tight ) )
                                                           .size( 30.dp )
                                     )
                                     if (song.asSong.likedAt != null) {

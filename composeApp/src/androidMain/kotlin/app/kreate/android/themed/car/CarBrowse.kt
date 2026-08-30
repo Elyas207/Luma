@@ -1,5 +1,7 @@
 package app.kreate.android.themed.car
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -148,7 +150,7 @@ private fun CarTile(
                 // artwork collapse to a fraction of the space available, and a tile you cannot
                 // recognise from the driver's seat is not doing its job.
                 .size( TILE_SIZE )
-                .clip( RoundedCornerShape( 20.dp ) )
+                .clip( RoundedCornerShape( LumaRadius.Sleeve ) )
                 .background( LumaColor.Raised )
         ) {
             song.cleanThumbnailUrl()?.also { url ->

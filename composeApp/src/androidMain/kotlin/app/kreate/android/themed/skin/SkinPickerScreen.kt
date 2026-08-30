@@ -1,5 +1,7 @@
 package app.kreate.android.themed.skin
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.animateColorAsState
@@ -122,15 +124,15 @@ private fun SkinCard(
 
     Column(
         Modifier
-            .clip( RoundedCornerShape( 18.dp ) )
+            .clip( RoundedCornerShape( LumaRadius.Card ) )
             .clickable( onClick = onClick )
     ) {
         Box(
             Modifier
                 .fillMaxWidth()
                 .aspectRatio( 1.35f )
-                .clip( RoundedCornerShape( 16.dp ) )
-                .border( borderWidth, borderColor, RoundedCornerShape( 16.dp ) )
+                .clip( RoundedCornerShape( LumaRadius.Card ) )
+                .border( borderWidth, borderColor, RoundedCornerShape( LumaRadius.Card ) )
         ) {
             SkinPreview( skin, Modifier.fillMaxSize() )
 

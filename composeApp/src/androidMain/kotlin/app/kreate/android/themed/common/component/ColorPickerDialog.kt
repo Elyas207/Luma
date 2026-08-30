@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.FloatRange
@@ -115,14 +117,14 @@ class ColorPickerDialog(
                             .height( 15.dp )
                             .background(
                                 Brush.horizontalGradient( hueColors ),
-                                shape = RoundedCornerShape( 2.dp )
+                                shape = RoundedCornerShape( LumaRadius.Hairline )
                             )
                 )
             },
             thumb = {
                 Box(
                     Modifier.size( 10.dp, 24.dp )
-                            .border( 2.dp, LumaColor.Ink, RoundedCornerShape(2.dp) )
+                            .border( 2.dp, LumaColor.Ink, RoundedCornerShape( LumaRadius.Hairline ) )
                 )
             }
         )

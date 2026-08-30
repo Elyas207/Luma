@@ -191,10 +191,16 @@ object LumaShape {
     )
 
     /** For artwork that must stay recognisable — an album sleeve cropped to an arch is a bad trade. */
-    val Sleeve = RoundedCornerShape( 20.dp )
+    val Sleeve = RoundedCornerShape( LumaRadius.Sleeve )
 
     /** Rows, sheets, and anything the eye should pass over. */
-    val Soft = RoundedCornerShape( 16.dp )
+    val Soft = RoundedCornerShape( LumaRadius.Card )
+
+    /** Buttons, fields and small panels — the default control corner. */
+    val Control = RoundedCornerShape( LumaRadius.Panel )
+
+    /** Dividers and progress tracks. */
+    val Hairline = RoundedCornerShape( LumaRadius.Hairline )
 
     val Pill = CircleShape
 }

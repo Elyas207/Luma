@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.animateColorAsState
@@ -69,7 +71,7 @@ private fun FilterRow(
             style = LumaType.Tile,
             color = content,
             modifier = Modifier
-                .clip( RoundedCornerShape( 18.dp ) )
+                .clip( RoundedCornerShape( LumaRadius.Card ) )
                 .background( background )
                 .clickable { onSelect( index ) }
                 .padding( horizontal = 16.dp, vertical = 9.dp )

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.navigation.nav
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.animateColor
@@ -105,7 +107,7 @@ class VerticalNavigationBar(
                             }
                 }
             val button = Button( iconId, textColor, 0.dp, 0.dp, Dp.Unspecified, buttonModifier )
-            val contentModifier = Modifier.clip( RoundedCornerShape(24.dp) )
+            val contentModifier = Modifier.clip( RoundedCornerShape( LumaRadius.Large ) )
                                           .clickable( onClick = { onTabChanged(index) } )
                                           .padding( vertical = 8.dp )
             val result: @Composable () -> Unit = {

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
@@ -1342,7 +1344,7 @@ fun MediaItemMenu(
                                     modifier = modifier
                                         .background(
                                             color = LumaColor.Ground,
-                                            shape = RoundedCornerShape(16.dp)
+                                            shape = RoundedCornerShape( LumaRadius.Card )
                                         )
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                         .animateContentSize()

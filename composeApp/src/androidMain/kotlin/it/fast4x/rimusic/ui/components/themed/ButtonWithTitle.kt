@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
@@ -41,7 +43,7 @@ fun ButtonWithTitle(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(48.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape( LumaRadius.Card ))
                 .background(LumaColor.Ember)
                 .clickable(onClick = onClick)
         ) {

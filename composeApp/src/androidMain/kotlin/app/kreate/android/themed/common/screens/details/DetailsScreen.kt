@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.details
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -153,7 +155,7 @@ fun SongDetailsScreen(
         }
     ) {
         val (colorPalette, typography) = LocalAppearance.current
-        val shape = RoundedCornerShape(15.dp)
+        val shape = RoundedCornerShape( LumaRadius.Card )
 
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -165,7 +167,7 @@ fun SongDetailsScreen(
 
             item {
                 val shape = remember {
-                    RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)
+                    RoundedCornerShape( LumaRadius.Card, LumaRadius.Card, 0.dp, 0.dp )
                 }
                 BoxWithConstraints(
                     Modifier.fillMaxWidth( .9f )

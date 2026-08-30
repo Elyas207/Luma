@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player.components.controls
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import android.os.Build
@@ -377,8 +379,8 @@ fun ControlsModern(
           onClick = {},
           modifier = Modifier
               .size(55.dp)
-              .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
-              .clip(RoundedCornerShape(8.dp))
+              .doubleShadowDrop(RoundedCornerShape( LumaRadius.Panel ), 4.dp, 8.dp)
+              .clip(RoundedCornerShape( LumaRadius.Panel ))
               .combinedClickable(
                   indication = ripple(bounded = true),
                   interactionSource = remember { MutableInteractionSource() },
@@ -468,8 +470,8 @@ fun ControlsModern(
               backgroundColor = LumaColor.Raised.copy(0.95f),
               onClick = {},
               modifier = Modifier
-                  .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
-                  .clip(RoundedCornerShape(8.dp))
+                  .doubleShadowDrop(RoundedCornerShape( LumaRadius.Panel ), 4.dp, 8.dp)
+                  .clip(RoundedCornerShape( LumaRadius.Panel ))
                   .combinedClickable(
                       indication = ripple(bounded = true),
                       interactionSource = remember { MutableInteractionSource() },
@@ -545,8 +547,8 @@ fun ControlsModern(
         onClick = {},
         modifier = Modifier
             .size(55.dp)
-            .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
-            .clip(RoundedCornerShape(8.dp))
+            .doubleShadowDrop(RoundedCornerShape( LumaRadius.Panel ), 4.dp, 8.dp)
+            .clip(RoundedCornerShape( LumaRadius.Panel ))
             .combinedClickable(
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
@@ -557,7 +559,7 @@ fun ControlsModern(
                 },
                 onLongClick = {}
             )
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape( LumaRadius.Panel ))
 
       ) {
           Image(

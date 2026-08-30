@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.Image
@@ -62,7 +64,7 @@ fun EmptyState(
         Box(
             modifier = Modifier
                 .size( 88.dp )
-                .clip( RoundedCornerShape( 24.dp ) )
+                .clip( RoundedCornerShape( LumaRadius.Large ) )
                 .background( LumaColor.Raised ),
             contentAlignment = Alignment.Center
         ) {
@@ -99,7 +101,7 @@ fun EmptyState(
 
             Box(
                 modifier = Modifier
-                    .clip( RoundedCornerShape( 24.dp ) )
+                    .clip( RoundedCornerShape( LumaRadius.Large ) )
                     .background( LumaColor.Ember )
                     .clickable( onClick = onAction )
                     .padding( horizontal = 28.dp, vertical = 14.dp )

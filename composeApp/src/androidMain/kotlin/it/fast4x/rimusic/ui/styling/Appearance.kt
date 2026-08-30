@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.styling
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
@@ -27,9 +29,9 @@ data class Appearance(
                 with(ColorPalette.Companion) { save(value.colorPalette) },
                 with(Typography.Companion) { save(value.typography) },
                 when (value.thumbnailShape) {
-                    RoundedCornerShape(8.dp) -> 8
-                    RoundedCornerShape(12.dp) -> 12
-                    RoundedCornerShape(16.dp) -> 16
+                    RoundedCornerShape( LumaRadius.Panel ) -> 8
+                    RoundedCornerShape( LumaRadius.Panel ) -> 12
+                    RoundedCornerShape( LumaRadius.Card ) -> 16
                     else -> 0
                 }
 

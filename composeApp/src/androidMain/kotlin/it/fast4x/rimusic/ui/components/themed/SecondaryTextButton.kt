@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
@@ -28,7 +30,7 @@ fun SecondaryTextButton(
         text = text,
         style = LumaType.Numeral,
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape( LumaRadius.Card ))
             .clickable(enabled = enabled, onClick = onClick)
             .background(if (alternative) LumaColor.Ground else LumaColor.Raised)
             .padding(all = 8.dp)

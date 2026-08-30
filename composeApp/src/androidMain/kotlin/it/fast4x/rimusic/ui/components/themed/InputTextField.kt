@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import app.kreate.android.themed.luma.LumaColor
 import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
@@ -59,7 +61,7 @@ inline fun InputTextField(
     Column(
         modifier = modifier
             .padding(all = 10.dp)
-            .background(color = LumaColor.Raised, shape = RoundedCornerShape(8.dp))
+            .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
             .padding(vertical = 16.dp)
             .defaultMinSize(Dp.Unspecified, 190.dp)
     ) {
