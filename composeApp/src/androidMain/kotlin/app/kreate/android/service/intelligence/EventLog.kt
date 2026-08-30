@@ -16,19 +16,33 @@ import kotlin.random.Random
  * reorder itself. Replay would then produce a different answer from the one the user actually got,
  * which defeats the point of having a replayable log at all.
  */
-internal object Ulid {
+class Ulid {
 
-    private const val ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"   // Crockford base32
     private val lastMillis = AtomicLong( 0 )
     private val counter = AtomicLong( 0 )
 
     fun generate( millis: Long, random: Random = Random.Default ): String {
         // Never let the visible timestamp go backwards within a process, and disambiguate events
-        // that share a millisecond with a counter rather than with luck.
-        val stamp = lastMillis.updateAndGet { previous ->
-            if ( millis > previous ) millis else previous
+        // that share a stamp with a counter rather than with luck.
+        //
+        // The two cases have to be handled together or the ids collide: when the clock *advances*
+        // the stamp carries the ordering and the counter restarts, but when it does not advance —
+        // whether because two events share a millisecond or because the clock moved backwards —
+        // the counter is the only thing keeping them in order, so it must increment in both. An
+        // earlier version reset it on a backwards jump, which gave two events the same sort key
+        // and left their order down to the random tail.
+        var seq = 0L
+        val stamp = synchronized( this ) {
+            val previous = lastMillis.get()
+            if ( millis > previous ) {
+                lastMillis.set( millis )
+                counter.set( 0 )
+                millis
+            } else {
+                seq = counter.incrementAndGet()
+                previous
+            }
         }
-        val seq = if ( stamp == millis ) counter.incrementAndGet() else counter.getAndSet( 0 )
 
         val time = buildString {
             var remaining = stamp
@@ -49,6 +63,20 @@ internal object Ulid {
         }
 
         return time + tail
+    }
+
+    companion object {
+        private const val ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"   // Crockford base32
+
+        /**
+         * Shared generator for app code.
+         *
+         * Instance state rather than object state because the monotonic guard is *mutable process
+         * state*: with it on an `object`, one test's clock left the counter somewhere that made a
+         * later test's assertion depend on execution order. An order-dependent test is a flaky
+         * test, so each [EventLog] owns its own generator and the tests get a fresh one each.
+         */
+        val shared = Ulid()
     }
 }
 
@@ -80,7 +108,8 @@ class InMemoryEventSink : EventSink {
 class EventLog(
     private val sink: EventSink,
     private val clock: LumaClock = LumaClock.System,
-    private val sessions: SessionKeeper = SessionKeeper( clock )
+    private val sessions: SessionKeeper = SessionKeeper( clock ),
+    private val ulid: Ulid = Ulid()
 ) {
 
     suspend fun record(
@@ -94,7 +123,7 @@ class EventLog(
     ): ListeningEvent {
         val now = clock.nowMillis()
         val event = ListeningEvent(
-            id = Ulid.generate( now ),
+            id = ulid.generate( now ),
             ts = now,
             tzOffsetMinutes = clock.timezoneOffsetMinutes(),
             sessionId = sessions.currentSessionId( now ),
@@ -122,7 +151,8 @@ class EventLog(
  */
 class SessionKeeper(
     private val clock: LumaClock,
-    private val gapMillis: Long = 30 * 60 * 1000L
+    private val gapMillis: Long = 30 * 60 * 1000L,
+    private val ulid: Ulid = Ulid()
 ) {
     private var sessionId: String? = null
     private var lastActivity: Long = 0
@@ -132,7 +162,7 @@ class SessionKeeper(
         // A backwards clock jump larger than the gap also starts a new session, which is the
         // honest reading: we cannot tell how much real time passed.
         val continuous = existing != null && kotlin.math.abs( now - lastActivity ) < gapMillis
-        val id = if ( continuous ) existing!! else Ulid.generate( now )
+        val id = if ( continuous ) existing!! else ulid.generate( now )
         sessionId = id
         lastActivity = now
         return id
