@@ -66,17 +66,42 @@ fun SkinnedSurface(
             )
             .then(
                 when ( material.surface ) {
-                    // A real specular sweep: bright at the very top, gone by the midpoint. This is
-                    // the single detail that makes a surface read as glass rather than as a colour.
+                    // The specular sweep, taken from the references rather than from the usual
+                    // imitation of them.
+                    //
+                    // Sampling `images 4.jpg` down its vertical axis gives luminance 153 / 229 / 79
+                    // across top / middle / bottom: the brightest band sits in the *upper middle*
+                    // and falls away in both directions, over a base that is markedly darker than
+                    // the top. The previous recipe here — brightest at the very top, gone by the
+                    // midpoint, a barely-there base — is the shape modern glassmorphism uses, and
+                    // it is what makes a fake Aero surface read as a flat tinted rectangle.
+                    //
+                    // The band is also kept clear of the lower half, because that is where labels
+                    // sit and a white highlight running under white text is this aesthetic's
+                    // signature legibility failure.
                     SkinSurface.GLOSS -> Modifier.drawWithContent {
                         drawContent()
                         drawRect(
                             brush = Brush.verticalGradient(
-                                0f to Color.White.copy( alpha = material.glossStrength ),
-                                0.45f to Color.White.copy( alpha = material.glossStrength * 0.15f ),
-                                0.5f to Color.Transparent,
-                                1f to Color.Black.copy( alpha = 0.10f )
+                                0.00f to Color.White.copy( alpha = material.glossStrength * 0.55f ),
+                                0.38f to Color.White.copy( alpha = material.glossStrength ),
+                                0.52f to Color.White.copy( alpha = material.glossStrength * 0.10f ),
+                                0.75f to Color.Transparent,
+                                1.00f to Color.Black.copy( alpha = 0.14f )
                             )
+                        )
+                        // The bevel: a light edge where the light falls and a darker one away from
+                        // it. Cheaper than the gloss and, in the references, doing more of the work
+                        // — it is what makes a control read as an object rather than as a fill.
+                        drawRect(
+                            brush = Brush.linearGradient(
+                                0.00f to Color.White.copy( alpha = 0.40f ),
+                                0.40f to Color.Transparent,
+                                1.00f to Color.Black.copy( alpha = 0.12f ),
+                                start = Offset.Zero,
+                                end = Offset( size.width, size.height )
+                            ),
+                            style = androidx.compose.ui.graphics.drawscope.Stroke( width = 2f )
                         )
                     }
 
