@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.ui.components
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.Transition
@@ -129,7 +133,7 @@ fun MultiFloatingActionsButton (
             contentAlignment = Alignment.BottomEnd
         ) {
             if (currentState == MultiFabState.Expanded) {
-                val color = colorPalette().favoritesIcon.copy(0.85f)
+                val color = LumaColor.Ember.copy(0.85f)
                 Canvas(modifier = Modifier
                     //.border(BorderStroke(1.dp, Color.Green))
                     .fillMaxSize()
@@ -177,9 +181,9 @@ fun MultiFloatingActionsButton (
 
                             }
                         }
-                        .clip(RoundedCornerShape(16.dp))
-                        //.background(colorPalette().favoritesIcon)
-                        .background(colorPalette().background2)
+                        .clip(RoundedCornerShape( LumaRadius.Card ))
+                        //.background(LumaColor.Ember)
+                        .background(LumaColor.Raised)
                         //.padding(all = 20.dp)
                         //.padding(horizontal = 20.dp)
                         .height(64.dp)
@@ -206,7 +210,7 @@ fun MultiFloatingActionsButton (
                         Image(
                             painter = painterResource(R.drawable.settings),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette().text),
+                            colorFilter = ColorFilter.tint(LumaColor.Ink),
                             modifier = Modifier
                                 .padding(top = 5.dp, end = 5.dp)
                                 .rotate(rotation)
@@ -218,7 +222,7 @@ fun MultiFloatingActionsButton (
                     Image(
                         painter = if (!useAsActionsMenu) fabIcon else painterResource(R.drawable.menu),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().text),
+                        colorFilter = ColorFilter.tint(LumaColor.Ink),
                         modifier = Modifier
                             .rotate(rotation)
                             .align(Alignment.Center)
@@ -270,8 +274,8 @@ fun SmallFloatingActionButtonRow(
             modifier = Modifier
                 .padding(4.dp),
             onClick = { item.onFabItemClicked() },
-            containerColor = colorPalette().background2,
-            contentColor = colorPalette().favoritesIcon
+            containerColor = LumaColor.Raised,
+            contentColor = LumaColor.Ember
         ) {
             Icon(
                 painter = item.icon,

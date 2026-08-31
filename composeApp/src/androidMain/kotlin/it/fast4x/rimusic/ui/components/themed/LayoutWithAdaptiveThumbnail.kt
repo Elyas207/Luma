@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -171,7 +173,7 @@ fun adaptiveThumbnailContent(
                     ) {
                         HeaderIconButton(
                             icon = R.drawable.alternative_version,
-                            color = colorPalette().text,
+                            color = LumaColor.Ink,
                             onClick = {
                                 onOtherVersionAvailable()
                             },

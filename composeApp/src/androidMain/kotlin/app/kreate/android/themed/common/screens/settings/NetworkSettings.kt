@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,7 +48,7 @@ fun NetworkSettings( paddingValues: PaddingValues ) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.background( colorPalette().background0 )
+        modifier = Modifier.background( LumaColor.Ground )
                            .padding( paddingValues )
                            .fillMaxHeight()
                            .fillMaxWidth(

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +26,7 @@ fun Loader(
     Image(
         painter = painterResource(R.drawable.loader),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette().text),
+        colorFilter = ColorFilter.tint(LumaColor.Ink),
         modifier = Modifier
             .align(Alignment.Center)
             .size(size)

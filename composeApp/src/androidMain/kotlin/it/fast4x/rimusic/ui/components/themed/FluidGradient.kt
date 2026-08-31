@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import android.graphics.Matrix
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -81,8 +83,8 @@ fun FluidGradientBox() {
                 .onSizeChanged {
                     size = Size(it.width.toFloat(), it.height.toFloat())
                 }
-                .clip(RoundedCornerShape(16.dp))
-                .border(1.dp, Color.White, RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape( LumaRadius.Card ))
+                .border(1.dp, Color.White, RoundedCornerShape( LumaRadius.Card ))
                 .drawBehind {
                     drawRect(brush = brushA)
                     drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
@@ -91,7 +93,7 @@ fun FluidGradientBox() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                modifier = Modifier.border(1.dp, Color.White, RoundedCornerShape(4.dp))
+                modifier = Modifier.border(1.dp, Color.White, RoundedCornerShape( LumaRadius.Tight ))
                     .padding(horizontal = 8.dp, vertical = 4.dp),
                 text = "FLUID",
                 style = MaterialTheme.typography.headlineLarge,

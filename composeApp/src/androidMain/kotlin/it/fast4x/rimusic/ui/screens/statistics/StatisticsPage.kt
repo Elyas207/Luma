@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.statistics
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -168,7 +170,7 @@ fun StatisticsPage(
 
     Box(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -193,27 +195,22 @@ fun StatisticsPage(
             val lazyGridState = rememberLazyGridState()
             LazyVerticalGrid(
                 state = lazyGridState,
+                // 200.dp gave a 411dp phone two ~205dp columns, which cannot hold artwork, a
+                // title, an artist, a duration and an action — so titles clipped at *both* ends
+                // ("Hotel (feat. R.Ke", "-Z, Boo & Gotti)"), finding 28. A song row needs about
+                // 320dp; at that minimum a phone gets one column and a tablet still gets several,
+                // which is what Adaptive is for.
                 columns = GridCells.Adaptive(
-                    if(statisticsCategory == StatisticsCategory.Songs) 200.dp else PlaylistItem.thumbnailSize().width
+                    if(statisticsCategory == StatisticsCategory.Songs) 320.dp else PlaylistItem.thumbnailSize().width
                 ),
                 modifier = Modifier
-                    .background(colorPalette().background0)
+                    .background(LumaColor.Ground)
                     .fillMaxSize()
             ) {
 
-                item(
-                    key = "header",
-                    span = { GridItemSpan(maxLineSpan) }
-                ) {
-                    HeaderWithIcon(
-                        title = statisticsType.text,
-                        iconId = statisticsType.androidIconId,
-                        enabled = true,
-                        showIcon = true,
-                        modifier = Modifier,
-                        onClick = {}
-                    )
-                }
+                // The period ("Today", "This week", …) is the scaffold's headline and its
+                // switcher, so a second centred copy of it with an icon beside it said the same
+                // word twice and pushed the actual figures below the fold.
 
                 item(
                     key = "header_tabs",
@@ -240,7 +237,11 @@ fun StatisticsPage(
                                 "${songs.size} ${context.getString( R.string.statistics_songs_heard )}"
                             }}
                             val subtitle by remember { derivedStateOf {
-                                "$totalDuration ${context.getString( R.string.statistics_of_time_taken )}"
+                                // Duration.toString() carries fractional seconds, so this line read
+                                // "1h 23m 48.168s time spent" — millisecond precision in a figure a
+                                // person reads at a glance (finding 29).
+                                val whole = totalDuration.inWholeSeconds.toDuration( DurationUnit.SECONDS )
+                                "$whole ${context.getString( R.string.statistics_of_time_taken )}"
                             }}
 
                             Row(
@@ -252,7 +253,7 @@ fun StatisticsPage(
                                                    )
                                                    .fillMaxWidth()
                                                    .background(
-                                                       color = colorPalette().background4,
+                                                       color = LumaColor.Raised,
                                                        shape = thumbnailRoundness.shape
                                                    )
                                                    .padding( all =  12.dp )
@@ -261,25 +262,25 @@ fun StatisticsPage(
                                     BasicText(
                                         text = title,
                                         maxLines = 1,
-                                        style = typography().xs
+                                        style = LumaType.Meta
                                                             .semiBold
-                                                            .copy( colorPalette().text ),
+                                                            .copy( LumaColor.Ink ),
                                         modifier = Modifier.padding( bottom = 4.dp )
                                     )
 
                                     BasicText(
                                         text = subtitle,
                                         maxLines = 2,
-                                        style = typography().xs
+                                        style = LumaType.Meta
                                                             .semiBold
-                                                            .copy( colorPalette().textSecondary )
+                                                            .copy( LumaColor.InkSoft )
                                     )
                                 }
 
                                 Icon(
                                     painter = painterResource( R.drawable.musical_notes ),
                                     contentDescription = null,
-                                    tint = colorPalette().shimmer,
+                                    tint = LumaColor.Raised,
                                     modifier = Modifier.size( 34.dp )
                                 )
                             }
@@ -297,7 +298,7 @@ fun StatisticsPage(
                             thumbnailOverlay = {
                                 BasicText(
                                     text = "${index + 1}",
-                                    style = typography().s.semiBold.center.color(colorPalette().text),
+                                    style = LumaType.Tile.center.color(LumaColor.Ink),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.width( SongItem.thumbnailSize().width )

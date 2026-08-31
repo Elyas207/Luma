@@ -37,6 +37,17 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.themed.car.CarModeScreen
+import app.kreate.android.themed.skin.SkinPickerScreen
+import app.kreate.android.themed.taste.TasteCentreScreen
+import app.kreate.android.themed.handoff.HandoffScreen
+import app.kreate.android.themed.luma.LumaSearchScreen
+import app.kreate.android.themed.now.NowScreen
+import app.kreate.android.themed.library.LibraryScreen
+import app.kreate.android.service.player.StatefulPlayer
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.forcePlay
+import org.koin.compose.koinInject
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -60,8 +71,6 @@ import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.TransitionEffect
-import it.fast4x.rimusic.extensions.games.pacman.Pacman
-import it.fast4x.rimusic.extensions.games.snake.SnakeGame
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.screens.history.HistoryScreen
@@ -126,7 +135,7 @@ fun AppNavigation(
         return@remember if( startPage == HomeScreenTabs.Search )
             NavRoutes.search
         else
-            NavRoutes.home
+            NavRoutes.now
     }
 
     val transitionEffect by Preferences.TRANSITION_EFFECT
@@ -191,6 +200,53 @@ fun AppNavigation(
         val navigateToPlaylist =
             { browseId: String -> NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId ) }
 
+        // Luma's home. The old taxonomy screen is still registered as `home` and reachable as
+        // "Your library" — it is a fine place to browse, it was just never a sensible thing to
+        // open the app onto.
+        composable(route = NavRoutes.now.name) {
+            val player: StatefulPlayer = koinInject()
+            NowScreen(
+                onPlaySong = { song ->
+                    // Declared before the call, so the event this produces records that a person
+                    // chose it rather than that the app did.
+                    app.kreate.android.service.intelligence.PlaybackIntent.declare(
+                        app.kreate.android.service.intelligence.Provenance.MANUAL_BROWSE
+                    )
+                    player.forcePlay( song.asMediaItem )
+                },
+                onOpenLibrary = { NavRoutes.library.navigateHere( navController ) },
+                onOpenSearch = { NavRoutes.search.navigateHere( navController ) },
+                onOpenCarMode = { NavRoutes.carMode.navigateHere( navController ) },
+                onOpenDestination = { it.navigateHere( navController ) }
+            )
+        }
+
+        // Browse surface. `home` below is the same four categories as *lists*, with the sort,
+        // filter and bulk-action machinery — reached by tapping a shelf header, not on the way in.
+        composable(route = NavRoutes.library.name) {
+            val player: StatefulPlayer = koinInject()
+            LibraryScreen(
+                onPlaySong = { song ->
+                    // Declared before the call, so the event this produces records that a person
+                    // chose it rather than that the app did.
+                    app.kreate.android.service.intelligence.PlaybackIntent.declare(
+                        app.kreate.android.service.intelligence.Provenance.MANUAL_BROWSE
+                    )
+                    player.forcePlay( song.asMediaItem )
+                },
+                onOpenSection = { tabIndex ->
+                    Preferences.HOME_TAB_INDEX.value = tabIndex
+                    NavRoutes.home.navigateHere( navController )
+                },
+                onOpenArtist = { NavRoutes.YT_ARTIST.navigateHere( navController, it.id ) },
+                onOpenAlbum = { NavRoutes.YT_ALBUM.navigateHere( navController, it.id ) },
+                onOpenPlaylist = {
+                    NavRoutes.localPlaylist.navigateHere( navController, it.playlist.id.toString() )
+                },
+                onOpenSearch = { NavRoutes.search.navigateHere( navController ) }
+            )
+        }
+
         composable(route = NavRoutes.home.name) {
             HomeScreen(
                 navController = navController,
@@ -199,19 +255,7 @@ fun AppNavigation(
             )
         }
 
-        composable(route = NavRoutes.gamePacman.name) {
-            modalBottomSheetPage {
-                Pacman()
-            }
 
-        }
-
-        composable(route = NavRoutes.gameSnake.name) {
-            modalBottomSheetPage {
-                SnakeGame()
-            }
-
-        }
 
         composable(route = NavRoutes.queue.name) {
             modalBottomSheetPage {
@@ -273,6 +317,24 @@ fun AppNavigation(
             )
         }
 
+        // Car Mode is a full-screen surface with no bottom nav and no mini player — it replaces
+        // the app's chrome rather than sitting inside it, which is why it takes no `miniPlayer`.
+        composable(route = NavRoutes.carMode.name) {
+            CarModeScreen( onExit = navController::navigateUp )
+        }
+
+        composable(route = NavRoutes.appearance.name) {
+            SkinPickerScreen()
+        }
+
+        composable(route = NavRoutes.listening.name) {
+            TasteCentreScreen()
+        }
+
+        composable(route = NavRoutes.handoff.name) {
+            HandoffScreen()
+        }
+
         composable(route = NavRoutes.statistics.name) {
             StatisticsScreen(
                 navController = navController,
@@ -303,11 +365,9 @@ fun AppNavigation(
         ) { navBackStackEntry ->
             val text = navBackStackEntry.arguments?.getString("text").orEmpty()
 
-            SearchScreen(
-                navController = navController,
-                miniPlayer = miniPlayer,
+            LumaSearchScreen(
                 initialTextInput = text,
-                onViewPlaylist = {},
+                onDismiss = { navController.popBackStack() },
                 onSearch = { query ->
                     println("onSearch: $query")
 

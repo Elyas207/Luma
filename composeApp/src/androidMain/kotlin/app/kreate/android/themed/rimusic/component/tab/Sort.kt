@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.component.tab
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -88,7 +90,7 @@ open class Sort<T>(
                             else
                                 painterResource( R.drawable.close ),
                         contentDescription = it.name,
-                        tint = colorPalette().text,
+                        tint = LumaColor.Ink,
                         modifier = Modifier.size( TabToolBar.TOOLBAR_ICON_SIZE )
                     )
                 },
@@ -117,7 +119,7 @@ open class Sort<T>(
                             else
                                 painterResource( R.drawable.close ),
                         contentDescription = it.name,
-                        tint = colorPalette().text,
+                        tint = LumaColor.Ink,
                         modifier = Modifier.size( TabToolBar.TOOLBAR_ICON_SIZE )
                     )
                 },
@@ -138,7 +140,7 @@ open class Sort<T>(
             ) {
                 BasicText(
                     text = menuIconTitle,
-                    style = typography().m.semiBold,
+                    style = LumaType.Row,
                     modifier = Modifier.padding(
                         vertical = 8.dp,
                         horizontal = 24.dp

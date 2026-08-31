@@ -57,6 +57,22 @@ interface AlbumTable: DatabaseTable<Album> {
     fun allInLibrary( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     /**
+     * @return every album you have at least one song from, most recently added first
+     *
+     * See [ArtistTable.allWithSongs] — [allInLibrary] also requires playlist membership, which
+     * makes it a measure of curation rather than of ownership.
+     */
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM albums A
+        JOIN song_album_map sam ON sam.album_id = A.id
+        JOIN songs S ON S.id = sam.song_id
+        ORDER BY A.ROWID DESC
+        LIMIT :limit
+    """)
+    fun allWithSongs( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
+
+    /**
      * @return albums that have their songs mapped to at least 1 playlist in randomized order
      */
     @Query("""

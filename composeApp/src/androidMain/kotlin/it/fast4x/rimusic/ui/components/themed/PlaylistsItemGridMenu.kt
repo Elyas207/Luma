@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -175,7 +177,7 @@ fun PlaylistsItemGridMenu(
                     IconButton(
                         onClick = { isViewingPlaylists = false },
                         icon = R.drawable.chevron_back,
-                        color = colorPalette().textSecondary,
+                        color = LumaColor.InkSoft,
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(20.dp)
@@ -193,7 +195,7 @@ fun PlaylistsItemGridMenu(
                 if (pinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.pinned_playlists),
-                        style = typography().m.semiBold,
+                        style = LumaType.Row,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -228,7 +230,7 @@ fun PlaylistsItemGridMenu(
                                     }
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = LumaColor.Ink,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -248,7 +250,7 @@ fun PlaylistsItemGridMenu(
                 if (youtubePlaylists.isNotEmpty() && isNetworkConnected(context)) {
                     BasicText(
                         text = stringResource(R.string.ytm_playlists),
-                        style = typography().m.semiBold,
+                        style = LumaType.Row,
                         modifier = Modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -270,7 +272,7 @@ fun PlaylistsItemGridMenu(
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = LumaColor.Ink,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -290,7 +292,7 @@ fun PlaylistsItemGridMenu(
                 if (unpinnedPlaylists.isNotEmpty()) {
                     BasicText(
                         text = stringResource(R.string.playlists),
-                        style = typography().m.semiBold,
+                        style = LumaType.Row,
                         modifier = modifier.padding(start = 20.dp, top = 5.dp)
                     )
 
@@ -314,7 +316,7 @@ fun PlaylistsItemGridMenu(
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = LumaColor.Ink,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)

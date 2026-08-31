@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.utils
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -69,7 +71,7 @@ fun SearchYoutubeEntity (
 
     Box(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             .fillMaxSize()
     ) {
         Column(

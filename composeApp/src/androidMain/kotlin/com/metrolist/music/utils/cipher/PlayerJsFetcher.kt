@@ -63,16 +63,59 @@ object PlayerJsFetcher : KoinComponent {
 
             // Fetch player hash from iframe_api
             logger.d("Fetching player hash from iframe_api...")
-            val hash = fetchPlayerHash()
-            if (hash == null) {
+            val live = fetchPlayerHash()
+            if (live == null) {
                 logger.e("Failed to extract player hash from iframe_api")
                 return@withContext null
             }
-            logger.d("Extracted player hash: $hash")
+            logger.d("Extracted player hash: $live")
+
+            /*
+             * Use the *newest player we can actually decipher*, not simply the newest one YouTube
+             * happens to be serving today.
+             *
+             * The signature descrambler is only usable when there is a config naming its entry
+             * points. When YouTube rotates to a player we have no config for, extraction fails, no
+             * stream url can be built, and playback falls through to clients whose urls are
+             * throttled to about half a megabyte — which is the "starts then dies" failure.
+             * Verified against the live service: player `e937390a` has no config and none of the
+             * fallback patterns match it, because the descrambler now runs inside the player's own
+             * interpreter rather than as a plain function.
+             *
+             * The important detail is that **YouTube keeps old players served indefinitely** — all
+             * 57 configured hashes still return 200 — and the `signatureTimestamp` in the request
+             * tells the server which player's cipher to sign for. So pinning to a known-good player
+             * is not a hack around the protocol; it is the protocol working as designed.
+             *
+             * Pinning is skipped whenever the live player is already known, so this costs nothing
+             * on the day a config for the current player arrives.
+             */
+            val hash = if (PlayerConfigStore.hasConfig(live)) {
+                live
+            } else {
+                val pinned = PlayerConfigStore.newestConfiguredHash()
+                if (pinned == null) {
+                    logger.w("No configured player to pin to; falling back to live $live")
+                    live
+                } else {
+                    logger.w("Live player $live has no cipher config — pinning to known-good $pinned")
+                    pinned
+                }
+            }
 
             // Download player JS
             logger.d("Downloading player JS for hash: $hash...")
             val playerJs = downloadPlayerJs(hash)
+                ?: run {
+                    // A pinned player that has since been withdrawn must not take playback down
+                    // with it; the live one at least lets the non-cipher clients be tried.
+                    if (hash != live) {
+                        logger.w("Pinned player $hash unavailable, falling back to live $live")
+                        downloadPlayerJs(live)?.also { writeToCache(live, it) }
+                            ?.let { return@withContext Pair(it, live) }
+                    }
+                    null
+                }
             if (playerJs == null) {
                 logger.e("Failed to download player JS for hash=$hash")
                 return@withContext null

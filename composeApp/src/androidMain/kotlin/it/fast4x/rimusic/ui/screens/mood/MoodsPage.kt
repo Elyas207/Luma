@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.mood
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -72,7 +74,7 @@ fun MoodsPage(
 
     Column (
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -99,7 +101,7 @@ fun MoodsPage(
                     state = moodAngGenresLazyGridState,
                     columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
                     modifier = Modifier
-                        .background(colorPalette().background0)
+                        .background(LumaColor.Ground)
                         .fillMaxSize()
                 ) {
                     item(
@@ -149,7 +151,7 @@ fun MoodsPage(
             onFailure = {
                 BasicText(
                     text = stringResource(R.string.page_not_been_loaded),
-                    style = typography().s.secondary.center,
+                    style = LumaType.Tile.center,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(all = 16.dp)

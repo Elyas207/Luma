@@ -57,6 +57,24 @@ interface ArtistTable: DatabaseTable<Artist> {
     fun allInLibrary( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
 
     /**
+     * @return every artist you have at least one song by, most recently added first
+     *
+     * Deliberately weaker than [allInLibrary], which additionally requires the song to sit in a
+     * playlist. That is a reasonable definition of "curated", and a poor one of "mine": it hides
+     * every artist whose music you have played but never filed, which for most people is most of
+     * them. A browse surface wants the whole collection.
+     */
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM artists A
+        JOIN song_artist_map sam ON sam.artist_id = A.id
+        JOIN songs S ON S.id = sam.song_id
+        ORDER BY A.ROWID DESC
+        LIMIT :limit
+    """)
+    fun allWithSongs( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
+
+    /**
      * @return artists that have their songs mapped to at least 1 playlist in randomized order
      */
     @Query("""

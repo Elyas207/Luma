@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.settings
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -66,9 +68,11 @@ class SettingEntrySearch(
     @Composable
     fun HeaderIcon( modifier: Modifier ) =
         Icon(
-            painter = painterResource( iconId ),
+            // Was the app's own icon, back when this row was a title bar. The row is now only a
+            // search affordance, so the glyph says what tapping it does.
+            painter = painterResource( app.kreate.android.R.drawable.search ),
             contentDescription = stringResource( titleId ),
-            tint = colorPalette().accent,
+            tint = LumaColor.Ember,
             modifier = modifier.size( 22.dp )
                                .clickable( onClick = ::onShortClick )
         )
@@ -80,9 +84,10 @@ class SettingEntrySearch(
         BasicText(
             text = stringResource( titleId ),
             style = TextStyle(
-                fontSize = typography().xxl.bold.fontSize,
-                fontWeight = typography().xxl.bold.fontWeight,
-                color = colorPalette().text,
+                fontSize = LumaType.Title.fontSize,
+                fontFamily = LumaType.Title.fontFamily,
+                fontWeight = LumaType.Title.fontWeight,
+                color = LumaColor.Ink,
                 textAlign = textAlign
             ),
             maxLines = 1,

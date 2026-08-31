@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.utils
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,6 +24,6 @@ fun ShowUpdatedVersion(
         text = "New version $newVersion",
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        style = typography().xs.semiBold.secondary,
+        style = LumaType.Meta.secondary,
     )
 }

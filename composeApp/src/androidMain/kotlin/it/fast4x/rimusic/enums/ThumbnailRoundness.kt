@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.enums
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.annotation.StringRes
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Shape
@@ -14,9 +16,9 @@ enum class ThumbnailRoundness(
 
     None( RoundedCornerShape(0.dp), R.string.none ),
 
-    Light( RoundedCornerShape(8.dp), R.string.light ),
+    Light( RoundedCornerShape( LumaRadius.Panel ), R.string.light ),
 
-    Medium( RoundedCornerShape(12.dp), R.string.medium ),
+    Medium( RoundedCornerShape( LumaRadius.Panel ), R.string.medium ),
 
-    Heavy( RoundedCornerShape(16.dp), R.string.heavy );
+    Heavy( RoundedCornerShape( LumaRadius.Card ), R.string.heavy );
 }

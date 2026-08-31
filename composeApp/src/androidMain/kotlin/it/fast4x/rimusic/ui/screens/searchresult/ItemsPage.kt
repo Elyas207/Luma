@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.searchresult
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -77,7 +79,7 @@ inline fun <T : Innertube.Item> ItemsPage(
 
     Box(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -111,7 +113,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                 item(key = "empty") {
                     BasicText(
                         text = emptyItemsText,
-                        style = typography().xs.secondary.center,
+                        style = LumaType.Meta.center,
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 32.dp)
                             .fillMaxWidth()

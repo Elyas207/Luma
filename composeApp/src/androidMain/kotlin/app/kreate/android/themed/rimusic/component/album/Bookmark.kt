@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.component.album
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,7 +40,7 @@ class Bookmark(
     override val messageId: Int = R.string.info_bookmark_album
     override val color: Color
         @Composable
-        get() = colorPalette().accent
+        get() = LumaColor.Ember
     override val menuIconTitle: String
         @Composable
         get() = stringResource( messageId )

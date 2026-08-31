@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.home.onDevice
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -71,7 +73,7 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import me.knighthat.component.FolderItem
 import me.knighthat.utils.PathUtils
 import me.knighthat.utils.Toaster
@@ -146,9 +148,13 @@ fun OnDeviceSong(
 
         context.getLocalSongs( odSort.sortBy, odSort.sortOrder )
                .distinctUntilChanged()
-               .onEach { lazyListState.scrollToItem( 0, 0 ) }
                .collect {
                    songsOnDevice = it
+
+                   // Scrolled after delivery, not before it. Upstream of `collect` this suspends
+                   // until the list is laid out, which makes data delivery depend on the list
+                   // being on screen — the same coupling that deadlocked the songs library.
+                   launch { runCatching { lazyListState.scrollToItem( 0, 0 ) } }
                }
     }
     LaunchedEffect( songsOnDevice, search.input, currentPath ) {
@@ -195,20 +201,20 @@ fun OnDeviceSong(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Lock,
-                    tint = colorPalette().textDisabled,
+                    tint = LumaColor.InkFaint,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize( .4f )
                 )
 
                 BasicText(
                     text = stringResource( R.string.media_permission_required_please_grant ),
-                    style = typography().m.copy( color = colorPalette().textDisabled )
+                    style = LumaType.Row.copy( color = LumaColor.InkFaint )
                 )
 
                 Spacer( Modifier.height( 20.dp ) )
 
                 Button(
-                    border = BorderStroke( 2.dp, colorPalette().accent ),
+                    border = BorderStroke( 2.dp, LumaColor.Ember ),
                     colors = ButtonDefaults.buttonColors().copy( containerColor = Color.Transparent ),
                     onClick = {
                         try {
@@ -223,7 +229,7 @@ fun OnDeviceSong(
                 ) {
                     BasicText(
                         text = stringResource( R.string.open_permission_settings ),
-                        style = typography().l.bold.copy( color = colorPalette().accent )
+                        style = LumaType.Section.copy( color = LumaColor.Ember )
                     )
                 }
             }

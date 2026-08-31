@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.navigation.header
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -13,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.ui.components.themed.Button
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 
@@ -26,11 +27,11 @@ class AppHeader(
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
         fun colors(): TopAppBarColors = TopAppBarColors(
-            containerColor = colorPalette().background0,
-            titleContentColor = colorPalette().text,
-            scrolledContainerColor = colorPalette().background0,
-            navigationIconContentColor = colorPalette().background0,
-            actionIconContentColor = colorPalette().text
+            containerColor = LumaColor.Ground,
+            titleContentColor = LumaColor.Ink,
+            scrolledContainerColor = LumaColor.Ground,
+            navigationIconContentColor = LumaColor.Ground,
+            actionIconContentColor = LumaColor.Ink
         )
     }
 
@@ -43,7 +44,7 @@ class AppHeader(
         ) {
             Button(
                 R.drawable.chevron_back,
-                colorPalette().favoritesIcon,
+                LumaColor.Ember,
                 0.dp,
                 24.dp
             ).Draw()
@@ -53,11 +54,8 @@ class AppHeader(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Draw() {
-        val showGames by remember { mutableStateOf(false) }
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         val context = LocalContext.current
-
-        if (showGames) Pacman()
 
         TopAppBar(
             title = { AppTitle( navController, context ) },

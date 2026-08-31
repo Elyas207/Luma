@@ -1,25 +1,25 @@
 package it.fast4x.rimusic.ui.components.navigation.header
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Context
-import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import app.kreate.android.R
@@ -31,64 +31,52 @@ import it.fast4x.rimusic.ui.components.themed.Button
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.utils.Toaster
 
-private fun appIconClickAction(
-    navController: NavController,
-    countToReveal: MutableIntState,
-    context: Context
-) {
-    countToReveal.intValue++
-
-    val message: String =
-        when( countToReveal.intValue ) {
-            10 -> {
-                countToReveal.intValue = 0
-                NavRoutes.gamePacman.navigateHere( navController )
-                ""
-            }
-            3 -> "Do you like clicking? Then continue..."
-            6 -> "Okay, you’re looking for something, keep..."
-            9 -> "You are a number one, click and enjoy the surprise"
-            else -> ""
-        }
-    if( message.isNotEmpty() )
-        Toaster.n( message, Toast.LENGTH_LONG )
-}
-
-private fun appIconLongClickAction(
-    navController: NavController,
-    context: Context
-) {
-    Toaster.n( "You are a number one, click and enjoy the surprise", Toast.LENGTH_LONG )
-    NavRoutes.gameSnake.navigateHere( navController )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
+/**
+ * The Luma mark.
+ *
+ * Two artworks, chosen by how dark the surface is. The mark is polished chrome with a mean
+ * luminance of 183 — bright silver — so on the light skins (Aurora, Vinyl, Terrazzo, Bloom) the
+ * original washes out until the top of the L disappears into the background. The graphite variant
+ * is the same artwork darkened with its contrast lifted, which keeps the bevel reading as metal
+ * rather than flattening it into a silhouette.
+ *
+ * Tinting was the obvious alternative and is wrong: the chrome *is* the identity, and a solid fill
+ * would throw away the thing that makes the mark look like an object.
+ */
 @Composable
 private fun AppLogo(
     navController: NavController,
     context: Context
 ) {
-    val countToReveal = remember { mutableIntStateOf(0) }
-    val modifier = Modifier.combinedClickable(
-        onClick = { appIconClickAction( navController, countToReveal, context ) },
-        onLongClick = { appIconLongClickAction( navController, context ) }
-    )
-
     Image(
-        bitmap = AppIcon.Round.imageBitmap( LocalContext.current ),
-        contentDescription = "App's icon",
-        modifier = modifier.size( 36.dp )
+        painter = painterResource(
+            if ( colorPalette().isDark ) R.drawable.luma_mark
+            else R.drawable.luma_mark_dark
+        ),
+        contentDescription = "Luma",
+        modifier = Modifier.size( 34.dp )
     )
 }
 
+/**
+ * "Luma", set in the app's own type rather than shipped as artwork.
+ *
+ * The previous wordmark was a fixed vector, which meant one colour for ten skins. Rendering it as
+ * text lets it inherit [colorPalette] and stay legible on every one of them, and it costs an asset
+ * rather than adding one.
+ */
 @Composable
 private fun AppLogoText( navController: NavController ) {
-    Button(
-        iconId = R.drawable.app_logo_text,
-        color = AppBar.contentColor(),
-        padding = 0.dp,
-        size = 36.dp,
-        forceWidth = 100.dp,
+    BasicText(
+        text = "Luma",
+        style = TextStyle(
+            fontSize = LumaType.Section.fontSize,
+            fontWeight = FontWeight.Bold,
+            fontFamily = LumaType.Section.fontFamily,
+            // Airy tracking suits a mark about sound carrying outward
+            letterSpacing = 1.5.sp,
+            color = AppBar.contentColor()
+        ),
         modifier = Modifier.clickable {
             if ( NavRoutes.home.isHere( navController ) ) return@clickable
 
@@ -102,7 +90,7 @@ private fun AppLogoText( navController: NavController ) {
                 launchSingleTop = true
             }
         }
-    ).Draw()
+    )
 }
 
 // START
@@ -130,10 +118,10 @@ fun AppTitle(
             BasicText(
                 text = stringResource(R.string.info_debug_mode_enabled),
                 style = TextStyle(
-                    fontSize = typography().xxs.semiBold.fontSize,
-                    fontWeight = typography().xxs.semiBold.fontWeight,
-                    fontFamily = typography().xxs.semiBold.fontFamily,
-                    color = colorPalette().red
+                    fontSize = LumaType.Numeral.fontSize,
+                    fontFamily = LumaType.Numeral.fontFamily,
+                    fontWeight = LumaType.Numeral.fontWeight,
+                    color = LumaColor.Alarm
                 ),
                 modifier = Modifier
                     .clickable {

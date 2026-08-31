@@ -1,5 +1,9 @@
 package app.kreate.android.themed.rimusic.screen.player
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.media.audiofx.AudioEffect
@@ -162,7 +166,7 @@ fun BoxScope.ActionBar(
                                showQueue = true
                            }
                            .background(
-                               colorPalette().background2.copy(
+                               LumaColor.Raised.copy(
                                    alpha =
                                        if (transparentBackgroundActionBarPlayer
                                            || (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
@@ -195,7 +199,7 @@ fun BoxScope.ActionBar(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .background(
-                            colorPalette().background2.copy(
+                            LumaColor.Raised.copy(
                                 alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f
                             )
                         )
@@ -268,7 +272,7 @@ fun BoxScope.ActionBar(
                                                        pagerStateQueue.animateScrollToPage( currentIndex )
                                                    }
                                                },
-                            tint = colorPalette().accent
+                            tint = LumaColor.Ember
                         )
                     }
 
@@ -310,7 +314,7 @@ fun BoxScope.ActionBar(
                                         contentDescription = "song_pos_$index",
                                         modifier = Modifier
                                             .padding(end = 5.dp)
-                                            .clip(RoundedCornerShape(5.dp))
+                                            .clip(RoundedCornerShape( LumaRadius.Tight ))
                                             .size(30.dp)
                                     )
                                 }
@@ -336,8 +340,8 @@ fun BoxScope.ActionBar(
                                     BasicText(
                                         text = titleText,
                                         style = TextStyle(
-                                            color = colorPalette().text,
-                                            fontSize = typography().xxxs.semiBold.fontSize,
+                                            color = LumaColor.Ink,
+                                            fontSize = LumaType.Numeral.fontSize,
                                         ),
                                         maxLines = 1,
                                         modifier = Modifier.scrollingText()
@@ -354,7 +358,7 @@ fun BoxScope.ActionBar(
                                                 0.65f
                                             )
                                             else Color.Black,
-                                            fontSize = typography().xxxs.semiBold.fontSize,
+                                            fontSize = LumaType.Numeral.fontSize,
                                         ),
                                         maxLines = 1,
                                         modifier = Modifier.scrollingText()
@@ -372,8 +376,8 @@ fun BoxScope.ActionBar(
                                     BasicText(
                                         text = artistsText,
                                         style = TextStyle(
-                                            color = colorPalette().text,
-                                            fontSize = typography().xxxs.semiBold.fontSize,
+                                            color = LumaColor.Ink,
+                                            fontSize = LumaType.Numeral.fontSize,
                                         ),
                                         maxLines = 1,
                                         modifier = Modifier.scrollingText()
@@ -395,7 +399,7 @@ fun BoxScope.ActionBar(
                                                     Color.White.copy( 0.65f )
                                                 else
                                                     Color.Black,
-                                            fontSize = typography().xxxs.semiBold.fontSize,
+                                            fontSize = LumaType.Numeral.fontSize,
                                         ),
                                         maxLines = 1,
                                         modifier = Modifier.scrollingText()
@@ -434,7 +438,7 @@ fun BoxScope.ActionBar(
                 if (showButtonPlayerVideo)
                     IconButton(
                         icon = R.drawable.video,
-                        color = colorPalette().accent,
+                        color = LumaColor.Ember,
                         onClick = {
                             player.pause()
                             showSearchEntityState.value = true
@@ -448,7 +452,7 @@ fun BoxScope.ActionBar(
 
                     IconButton(
                         icon = R.drawable.star_brilliant,
-                        color = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled,
+                        color = if (discoverIsEnabled) LumaColor.Ink else LumaColor.InkFaint,
                         onClick = {},
                         modifier = Modifier
                             .size(24.dp)
@@ -467,7 +471,7 @@ fun BoxScope.ActionBar(
 
                     DownloadStateIconButton(
                         icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                        color = if (isDownloaded) colorPalette().accent else Color.Gray,
+                        color = if (isDownloaded) LumaColor.Ember else Color.Gray,
                         downloadState = getDownloadState(mediaItem.mediaId),
                         onClick = {
                             manageDownload(
@@ -535,7 +539,7 @@ fun BoxScope.ActionBar(
 
                     IconButton(
                         icon = queueLoopType.androidIconId,
-                        color = colorPalette().accent,
+                        color = LumaColor.Ember,
                         onClick = {
                             queueLoopType = queueLoopType.next()
                             if (effectRotationEnabled)
@@ -549,7 +553,7 @@ fun BoxScope.ActionBar(
                 if (showButtonPlayerShuffle)
                     IconButton(
                         icon = R.drawable.shuffle,
-                        color = colorPalette().accent,
+                        color = LumaColor.Ember,
                         onClick = player::shuffleQueue,
                         modifier = Modifier.size( 24.dp )
                     )
@@ -558,7 +562,7 @@ fun BoxScope.ActionBar(
                 if (showButtonPlayerLyrics)
                     IconButton(
                         icon = R.drawable.song_lyrics,
-                        color = if ( isShowingLyrics ) colorPalette().accent else Color.Gray,
+                        color = if ( isShowingLyrics ) LumaColor.Ember else Color.Gray,
                         enabled = true,
                         onClick = {
                             if( isShowingVisualizer )
@@ -577,7 +581,7 @@ fun BoxScope.ActionBar(
                     if (expandedPlayerToggle && !showLyricsThumbnail)
                         IconButton(
                             icon = R.drawable.maximize,
-                            color = if ( expandedPlayer ) colorPalette().accent else Color.Gray,
+                            color = if ( expandedPlayer ) LumaColor.Ember else Color.Gray,
                             onClick = {
                                 expandedPlayer = !expandedPlayer
                             },
@@ -589,7 +593,7 @@ fun BoxScope.ActionBar(
                 if (visualizerEnabled)
                     IconButton(
                         icon = R.drawable.sound_effect,
-                        color = if ( isShowingVisualizer ) colorPalette().text else colorPalette().textDisabled,
+                        color = if ( isShowingVisualizer ) LumaColor.Ink else LumaColor.InkFaint,
                         onClick = {
                             if (isShowingLyrics)
                                 isShowingLyrics = !isShowingLyrics
@@ -605,7 +609,7 @@ fun BoxScope.ActionBar(
 
                     IconButton(
                         icon = R.drawable.sleep,
-                        color = if (sleepTimerMillisLeft != null) colorPalette().accent else Color.Gray,
+                        color = if (sleepTimerMillisLeft != null) LumaColor.Ember else Color.Gray,
                         onClick = {
                             showSleepTimerState.value = true
                         },
@@ -620,7 +624,7 @@ fun BoxScope.ActionBar(
 
                     IconButton(
                         icon = R.drawable.equalizer,
-                        color = colorPalette().accent,
+                        color = LumaColor.Ember,
                         onClick = {
                             try {
                                 activityResultLauncher.launch(
@@ -651,7 +655,7 @@ fun BoxScope.ActionBar(
                 if (showButtonPlayerStartRadio)
                     IconButton(
                         icon = R.drawable.radio,
-                        color = colorPalette().accent,
+                        color = LumaColor.Ember,
                         onClick = {
                             player.startRadio( mediaItem )
                         },
@@ -670,7 +674,7 @@ fun BoxScope.ActionBar(
                 if (showButtonPlayerArrow)
                     IconButton(
                         icon = R.drawable.chevron_up,
-                        color = colorPalette().accent,
+                        color = LumaColor.Ember,
                         enabled = true,
                         onClick = {
                             showQueue = true
@@ -686,7 +690,7 @@ fun BoxScope.ActionBar(
 
                     IconButton(
                         icon = R.drawable.ellipsis_vertical,
-                        color = colorPalette().accent,
+                        color = LumaColor.Ember,
                         onClick = {
                             menuState.display {
                                 PlayerMenu(

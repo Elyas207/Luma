@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.artist
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Intent
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
@@ -123,7 +125,7 @@ private fun LazyListScope.renderSections(
         ) {
             Text(
                 text = section.title!!,
-                style = typography().m.semiBold,
+                style = LumaType.Row,
                 modifier = Modifier.weight( 1f )
             )
 
@@ -132,7 +134,7 @@ private fun LazyListScope.renderSections(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
-                    tint = colorPalette().textSecondary,
+                    tint = LumaColor.InkSoft,
                     modifier = Modifier.clickable {
                         val path = "${section.browseId}?params=${section.params}"
 
@@ -220,7 +222,7 @@ private fun LazyListScope.renderLibrarySongs(
     item( "songs" ) {
         Text(
             text = stringResource( R.string.songs ),
-            style = typography().m.semiBold,
+            style = LumaType.Row,
             modifier = sectionTextModifier.fillMaxWidth()
         )
     }
@@ -409,7 +411,7 @@ fun YouTubeArtist(
                             item( "monthlyListeners" ) {
                                 BasicText(
                                     text = monthlyAudience,
-                                    style = typography().xs.medium,
+                                    style = LumaType.Meta,
                                     maxLines = 1
                                 )
                             }

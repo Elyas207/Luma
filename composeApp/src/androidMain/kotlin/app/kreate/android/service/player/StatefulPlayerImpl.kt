@@ -30,6 +30,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.offline.Download
 import app.kreate.android.Preferences
+import app.kreate.android.service.taste.TasteEngine
 import app.kreate.android.R
 import app.kreate.android.service.PlayerEventUpdateDiscord
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
@@ -287,10 +288,19 @@ class StatefulPlayerImpl(private val player: ExoPlayer) :
                     player.mediaItems.fastMap( MediaItem::mediaId )
                 }
 
-                // Songs with the same id as provided [Song] should be removed.
-                // The song usually lives at the the first index, but this
-                // way is safer to implement, as it can live through changes in position.
-                relatedSongs.dropWhile { it.id == mediaItem.mediaId || it.id in currentQueue }
+                // Ids the user has repeatedly rejected. Autoplay is precisely where suppression
+                // should apply: it is the app choosing, not the user. Anything they pick by hand
+                // still plays, and nothing is removed from the library or from search.
+                val suppressed = TasteEngine.suppressedIdsSnapshot()
+
+                // `filterNot`, not `dropWhile`: the latter stops at the first element that doesn't
+                // match, so it only ever stripped a *leading* run of duplicates and let any later
+                // repeat straight back into the queue.
+                relatedSongs.filterNot {
+                                it.id == mediaItem.mediaId ||
+                                it.id in currentQueue ||
+                                it.id in suppressed
+                            }
                             .fastMap( InnertubeSong::toMediaItem )
                             .also {
                                 // Any call to [player] must happen on Main thread

@@ -106,6 +106,56 @@ object YTPlayerUtils : KoinComponent {
     @Volatile
     var disabledStreamClients: Set<String> = emptySet()
 
+    /**
+     * Clients that have just told us to sign in, and when to stop believing them.
+     *
+     * YouTube's answer to "can this client stream" is a property of the *session*, not of the track:
+     * when it decides a client looks like a bot it says so for every video, for a while. The walk
+     * above had no memory of that, so a typical resolve spent roughly five seconds re-asking six
+     * clients the same question and getting the same "Sign in to confirm you're not a bot" six
+     * times — on every single track. That is the bulk of the "takes a very long time to load"
+     * complaint, and none of it was doing any work.
+     *
+     * Ten minutes is chosen to be long enough to cover a listening session's worth of tracks and
+     * short enough that a genuinely transient block clears itself without the user ever knowing
+     * there was one. Nothing is ever *permanently* written off — a rejection expires on its own, so
+     * this can never be the reason a client stops being tried.
+     */
+    private val rejectedClients = java.util.concurrent.ConcurrentHashMap<String, Long>()
+
+    private const val CLIENT_REJECTION_TTL_MS = 10 * 60 * 1000L
+
+    private fun isRecentlyRejected( clientName: String ): Boolean {
+        val until = rejectedClients[clientName] ?: return false
+        if ( System.currentTimeMillis() > until ) {
+            rejectedClients.remove( clientName )
+            return false
+        }
+        return true
+    }
+
+    /**
+     * Only auth-shaped refusals are remembered. A 403 on the media URL, an expired link or a
+     * track-specific restriction says nothing about the client's standing, and writing those off
+     * would slowly disable every client for the wrong reason.
+     */
+    private fun rememberRejection( clientName: String, status: String?, reason: String? ) {
+        val authShaped = status == "LOGIN_REQUIRED" ||
+                         reason?.contains( "sign in", ignoreCase = true ) == true
+
+        if ( authShaped )
+            rejectedClients[clientName] = System.currentTimeMillis() + CLIENT_REJECTION_TTL_MS
+    }
+
+    /** Lets a successful login immediately undo every "please sign in" we are currently honouring. */
+    fun clearClientRejections() = rejectedClients.clear()
+
+    /** Never stream a taller track than this, whatever the connection. */
+    private const val MAX_VIDEO_HEIGHT = 1080
+
+    /** Cap on a metered connection — 480p keeps a music video watchable without eating mobile data. */
+    private const val METERED_VIDEO_HEIGHT = 480
+
     // A stable video id used only to warm the local BotGuard token generator; the token is
     // discarded. PoToken generation is a local WebView computation (no YouTube /player call), so
     // this triggers no network request to YouTube for the video itself.
@@ -117,12 +167,27 @@ object YTPlayerUtils : KoinComponent {
      * visitorData being ready. The cipher WebView warm-up is separate (CipherDeobfuscator.prewarm)
      * since it needs no session. Failure is swallowed; playback falls back to lazy init unchanged.
      */
+
+    /**
+     * The identity a proof-of-origin token must be minted against.
+     *
+     * `YouTube.visitorData` is held percent-encoded — it ends `%3D%3D`, i.e. a base64 `==` that has
+     * been escaped for use in the `X-Goog-Visitor-Id` header. BotGuard binds the token to the
+     * *string it is handed*, and YouTube then validates the token against the visitor identity in
+     * its decoded form, so minting against the escaped text produces a token that is structurally
+     * valid and bound to the wrong subject. It fails exactly like no token at all: the stream
+     * serves a short prefix and then 403s.
+     */
+    private fun poTokenIdentity( visitorData: String ): String =
+        runCatching { java.net.URLDecoder.decode( visitorData, "UTF-8" ) }
+            .getOrDefault( visitorData )
+
     suspend fun prewarmPoToken() {
         val sessionId = YouTube.visitorData ?: return
         if (!MAIN_CLIENT.useWebPoTokens) return
         runCatching {
             withContext(Dispatchers.IO) {
-                poTokenGenerator.getWebClientPoToken(POTOKEN_WARMUP_VIDEO_ID, sessionId)
+                poTokenGenerator.getWebClientPoToken(POTOKEN_WARMUP_VIDEO_ID, poTokenIdentity(sessionId))
             }
         }.onFailure { logger.w("PoToken prewarm skipped: ${it.message}", it) }
     }
@@ -135,7 +200,18 @@ object YTPlayerUtils : KoinComponent {
         val streamUrl: String,
         val streamExpiresInSeconds: Int,
         val streamClient: String = "unknown",
-    )
+        /**
+         * Video track from the same response as [format], when one is available and usable.
+         * Null means audio-only — either the content has no video or its video could not be
+         * resolved, and in both cases playback proceeds with audio alone.
+         */
+        val videoFormat: PlayerResponse.StreamingData.Format? = null,
+        val videoStreamUrl: String? = null,
+    ) {
+        /** Whether this resolution can drive a video surface as well as the audio renderer. */
+        val hasVideo: Boolean
+            get() = videoStreamUrl != null
+    }
     /**
      * Custom player response intended to use for playback.
      * Metadata like audioConfig and videoDetails are from [MAIN_CLIENT].
@@ -170,7 +246,7 @@ object YTPlayerUtils : KoinComponent {
         if (MAIN_CLIENT.useWebPoTokens && sessionId != null) {
             logger.d("Generating PoToken for WEB_REMIX with sessionId")
             try {
-                poToken = poTokenGenerator.getWebClientPoToken(videoId, sessionId)
+                poToken = poTokenGenerator.getWebClientPoToken(videoId, poTokenIdentity(sessionId))
                 if (poToken != null) {
                     logger.d("PoToken generated successfully")
                 }
@@ -247,6 +323,16 @@ object YTPlayerUtils : KoinComponent {
         var bestFallbackClient: String? = null
         var successClient: String? = null
 
+        // Whether *any* client considered this track playable, even if its url was later rejected.
+        // Distinguishes "YouTube will not serve this to anyone" from "we could not get a working
+        // link", which are different problems and deserve different words. See the throw below.
+        var sawPlayableResponse = false
+
+        // The response/client the audio url came from. The video track is taken from the same pair
+        // so both halves of the stream are guaranteed to be mutually playable.
+        var winningResponse: PlayerResponse? = null
+        var winningClient: YouTubeClient? = null
+
         val hasHighQuality = mainPlayerResponse.streamingData?.adaptiveFormats?.any { it.audioQuality == "AUDIO_QUALITY_HIGH" } == true
 
         for (clientIndex in (startIndex until STREAM_FALLBACK_CLIENTS.size)) {
@@ -282,8 +368,18 @@ object YTPlayerUtils : KoinComponent {
                     continue
                 }
 
+                if (isRecentlyRejected(client.clientName)) {
+                    // Already refused us this session; asking again costs a full round trip to be
+                    // told the same thing. See [rejectedClients].
+                    logger.d("Skipping client ${client.clientName} — refused sign-in check recently")
+                    continue
+                }
+
                 logger.d("Fetching player response for fallback client: ${client.clientName}")
-                // Only pass poToken for clients that support it
+                // Only web clients take proof-of-origin. Presenting the web token to VISIONOS,
+                // ANDROID_VR and TVHTML5 was tried against the live service and changed nothing —
+                // they still answered "Sign in to confirm you're not a bot" — so the token stays
+                // where it is accepted rather than being sent to clients that have no use for it.
                 val clientPoToken = if (client.useWebPoTokens) poToken?.playerRequestPoToken else null
                 // Skip signature timestamp for age-restricted (faster), use it for normal content
                 val clientSigTimestamp = if (wasOriginallyAgeRestricted) null else signatureTimestamp.timestamp
@@ -294,6 +390,7 @@ object YTPlayerUtils : KoinComponent {
             // process current client response
             if (streamPlayerResponse?.playabilityStatus?.status == "OK") {
                 logger.d("Player response status OK for client: ${if (clientIndex == -1) MAIN_CLIENT.clientName else STREAM_FALLBACK_CLIENTS[clientIndex].clientName}")
+                sawPlayableResponse = true
 
                 // Skip NewPipe for age-restricted content (NewPipe doesn't use our auth)
                 val responseToUse = if (wasOriginallyAgeRestricted) {
@@ -362,41 +459,27 @@ object YTPlayerUtils : KoinComponent {
                 logger.d("  Reason: useWebPoTokens=${currentClient.useWebPoTokens}, " +
                     "clientInList=${currentClient.clientName in listOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5")}")
 
-                if (needsNTransform) {
-                    try {
-                        logger.d("Applying n-transform to stream URL...")
-                        logger.d("  Original URL length: ${streamUrl.length}")
-                        logger.d("  Original URL preview: ${streamUrl.take(100)}...")
-
-                        val originalUrl = streamUrl
-                        // Use CipherDeobfuscator for n-transform (fixed implementation)
-                        streamUrl = CipherDeobfuscator.transformNParamInUrl(streamUrl)
-
-                        logger.d("  Transformed URL length: ${streamUrl.length}")
-                        logger.d("  URL changed: ${originalUrl != streamUrl}")
-
-                        // Append pot= parameter with streaming data poToken
-                        val needsPoToken = currentClient.useWebPoTokens && poToken?.streamingDataPoToken != null
-                        logger.d("PoToken decision:")
-                        logger.d("  needsPoToken: $needsPoToken")
-                        logger.d("  hasStreamingDataPoToken: ${poToken?.streamingDataPoToken != null}")
-
-                        if (needsPoToken) {
-                            logger.d("Appending pot= parameter to stream URL")
-                            val separator = if ("?" in streamUrl) "&" else "?"
-                            streamUrl = "${streamUrl}${separator}pot=${Uri.encode(poToken.streamingDataPoToken)}"
-                            logger.d("  Final URL length (with pot): ${streamUrl.length}")
-                        }
-                    } catch (e: kotlinx.coroutines.CancellationException) {
-                        throw e // request superseded/cancelled — abort cleanly, don't validate an un-transformed URL
-                    } catch (e: Exception) {
-                        logger.e("N-transform or pot append failed: ${e.message}", e)
-                        logger.e("Stack trace: ${e.stackTraceToString().take(500)}")
-                        // Continue with original URL
-                    }
-                } else {
+                /*
+                 * Two separate jobs that were wired to one switch.
+                 *
+                 * The `n` transform only applies to clients whose urls actually carry an `n`
+                 * parameter — that gate is correct. Proof-of-origin is not the same question: every
+                 * url needs it, and it was riding along inside the same branch, so the clients that
+                 * skip the n-transform (IOS, ANDROID — precisely the ones the fallback lands on)
+                 * were also silently skipping `pot`. Attaching them separately is the difference
+                 * between a stream that stops at half a megabyte and one that plays to the end.
+                 */
+                if (needsNTransform)
+                    streamUrl = applyThrottleTransform(streamUrl, currentClient, poToken)
+                else {
                     logger.d("Skipping n-transform (not required for this client/content)")
+                    streamUrl = appendProofOfOrigin(streamUrl, poToken)
                 }
+
+                // Remember which response and client produced the winning audio url, so the video
+                // track can be pulled from that same response without a second network sweep.
+                winningResponse = responseToUse
+                winningClient = currentClient
 
                 streamExpiresInSeconds = streamPlayerResponse.streamingData?.expiresInSeconds
                 if (streamExpiresInSeconds == null) {
@@ -455,13 +538,27 @@ object YTPlayerUtils : KoinComponent {
                 if (clientIndex == -1 && currentClient.clientName == "WEB_REMIX" &&
                     !webRemixFailedIds.contains(videoId)
                 ) {
-                    logger.d("WEB_REMIX — skipping HEAD validation, letting ExoPlayer try directly")
-                    logger.i("Playback: client=${currentClient.clientName}, videoId=$videoId")
-                    successClient = currentClient.clientName
-                    break
+                    /*
+                     * This used to hand WEB_REMIX's url straight to ExoPlayer unchecked, because a
+                     * `HEAD` against it returns 403 even when the url is fine. The deep probe does
+                     * not have that false negative — it is the same ranged GET ExoPlayer issues —
+                     * so the main client can now be held to the same standard as every fallback.
+                     *
+                     * Checking here is what stops a url that will die mid-track from becoming the
+                     * user's problem: a failure costs one 2 KB request and moves to the next
+                     * client, instead of a stall, an ExoPlayer error and a recovery pass.
+                     */
+                    if (validateStatus(streamUrl, deep = true)) {
+                        logger.d("WEB_REMIX validated (deep probe)")
+                        logger.i("Playback: client=${currentClient.clientName}, videoId=$videoId")
+                        successClient = currentClient.clientName
+                        break
+                    }
+                    logger.d("WEB_REMIX failed deep validation — falling through to fallback clients")
+                    markWebRemixFailed(videoId)
                 }
 
-                if (validateStatus(streamUrl)) {
+                if (validateStatus(streamUrl, deep = true)) {
                     // working stream found
                     logger.d("Stream validated successfully with client: ${currentClient.clientName}")
                     // Log for release builds
@@ -471,7 +568,12 @@ object YTPlayerUtils : KoinComponent {
                     logger.d("Stream validation failed for client: ${currentClient.clientName}")
                 }
             } else {
-                logger.d("Player response status not OK: ${streamPlayerResponse?.playabilityStatus?.status}, reason: ${streamPlayerResponse?.playabilityStatus?.reason}")
+                val status = streamPlayerResponse?.playabilityStatus?.status
+                val reason = streamPlayerResponse?.playabilityStatus?.reason
+                logger.d("Player response status not OK: $status, reason: $reason")
+
+                if (clientIndex >= 0)
+                    rememberRejection(STREAM_FALLBACK_CLIENTS[clientIndex].clientName, status, reason)
             }
         }
 
@@ -493,12 +595,29 @@ object YTPlayerUtils : KoinComponent {
         }
 
         if (streamPlayerResponse.playabilityStatus.status != "OK") {
-            val errorReason = streamPlayerResponse.playabilityStatus.reason
-            // YouTube often surfaces generic reasons (e.g. "error 2000") for restricted or
-            // unavailable streams; Metrolist cannot recover those without official playback.
-            logger.e("Playability status not OK: $errorReason")
+            val lastReason = streamPlayerResponse.playabilityStatus.reason
+
+            /*
+             * `streamPlayerResponse` holds whichever client happened to be *last* in the list, and
+             * that client's opinion is not the truth about the track.
+             *
+             * Observed on a track that plays perfectly: clients 7 and 8 (IOS) returned OK and gave
+             * real urls that 403'd, client 11 (ANDROID) returned OK, and client 12 (WEB) — the last
+             * one, and therefore the one whose message reached the screen — said "Video
+             * unavailable". The user is told the track does not exist when in fact ten clients
+             * disagreed and the actual problem was that no url survived validation.
+             *
+             * So the message now follows what was actually observed. This is a user-facing string,
+             * and a wrong one sends people looking for a problem that is not there.
+             */
+            val errorReason = if (sawPlayableResponse)
+                "Couldn't get a playable stream — YouTube rejected every link we tried"
+            else
+                lastReason
+
+            logger.e("Playability status not OK: $lastReason (sawPlayableResponse=$sawPlayableResponse)")
             if (isUploadedTrack) {
-                println("[PLAYBACK_DEBUG] FAILURE: Playability not OK for uploaded track - status=${streamPlayerResponse.playabilityStatus.status}, reason=$errorReason")
+                println("[PLAYBACK_DEBUG] FAILURE: Playability not OK for uploaded track - status=${streamPlayerResponse.playabilityStatus.status}, reason=$lastReason")
             }
             throw PlaybackException(
                 errorReason,
@@ -526,6 +645,28 @@ object YTPlayerUtils : KoinComponent {
         if (isUploadedTrack) {
             println("[PLAYBACK_DEBUG] SUCCESS: Got playback data for uploaded track - format=${format.mimeType}, streamUrl=${streamUrl.take(100)}...")
         }
+
+        // Video is strictly best-effort: it rides along on the response the audio already won with,
+        // costs no extra network round trip, and a failure here must never break audio playback.
+        val videoResponse = bestFallbackResponse?.takeIf { it === streamPlayerResponse } ?: winningResponse
+        var videoFormat: PlayerResponse.StreamingData.Format? = null
+        var videoStreamUrl: String? = null
+
+        if ( videoResponse != null && winningClient != null ) {
+            videoFormat = findVideoFormat(
+                videoResponse.streamingData?.adaptiveFormats.orEmpty(),
+                connectivityManager.isActiveNetworkMetered
+            )
+
+            if ( videoFormat != null )
+                videoStreamUrl = runCatching {
+                    findUrlOrNull( videoFormat, videoId, videoResponse, skipNewPipe = wasOriginallyAgeRestricted )
+                        ?.let { applyThrottleTransform( it, winningClient, poToken ) }
+                }.onFailure {
+                    logger.w( "Video url resolution failed, continuing audio-only: ${it.message}" )
+                }.getOrNull()
+        }
+
         PlaybackData(
             audioConfig,
             videoDetails,
@@ -534,6 +675,8 @@ object YTPlayerUtils : KoinComponent {
             streamUrl,
             streamExpiresInSeconds,
             streamClient = successClient ?: "unknown",
+            videoFormat = videoFormat,
+            videoStreamUrl = videoStreamUrl,
         )
     }.onFailure { e ->
         println("[PLAYBACK_DEBUG] EXCEPTION during playback for videoId=$videoId: ${e::class.simpleName}: ${e.message}")
@@ -553,12 +696,122 @@ object YTPlayerUtils : KoinComponent {
         var poToken: PoTokenResult? = null
         if (MAIN_CLIENT.useWebPoTokens && sessionId != null) {
             try {
-                poToken = poTokenGenerator.getWebClientPoToken(videoId, sessionId)
+                poToken = poTokenGenerator.getWebClientPoToken(videoId, poTokenIdentity(sessionId))
             } catch (_: Exception) { }
         }
         return YouTube.player(videoId, playlistId, WEB_REMIX, signatureTimestamp.timestamp, poToken?.playerRequestPoToken)
             .onSuccess { logger.d("Successfully fetched metadata player response") }
             .onFailure { logger.e("Failed to fetch metadata player response", it) }
+    }
+
+    /**
+     * Pick a video track from the same `adaptiveFormats` the audio track came from.
+     *
+     * Deliberately conservative, because the target is a car head unit rather than a phone:
+     *
+     * - **avc1 (H.264) is preferred over vp9/av1.** Practically every Android media block decodes
+     *   avc1 in hardware; vp9 and av1 fall back to software on a lot of the cheap SoCs that end up
+     *   in head units, which burns battery and drops frames.
+     * - **Height is capped**, hard at [MAX_VIDEO_HEIGHT] and much lower on a metered connection.
+     *   A centre display is not worth 1080p of somebody's mobile data, and the extra bitrate is the
+     *   first thing to stall when signal drops.
+     * - **60fps is not chased.** Where two formats tie on height, the lower bitrate wins.
+     *
+     * @return the chosen format, or `null` when the response carries no usable video track
+     */
+    /**
+     * Undo YouTube's throttling `n` parameter and append the streaming PoToken.
+     *
+     * Extracted so the video url gets byte-identical treatment to the audio url — a video stream
+     * that skipped the n-transform throttles to a crawl rather than failing outright, which is a
+     * far more confusing symptom than an error.
+     *
+     * On failure the original url is returned: an un-transformed url usually still plays, just
+     * slowly, and that beats dropping the track.
+     */
+    /**
+     * Attach proof-of-origin to a stream url.
+     *
+     * Measured behaviour without it, against a live url: ranges up to ~450 KB return `206`, and
+     * every range past that returns `403` — on a 496 MB file exactly as on a 566 KB one. It is a
+     * flat prefix allowance, not a rate limit, so playback begins and then dies a few seconds in.
+     * That is the whole failure the app was showing.
+     *
+     * The token is bound to the **session**, not to the video and not to the client, and
+     * `visitorData` is shared across every client the app talks to — so the same token is the right
+     * one to present whichever client minted the url.
+     */
+    private fun appendProofOfOrigin( url: String, poToken: PoTokenResult? ): String {
+        val token = poToken?.streamingDataPoToken
+        if ( token.isNullOrBlank() || "pot=" in url ) return url
+
+        val separator = if ( "?" in url ) "&" else "?"
+        return "$url${separator}pot=${Uri.encode( token )}"
+    }
+
+    private suspend fun applyThrottleTransform(
+        url: String,
+        client: YouTubeClient,
+        poToken: PoTokenResult?,
+    ): String = try {
+        var transformed = CipherDeobfuscator.transformNParamInUrl( url )
+
+        /*
+         * `pot` goes on every client's url, not just the web family.
+         *
+         * The gate used to be `client.useWebPoTokens`, which meant the *only* client that ever
+         * carried proof-of-origin was the one whose formats need the signature cipher — and with
+         * the cipher broken, playback always landed on IOS or ANDROID instead, with no `pot` at
+         * all. googlevideo then served a ~0.5 MB prefix and refused the rest, which is the
+         * "starts and dies" behaviour.
+         *
+         * Attaching it to any client is correct rather than opportunistic: this token is minted
+         * from the **session id**, and `visitorData` is a single value shared by every client the
+         * app talks to (`InnerTube.visitorData`, sent as `X-Goog-Visitor-Id` on all of them). The
+         * token therefore describes the session doing the fetching, which is exactly what
+         * googlevideo is checking, whichever client happened to mint the url.
+         */
+        transformed = appendProofOfOrigin( transformed, poToken )
+
+        logger.d( "Throttle transform applied, url changed: ${transformed != url}" )
+        transformed
+    } catch ( e: kotlinx.coroutines.CancellationException ) {
+        throw e     // request superseded — don't hand back a half-transformed url
+    } catch ( e: Exception ) {
+        logger.e( "N-transform or pot append failed: ${e.message}", e )
+        url
+    }
+
+    internal fun findVideoFormat(
+        adaptiveFormats: List<PlayerResponse.StreamingData.Format>,
+        isMetered: Boolean,
+    ): PlayerResponse.StreamingData.Format? {
+        val videoFormats = adaptiveFormats.filter { !it.isAudio && it.mimeType.startsWith( "video" ) }
+        if ( videoFormats.isEmpty() ) return null
+
+        val heightCap = if ( isMetered ) METERED_VIDEO_HEIGHT else MAX_VIDEO_HEIGHT
+
+        fun scoreCodec( mimeType: String ): Int = when {
+            mimeType.contains( "avc1", ignoreCase = true ) -> 2
+            mimeType.contains( "vp9", ignoreCase = true ) -> 1
+            else -> 0     // av1 and anything unrecognised
+        }
+
+        // Prefer to stay under the cap; if every track is above it, take the smallest available
+        // rather than giving up on video entirely.
+        val eligible = videoFormats.filter { ( it.height ?: Int.MAX_VALUE ) <= heightCap }
+            .ifEmpty { listOfNotNull( videoFormats.minByOrNull { it.height ?: Int.MAX_VALUE } ) }
+
+        return eligible.maxWithOrNull(
+            compareBy<PlayerResponse.StreamingData.Format> { scoreCodec( it.mimeType ) }
+                .thenBy { it.height ?: 0 }
+                .thenByDescending { it.bitrate }        // cheapest stream at the chosen size
+        ).also {
+            if ( it == null )
+                logger.d( "No suitable video format found" )
+            else
+                logger.d( "Selected video format: itag=${it.itag}, ${it.qualityLabel}, ${it.mimeType}" )
+        }
     }
 
     private fun findFormat(
@@ -648,23 +901,74 @@ object YTPlayerUtils : KoinComponent {
      * If this returns true the url is likely to work.
      * If this returns false the url might cause an error during playback.
      */
-    private fun validateStatus(url: String): Boolean {
-        logger.d("Validating stream URL status")
-        try {
-            val requestBuilder = okhttp3.Request.Builder()
-                .head()
-                .url(url)
+    /**
+     * Ask the CDN the same question ExoPlayer is about to ask.
+     *
+     * This check used to send `HEAD` with the account cookie attached to every url, and it was
+     * throwing away working streams for two independent reasons:
+     *
+     * 1. **googlevideo does not reliably answer `HEAD`.** It routinely returns 403 for a url that
+     *    serves a byte-range `GET` perfectly — which the code already knew, because the MAIN_CLIENT
+     *    path above carries a comment saying exactly that and skips validation altogether to dodge
+     *    it. Every other client was still being judged by a method known to lie. Observed directly:
+     *    two IOS responses came back `OK` with real urls, both were discarded on a `HEAD` 403, and
+     *    the walk then ran to the end and reported "Video unavailable" for a track that plays.
+     * 2. **The web cookie was attached to non-web urls.** A url minted for `c=IOS` or `c=ANDROID` is
+     *    not bound to the web session, and presenting a `SAPISID` cookie to it is a good way to be
+     *    refused by a CDN that was perfectly willing to serve it anonymously.
+     *
+     * So: a one-byte ranged `GET`, which is what the player actually issues, and the cookie only for
+     * urls minted by a cookie-authenticated client — which is what "privately owned tracks" needed
+     * it for in the first place.
+     */
+    private fun validateStatus(url: String): Boolean = validateStatus(url, deep = false)
 
-            // Add authentication cookie for privately owned tracks
-            YouTube.cookie?.let { cookie ->
-                requestBuilder.addHeader("Cookie", cookie)
-                println("[PLAYBACK_DEBUG] Added cookie to validation request")
+    /**
+     * @param deep probe a range *past* the un-attested prefix allowance instead of the first byte.
+     *
+     * A one-byte probe answers "does this url exist", which is not the question that matters. An
+     * un-attested googlevideo url happily serves its first ~450 KB and refuses everything beyond —
+     * so a shallow check passes and the track still dies a few seconds in. A deep probe asks the
+     * question playback actually depends on: *will this url serve the middle of the file?*
+     */
+    private fun validateStatus(url: String, deep: Boolean): Boolean {
+        logger.d("Validating stream URL status (deep=$deep)")
+        try {
+            // `clen` is the CDN's own statement of length, so the probe lands inside the file
+            // without a preflight round trip.
+            val clen = Regex("[?&]clen=(\\d+)").find(url)?.groupValues?.get(1)?.toLongOrNull()
+            val range = when {
+                !deep || clen == null || clen < 800_000L -> "bytes=0-1"
+                // An un-attested stream serves a fixed *fraction* of the file and refuses the rest:
+                // measured against a live url with clen=5365234, every 2 KB range up to offset
+                // 1078308 returned 206 and everything from 1108040 on returned 403 — a boundary at
+                // 20.1% that did not move when retried later, so it is a share of the file rather
+                // than a byte budget or a rate limit. A fixed 600 KB probe therefore lands *inside*
+                // the allowance for anything over 3 MB and certifies a stream that dies a minute in.
+                // 40% is clear of the boundary on any file size while still costing 2 KB.
+                else -> ( clen * 2 / 5 ).let { "bytes=$it-${it + 2000}" }
             }
 
-            val response = httpClient.newCall(requestBuilder.build()).execute()
-            val isSuccessful = response.isSuccessful
-            logger.d("Stream URL validation result: ${if (isSuccessful) "Success" else "Failed"} (${response.code})")
-            return isSuccessful
+            val requestBuilder = okhttp3.Request.Builder()
+                .get()
+                .url(url)
+                .addHeader("Range", range)
+
+            // Only web-family urls are bound to the account session. `c=` is set by the client that
+            // produced the url; when it is absent, keeping the cookie preserves the old behaviour.
+            val client = Regex("[?&]c=([A-Z_0-9]+)").find(url)?.groupValues?.get(1)
+            val isWebFamily = client == null || client.startsWith("WEB") || client == "TVHTML5"
+
+            if (isWebFamily)
+                YouTube.cookie?.let { requestBuilder.addHeader("Cookie", it) }
+
+            return httpClient.newCall(requestBuilder.build()).execute().use { response ->
+                // 206 is the expected answer to a range request; 200 means the server ignored the
+                // range and is about to hand over the whole file, which is also fine.
+                val ok = response.code == 200 || response.code == 206
+                logger.d("Stream URL validation result: ${if (ok) "Success" else "Failed"} (${response.code}, client=$client, cookie=$isWebFamily)")
+                ok
+            }
         } catch (e: Exception) {
             logger.e("Stream URL validation failed with exception", e)
         }

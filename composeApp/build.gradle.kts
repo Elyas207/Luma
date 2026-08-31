@@ -8,7 +8,7 @@ import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 
-val APP_NAME = "Kreate"
+val APP_NAME = "Luma"
 
 private fun String.sha256(): String {
     val digest = MessageDigest.getInstance( "SHA-256" )
@@ -94,9 +94,11 @@ kotlin {
             implementation( libs.media3.exoplayer )
             implementation(libs.media3.session)
             implementation( libs.media3.datasource.okhttp )
-            implementation( libs.androidyoutubeplayer )
 
             implementation( libs.toasty )
+
+            // QR generation only — pure Java, no Android deps, ~500KB.
+            implementation( libs.zxing.core )
 
             // Dependency injection
             implementation( libs.koin.android )

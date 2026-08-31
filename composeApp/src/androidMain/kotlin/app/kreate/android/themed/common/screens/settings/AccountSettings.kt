@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import androidx.compose.foundation.Image
@@ -72,7 +74,7 @@ fun AccountSettings(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.background( colorPalette().background0 )
+        modifier = Modifier.background( LumaColor.Ground )
                            .padding( paddingValues )
                            .fillMaxHeight()
                            .fillMaxWidth(
@@ -165,7 +167,7 @@ fun AccountSettings(
                                 Icon(
                                     painter = painterResource( R.drawable.ytmusic ),
                                     contentDescription = title,
-                                    tint = colorPalette().text,
+                                    tint = LumaColor.Ink,
                                     modifier = Modifier.size( 24.dp )
                                 )
                             }
@@ -205,13 +207,13 @@ fun AccountSettings(
                 CustomModalBottomSheet(
                     showSheet = loginYouTube,
                     onDismissRequest = { loginYouTube = false },
-                    containerColor = colorPalette().background0,
-                    contentColor = colorPalette().background0,
+                    containerColor = LumaColor.Ground,
+                    contentColor = LumaColor.Ground,
                     modifier = Modifier.fillMaxWidth(),
                     sheetState = rememberModalBottomSheetState( true ),
                     dragHandle = {
                         Surface(
-                            color = colorPalette().background0,
+                            color = LumaColor.Ground,
                             shape = thumbnailShape()
                         ) {}
                     },
@@ -297,13 +299,13 @@ fun AccountSettings(
                 CustomModalBottomSheet(
                     showSheet = loginDiscord,
                     onDismissRequest = { loginDiscord = false },
-                    containerColor = colorPalette().background0,
-                    contentColor = colorPalette().background0,
+                    containerColor = LumaColor.Ground,
+                    contentColor = LumaColor.Ground,
                     modifier = Modifier.fillMaxWidth(),
                     sheetState = rememberModalBottomSheetState( true ),
                     dragHandle = {
                         Surface(
-                            color = colorPalette().background0,
+                            color = LumaColor.Ground,
                             shape = thumbnailShape()
                         ) {}
                     },

@@ -1,5 +1,7 @@
 package me.knighthat.component.dialog
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.border
@@ -54,17 +56,17 @@ object RestartAppDialog: ConfirmDialog {
     override fun Buttons() {
         BasicText(
             text = stringResource( R.string.confirm ),
-            style = typography().xs
+            style = LumaType.Meta
                                 .medium
                                 .copy(
-                                    color = colorPalette().accent,
+                                    color = LumaColor.Ember,
                                     textAlign = TextAlign.Center
                                 ),
             modifier = InteractiveDialog.ButtonModifier()
                                         .fillMaxWidth( .98f )       // Creates some space between buttons
                                         .border(
                                             width = 2.dp,
-                                            color = colorPalette().accent,
+                                            color = LumaColor.Ember,
                                             shape = RoundedCornerShape(20)
                                         )
                                         .padding( vertical = 10.dp )
@@ -76,7 +78,7 @@ object RestartAppDialog: ConfirmDialog {
     override fun DialogBody() {
         BasicText(
             text = stringResource( R.string.restart_dialog_body, BuildConfig.APP_NAME ),
-            style = typography().xs.copy( color = colorPalette().text ),
+            style = LumaType.Meta.copy( color = LumaColor.Ink ),
             modifier = Modifier.padding( vertical = 20.dp )
         )
     }

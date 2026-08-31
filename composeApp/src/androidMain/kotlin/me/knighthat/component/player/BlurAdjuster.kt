@@ -1,5 +1,7 @@
 package me.knighthat.component.player
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -71,7 +73,7 @@ class BlurAdjuster private constructor(
                 IconButton(
                     onClick = { strength = 25f },
                     icon = R.drawable.drop_blur,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier.size(24.dp)
                 )
 
@@ -93,7 +95,7 @@ class BlurAdjuster private constructor(
                 IconButton(
                     onClick = { backdrop = 0f },
                     icon = R.drawable.drop_half_fill,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier.size( 24.dp )
                 )
 
@@ -114,7 +116,7 @@ class BlurAdjuster private constructor(
                 IconButton(
                     onClick = { backdrop = 0f },
                     icon = R.drawable.image,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier.size( 24.dp )
                 )
 

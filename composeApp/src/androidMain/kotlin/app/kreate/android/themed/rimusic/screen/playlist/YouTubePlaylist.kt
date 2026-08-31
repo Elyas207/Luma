@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.playlist
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -258,7 +260,7 @@ fun YouTubePlaylist(
                                 Icon(
                                     painter = painterResource( R.drawable.share_social ),
                                     contentDescription = stringResource( R.string.listen_on_youtube_music ),
-                                    tint = colorPalette().text.copy( .5f ),
+                                    tint = LumaColor.Ink.copy( .5f ),
                                     modifier = Modifier.padding( all = 5.dp )
                                                        .size( 40.dp )
                                                        .align( Alignment.TopEnd )
@@ -283,11 +285,11 @@ fun YouTubePlaylist(
 
                             AutoResizeText(
                                 text = playlistPage?.name.orEmpty(),
-                                style = typography().l.semiBold,
+                                style = LumaType.Section,
                                 fontSizeRange = FontSizeRange(32.sp, 38.sp),
-                                fontWeight = typography().l.semiBold.fontWeight,
-                                fontFamily = typography().l.semiBold.fontFamily,
-                                color = typography().l.semiBold.color,
+                                fontWeight = LumaType.Section.fontWeight,
+                                fontFamily = LumaType.Section.fontFamily,
+                                color = LumaColor.Ink,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
@@ -301,7 +303,7 @@ fun YouTubePlaylist(
                     item( "subtitle" ) {
                         BasicText(
                             text = playlistPage?.subtitleText.orEmpty(),
-                            style = typography().xs.medium,
+                            style = LumaType.Meta,
                             maxLines = 1
                         )
                     }

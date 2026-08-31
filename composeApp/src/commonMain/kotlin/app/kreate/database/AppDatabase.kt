@@ -14,6 +14,8 @@ import app.kreate.database.models.Album
 import app.kreate.database.models.Artist
 import app.kreate.database.models.Event
 import app.kreate.database.models.Format
+import app.kreate.database.models.ListeningEvent
+import app.kreate.database.models.ListeningSignal
 import app.kreate.database.models.Lyrics
 import app.kreate.database.models.PersistentQueue
 import app.kreate.database.models.Playlist
@@ -38,8 +40,10 @@ import app.kreate.database.models.SongPlaylistMap
         Format::class,
         Event::class,
         Lyrics::class,
+        ListeningSignal::class,
+        ListeningEvent::class,
     ],
-    version = 36,
+    version = 39,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -63,6 +67,9 @@ import app.kreate.database.models.SongPlaylistMap
         AutoMigration(from = 31, to = 32, spec = From31To32Migration::class),
         AutoMigration(from = 32, to = 33, spec = From32To33Migration::class),
         AutoMigration(from = 33, to = 34),       // Adding `onUpdate = ForeignKey.CASCADE` to several tables
+        AutoMigration(from = 36, to = 37),       // Adding `songs.is_video` so video survives a DB round trip
+        AutoMigration(from = 37, to = 38),       // Adding `listening_signals` for learned preferences
+        AutoMigration(from = 38, to = 39),       // Adding `listening_events`, the append-only log
     ],
 )
 @TypeConverters(Converters::class)
@@ -77,6 +84,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val albumTable: AlbumTable
     abstract val artistTable: ArtistTable
     abstract val eventTable: EventTable
+
+    abstract val listeningSignalTable: ListeningSignalTable
+
+    abstract val listeningEventTable: ListeningEventTable
     abstract val formatTable: FormatTable
     abstract val lyricsTable: LyricsTable
     abstract val playlistTable: PlaylistTable

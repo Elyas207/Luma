@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.ui.components.navigation.nav
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
@@ -61,9 +65,9 @@ class VerticalNavigationBar(
         buttons { index, text, iconId ->
             val textColor by transition.animateColor(label = "") {
                 if (it == index)
-                    colorPalette().text
+                    LumaColor.Ink
                 else
-                    colorPalette().textDisabled
+                    LumaColor.InkFaint
             }
             val dothAlpha by transition.animateFloat(label = "") {
                 if (it == index)
@@ -77,9 +81,10 @@ class VerticalNavigationBar(
                     BasicText(
                         text = text,
                         style = TextStyle(
-                            fontSize = typography().xs.semiBold.fontSize,
-                            fontWeight = typography().xs.semiBold.fontWeight,
-                            color = colorPalette().text,
+                            fontSize = LumaType.Meta.fontSize,
+                            fontFamily = LumaType.Meta.fontFamily,
+                            fontWeight = LumaType.Meta.fontWeight,
+                            color = LumaColor.Ink,
                         ),
                         modifier = Modifier.vertical( enabled = !isLandscape )
                                            .rotate(if (isLandscape) 0f else -90f)
@@ -102,7 +107,7 @@ class VerticalNavigationBar(
                             }
                 }
             val button = Button( iconId, textColor, 0.dp, 0.dp, Dp.Unspecified, buttonModifier )
-            val contentModifier = Modifier.clip( RoundedCornerShape(24.dp) )
+            val contentModifier = Modifier.clip( RoundedCornerShape( LumaRadius.Large ) )
                                           .clickable( onClick = { onTabChanged(index) } )
                                           .padding( vertical = 8.dp )
             val result: @Composable () -> Unit = {

@@ -42,6 +42,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -243,7 +244,8 @@ class BottomMenu {
                                 },
                                 headlineContent = {
                                     Text(
-                                        text = currentScreen.playlist.playlist.name
+                                        text = currentScreen.playlist.playlist.name,
+                                        style = LumaType.Row
                                     )
                                 },
                                 supportingContent = {
@@ -257,7 +259,8 @@ class BottomMenu {
                                         )
 
                                         Text(
-                                            text = currentScreen.playlist.songCount.toString()
+                                            text = currentScreen.playlist.songCount.toString(),
+                                            style = LumaType.Meta
                                         )
                                     }
                                 },
@@ -336,8 +339,12 @@ class BottomMenu {
                                     )
                                 },
                                 headlineContent = {
+                                    // Without an explicit style this ListItem falls back to
+                                    // Material's default sans, which is why every action sheet
+                                    // still read as the stock app with the palette swapped.
                                     Text(
                                         text = button.title,
+                                        style = LumaType.Row,
                                         overflow = TextOverflow.Ellipsis,
                                         textAlign = TextAlign.Start,
                                         maxLines = 1,

@@ -1,22 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Launcher background for the Luma mark.
+
+  Deep, near-neutral graphite rather than a brand colour. The mark is polished chrome: it has no
+  hue of its own and takes its character entirely from what it reflects, so a saturated ground
+  would fight it and a light one would erase it (the mark's mean luminance is 183 — bright silver).
+
+  The subtle top-left-to-bottom-right ramp gives the flat plate a light direction that agrees with
+  the bevel already in the artwork, so the icon reads as a machined object rather than a sticker.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-  <path
-      android:pathData="M-0,0l108,0l0,108l-108,0z"
-      android:strokeWidth="0.21">
-    <aapt:attr name="android:fillColor">
-      <gradient
-          android:startX="21.03"
-          android:startY="88.27"
-          android:endX="82.65"
-          android:endY="21.39"
-          android:type="linear">
-        <item android:offset="0" android:color="#FF3159F7"/>
-        <item android:offset="1" android:color="#FFBB19FF"/>
-      </gradient>
-    </aapt:attr>
-  </path>
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="0" android:startY="0"
+                android:endX="108" android:endY="108"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF2B3036"/>
+                <item android:offset="0.55" android:color="#FF191D21"/>
+                <item android:offset="1.0" android:color="#FF0E1114"/>
+            </gradient>
+        </aapt:attr>
+    </path>
 </vector>

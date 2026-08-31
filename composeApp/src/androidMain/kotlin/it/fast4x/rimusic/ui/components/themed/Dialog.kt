@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -192,7 +196,7 @@ fun TextFieldDialog(
         BasicTextField(
             value = textFieldValue,
             onValueChange = { textFieldValue = it },
-            textStyle = typography().xs.semiBold.center,
+            textStyle = LumaType.Meta.center,
             singleLine = singleLine,
             maxLines = maxLines,
             keyboardOptions = KeyboardOptions(imeAction = if (singleLine) ImeAction.Done else ImeAction.None),
@@ -204,7 +208,7 @@ fun TextFieldDialog(
                     }
                 }
             ),
-            cursorBrush = SolidColor(colorPalette().text),
+            cursorBrush = SolidColor(LumaColor.Ink),
             decorationBox = { innerTextField ->
                 Box(
                     contentAlignment = Alignment.Center,
@@ -220,7 +224,7 @@ fun TextFieldDialog(
                             text = hintText,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            style = typography().xs.semiBold.secondary,
+                            style = LumaType.Meta.secondary,
                         )
                     }
 
@@ -281,7 +285,7 @@ fun ConfirmationDialog(
     ) {
         BasicText(
             text = text,
-            style = typography().xs.medium.center,
+            style = LumaType.Meta.center,
             modifier = Modifier
                 .padding(all = 16.dp)
         )
@@ -326,8 +330,8 @@ inline fun DefaultDialog(
             modifier = modifier
                 .padding(all = 10.dp)
                 .background(
-                    color = colorPalette().background1,
-                    shape = RoundedCornerShape(8.dp)
+                    color = LumaColor.Raised,
+                    shape = RoundedCornerShape( LumaRadius.Panel )
                 )
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             content = content
@@ -351,19 +355,19 @@ fun <T> ValueSelectorDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette.background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette.background1, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography().s.semiBold,
+                style = LumaType.Tile,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
             if (titleSecondary != null) {
                 BasicText(
                     text = titleSecondary,
-                    style = typography().xxs.semiBold,
+                    style = LumaType.Numeral,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -420,7 +424,7 @@ fun <T> ValueSelectorDialog(
 
                         BasicText(
                             text = valueText(value),
-                            style = typography().xs.medium
+                            style = LumaType.Meta
                         )
                     }
                 }
@@ -454,12 +458,12 @@ inline fun SelectorDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography().s.semiBold,
+                style = LumaType.Tile,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -487,7 +491,7 @@ inline fun SelectorDialog(
                             IconButton(
                                 onClick = {},
                                 icon = R.drawable.playlist,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 modifier = Modifier
                                     .size(18.dp)
                             )
@@ -496,7 +500,7 @@ inline fun SelectorDialog(
                             text = value.name ?: "Not selectable",
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
-                            style = typography().xs.medium
+                            style = LumaType.Meta
                         )
                     }
                 }
@@ -536,7 +540,7 @@ inline fun SelectorArtistsDialog(
             modifier = modifier
                 .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
                 .clip(thumbnailRoundness.shape)
-                .background(color = colorPalette().background1)
+                .background(color = LumaColor.Raised)
         ) {
             if (values != null) {
                 val pagerState = rememberPagerState(pageCount = { values.size })
@@ -597,14 +601,14 @@ inline fun SelectorArtistsDialog(
                                     text = cleanPrefix(it1),
                                     maxLines = 3,
                                     overflow = TextOverflow.Ellipsis,
-                                    style = typography().xs.medium,
+                                    style = LumaType.Meta,
                                     modifier = Modifier
                                         .padding(bottom = 20.dp)
                                         .align(Alignment.BottomCenter)
                                 )
                                 BasicText(
                                     text = cleanPrefix(it1),
-                                    style = typography().xs.medium.merge(TextStyle(
+                                    style = LumaType.Meta.merge(TextStyle(
                                         drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
                                         color = if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                                         else Color.Black
@@ -627,7 +631,7 @@ inline fun SelectorArtistsDialog(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         repeat(values.size) { iteration ->
-                            val color = if (pagerState.currentPage == iteration) colorPalette().text else colorPalette().text.copy(alpha = 0.5f)
+                            val color = if (pagerState.currentPage == iteration) LumaColor.Ink else LumaColor.Ink.copy(alpha = 0.5f)
                             Box(
                                 modifier = Modifier
                                     .padding(4.dp)
@@ -664,13 +668,13 @@ inline fun InputNumericDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
                 .requiredHeight(190.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography().s.semiBold,
+                style = LumaType.Tile,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -733,7 +737,7 @@ inline fun InputNumericDialog(
 
                 BasicText(
                     text = if (txtFieldError.value.isNotEmpty()) txtFieldError.value else "---",
-                    style = typography().xs.medium,
+                    style = LumaType.Meta,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -798,13 +802,13 @@ inline fun InputTextDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
                 .defaultMinSize(Dp.Unspecified, 190.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography().s.semiBold,
+                style = LumaType.Tile,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -860,15 +864,15 @@ inline fun InputTextDialog(
                                 checkedState.value = it
                             },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = colorPalette().accent,
-                                uncheckedColor = colorPalette().text
+                                checkedColor = LumaColor.Ember,
+                                uncheckedColor = LumaColor.Ink
                             ),
                             modifier = Modifier
                                 .scale(0.7f)
                         )
                         BasicText(
                             text = stringResource(R.string.set_custom_value),
-                            style = typography().xs.medium,
+                            style = LumaType.Meta,
                             maxLines = 2,
                             modifier = Modifier
                         )
@@ -944,7 +948,7 @@ inline fun StringListDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
                 .defaultMinSize(Dp.Unspecified, 190.dp)
         ) {
@@ -955,7 +959,7 @@ inline fun StringListDialog(
             ) {
                 BasicText(
                     text = title,
-                    style = typography().s.semiBold,
+                    style = LumaType.Tile,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -984,7 +988,7 @@ inline fun StringListDialog(
                     ) {
                         BasicText(
                             text = item,
-                            style = typography().s.semiBold,
+                            style = LumaType.Tile,
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(horizontal = 24.dp, vertical = 8.dp)
@@ -1039,7 +1043,7 @@ inline fun StringListDialog(
         ) {
             BasicText(
                 text = conflictTitle,
-                style = typography().xs.medium.center,
+                style = LumaType.Meta.center,
                 modifier = Modifier
                     .padding(all = 16.dp)
             )
@@ -1077,12 +1081,12 @@ inline fun GenericDialog(
         Column(
             modifier = modifier
                 .padding(all = 48.dp)
-                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised, shape = RoundedCornerShape( LumaRadius.Panel ))
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
                 text = title,
-                style = typography().s.bold,
+                style = LumaType.Tile,
                 modifier = Modifier
                     .padding(vertical = 8.dp, horizontal = 24.dp)
             )
@@ -1147,7 +1151,7 @@ fun BlurParamsDialog(
                     blurStrength = defaultStrength
                 },
                 icon = R.drawable.droplet,
-                color = colorPalette().favoritesIcon,
+                color = LumaColor.Ember,
                 modifier = Modifier
                     .size(24.dp)
             )
@@ -1259,7 +1263,7 @@ fun BlurParamsDialog(
                             imageCoverSize = defaultImageCoverSize
                         },
                         icon = R.drawable.album,
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         modifier = Modifier
                             .size(24.dp)
                     )
@@ -1290,7 +1294,7 @@ fun BlurParamsDialog(
                                 thumbnailFadeEx = defaultFade
                             },
                             icon = R.drawable.droplet,
-                            color = colorPalette().favoritesIcon,
+                            color = LumaColor.Ember,
                             modifier = Modifier
                                 .size(24.dp)
                         )
@@ -1374,7 +1378,7 @@ fun BlurParamsDialog(
                                 thumbnailFade = defaultFade
                             },
                             icon = R.drawable.droplet,
-                            color = colorPalette().favoritesIcon,
+                            color = LumaColor.Ember,
                             modifier = Modifier
                                 .size(24.dp)
                         )
@@ -1402,7 +1406,7 @@ fun BlurParamsDialog(
                             thumbnailSpacing = defaultSpacing
                         },
                         icon = R.drawable.burger,
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         modifier = Modifier
                             .size(24.dp)
                     )
@@ -1486,7 +1490,7 @@ fun BlurParamsDialog(
                             thumbnailSpacingL = defaultSpacing
                         },
                         icon = R.drawable.burger,
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         modifier = Modifier
                             .size(24.dp)
                             .rotate(90f)
@@ -1527,7 +1531,7 @@ fun AppearancePresetDialog(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .background(color = colorPalette().background1)
+                .background(color = LumaColor.Raised)
         ){
             Box(
                 modifier = Modifier
@@ -1552,12 +1556,12 @@ fun AppearancePresetDialog(
                     modifier = Modifier
                         .padding(bottom = 30.dp)
                         .padding(end = 15.dp)
-                        .background(colorPalette().accent, CircleShape)
+                        .background(LumaColor.Ember, CircleShape)
                         .align(Alignment.BottomEnd),
                 ) {
                     IconButton(
                         icon = R.drawable.checkmark,
-                        color = colorPalette().background0,
+                        color = LumaColor.Ground,
                         indication = ripple(false),
                         onClick = if (pagerStateAppearance.settledPage == 0) onClick0
                         else if (pagerStateAppearance.settledPage == 1) onClick1
@@ -1587,7 +1591,7 @@ fun AppearancePresetDialog(
                         Box(
                             modifier = Modifier
                                 .padding(4.dp)
-                                .clip(RoundedCornerShape(2.dp))
+                                .clip(RoundedCornerShape( LumaRadius.Hairline ))
                                 .background(color)
                                 .weight(lineWeight.value)
                                 .size(5.dp)
@@ -1628,7 +1632,7 @@ fun LyricsSizeDialog(
                         lyricsSize = 20f
                     },
                     icon = R.drawable.text,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier
                         .size(24.dp)
                 )
@@ -1655,7 +1659,7 @@ fun LyricsSizeDialog(
                         lyricsSizeL = 20f
                     },
                     icon = R.drawable.text,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier
                         .size(24.dp)
                 )
@@ -1688,9 +1692,10 @@ fun InProgressDialog(
             text = text,
             style = TextStyle(
                 textAlign = TextAlign.Center,
-                fontSize = typography().l.bold.fontSize,
-                fontWeight = typography().l.bold.fontWeight,
-                color = colorPalette().text
+                fontSize = LumaType.Section.fontSize,
+                fontFamily = LumaType.Section.fontFamily,
+                fontWeight = LumaType.Section.fontWeight,
+                color = LumaColor.Ink
             ),
             overflow = TextOverflow.Ellipsis,
         )
@@ -1701,8 +1706,8 @@ fun InProgressDialog(
             text = "$done / $total",
             style = TextStyle(
                 textAlign = TextAlign.Center,
-                fontStyle = typography().xs.semiBold.fontStyle,
-                color = colorPalette().text
+                fontStyle = LumaType.Meta.fontStyle,
+                color = LumaColor.Ink
             ),
             overflow = TextOverflow.Ellipsis,
         )
@@ -1727,7 +1732,7 @@ fun SongMatchingDialog(
             modifier = Modifier
                 .fillMaxWidth(if (isLandscape) 0.5f else 0.9f)
                 .fillMaxHeight(if (isLandscape) 0.9f else 0.7f)
-                .background(color = colorPalette().background1,shape = RoundedCornerShape(8.dp))
+                .background(color = LumaColor.Raised,shape = RoundedCornerShape( LumaRadius.Panel ))
         ) {
             fun filteredText(text : String): String{
                 val filteredText = text
@@ -1766,7 +1771,7 @@ fun SongMatchingDialog(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, colorPalette().text, shape = RoundedCornerShape(8.dp))
+                    .border(1.dp, LumaColor.Ink, shape = RoundedCornerShape( LumaRadius.Panel ))
                     .padding(horizontal = 5.dp)
                     .padding(vertical = 10.dp)
             ) {
@@ -1775,14 +1780,14 @@ fun SongMatchingDialog(
                         thumbnailUrl = songToRematch.asMediaItem.mediaMetadata.artworkUri.toString(),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.padding( end = 5.dp )
-                                           .clip( RoundedCornerShape(5.dp) )
+                                           .clip( RoundedCornerShape( LumaRadius.Tight ) )
                                            .size( 40.dp )
                     )
                     if (songToRematch.likedAt != null) {
                         HeaderIconButton(
                             onClick = {},
                             icon = getLikeState(songToRematch.asMediaItem.mediaId),
-                            color = colorPalette().favoritesIcon,
+                            color = LumaColor.Ember,
                             iconSize = 12.dp,
                             modifier = Modifier
                                 .align(Alignment.BottomStart)
@@ -1801,7 +1806,7 @@ fun SongMatchingDialog(
                         if (songToRematch.asMediaItem.isExplicit) {
                             IconButton(
                                 icon = R.drawable.explicit,
-                                color = colorPalette().text,
+                                color = LumaColor.Ink,
                                 enabled = true,
                                 onClick = {},
                                 modifier = Modifier
@@ -1814,7 +1819,7 @@ fun SongMatchingDialog(
                         }
                         BasicText(
                             text = cleanPrefix(songToRematch.title),
-                            style = typography().xs.semiBold,
+                            style = LumaType.Meta,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -1827,7 +1832,7 @@ fun SongMatchingDialog(
                     ) {
                         BasicText(
                             text = songToRematch.cleanArtistsText(),
-                            style = typography().s.semiBold.secondary,
+                            style = LumaType.Tile.secondary,
                             maxLines = 1,
                             overflow = TextOverflow.Clip,
                             modifier = Modifier
@@ -1836,7 +1841,7 @@ fun SongMatchingDialog(
                         )
                         BasicText(
                             text = songToRematch.durationText ?: "",
-                            style = typography().xs.secondary.medium,
+                            style = LumaType.Meta.medium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
@@ -1866,7 +1871,7 @@ fun SongMatchingDialog(
                         startSearch = true
                     },
                     modifier = Modifier
-                        .background(shape = RoundedCornerShape(4.dp),color = Color.White)
+                        .background(shape = RoundedCornerShape( LumaRadius.Tight ),color = Color.White)
                         .padding(all = 4.dp)
                         .size(24.dp)
                         .align(Alignment.CenterVertically)
@@ -1936,14 +1941,14 @@ fun SongMatchingDialog(
                                         thumbnailUrl = song.asMediaItem.mediaMetadata.artworkUri.toString(),
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier.padding( end = 5.dp )
-                                                          .clip( RoundedCornerShape(5.dp) )
+                                                          .clip( RoundedCornerShape( LumaRadius.Tight ) )
                                                           .size( 30.dp )
                                     )
                                     if (song.asSong.likedAt != null) {
                                         HeaderIconButton(
                                             onClick = {},
                                             icon = getLikeState(song.asMediaItem.mediaId),
-                                            color = colorPalette().favoritesIcon,
+                                            color = LumaColor.Ember,
                                             iconSize = 9.dp,
                                             modifier = Modifier
                                                 .align(Alignment.BottomStart)
@@ -1959,7 +1964,7 @@ fun SongMatchingDialog(
                                         if (song.asMediaItem.isExplicit) {
                                             IconButton(
                                                 icon = R.drawable.explicit,
-                                                color = colorPalette().text,
+                                                color = LumaColor.Ink,
                                                 enabled = true,
                                                 onClick = {},
                                                 modifier = Modifier
@@ -1972,7 +1977,7 @@ fun SongMatchingDialog(
                                         }
                                         BasicText(
                                             text = cleanPrefix(song.title ?: ""),
-                                            style = typography().xs.semiBold,
+                                            style = LumaType.Meta,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
                                         )
@@ -1984,7 +1989,7 @@ fun SongMatchingDialog(
                                     ) {
                                         BasicText(
                                             text = song.asSong.cleanArtistsText(),
-                                            style = typography().xs.semiBold.secondary,
+                                            style = LumaType.Meta.secondary,
                                             maxLines = 1,
                                             overflow = TextOverflow.Clip,
                                             modifier = Modifier
@@ -1993,7 +1998,7 @@ fun SongMatchingDialog(
                                         )
                                         BasicText(
                                             text = song.durationText ?: "",
-                                            style = typography().xxs.secondary.medium,
+                                            style = LumaType.Numeral.medium,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
                                             modifier = Modifier
@@ -2218,7 +2223,7 @@ fun PlaybackParamsDialog(
                     blurStrength = defaultStrength
                 },
                 icon = R.drawable.droplet,
-                color = colorPalette().favoritesIcon,
+                color = LumaColor.Ember,
                 modifier = Modifier
                     .size(20.dp)
             )
@@ -2302,7 +2307,7 @@ fun PlaybackParamsDialog(
                     playbackDuration = defaultDuration
                 },
                 icon = R.drawable.playbackduration,
-                color = colorPalette().favoritesIcon,
+                color = LumaColor.Ember,
                 modifier = Modifier
                     .size(20.dp)
             )
@@ -2396,7 +2401,7 @@ fun PlaybackParamsDialog(
                             PlaybackParameters(playbackSpeed, playbackPitch)
                     },
                     icon = R.drawable.slow_motion,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier
                         .size(20.dp)
                 )
@@ -2496,7 +2501,7 @@ fun PlaybackParamsDialog(
                             PlaybackParameters(playbackSpeed, playbackPitch)
                     },
                     icon = R.drawable.equalizer,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier
                         .size(20.dp)
                 )
@@ -2596,7 +2601,7 @@ fun PlaybackParamsDialog(
                         player.setGlobalVolume(playbackVolume)
                     },
                     icon = R.drawable.volume_up,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier
                         .size(20.dp)
                 )
@@ -2694,7 +2699,7 @@ fun PlaybackParamsDialog(
                         setDeviceVolume(context, playbackDeviceVolume)
                     },
                     icon = R.drawable.master_volume,
-                    color = colorPalette().favoritesIcon,
+                    color = LumaColor.Ember,
                     modifier = Modifier
                         .size(20.dp)
                 )
@@ -2732,7 +2737,7 @@ fun PlaybackParamsDialog(
                     setDeviceVolume(context, playbackDeviceVolume)
                 },
                 icon = R.drawable.musical_notes,
-                color = colorPalette().favoritesIcon,
+                color = LumaColor.Ember,
                 modifier = Modifier
                     .size(20.dp)
             )
@@ -2767,7 +2772,7 @@ fun <T> ValueSelectorDialogBody(
 
     BasicText(
         text = title,
-        style = typography().s.semiBold,
+        style = LumaType.Tile,
         modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
     )
 
@@ -2816,7 +2821,7 @@ fun <T> ValueSelectorDialogBody(
 
                 BasicText(
                     text = valueText(value),
-                    style = typography().xs.medium
+                    style = LumaType.Meta
                 )
             }
         }

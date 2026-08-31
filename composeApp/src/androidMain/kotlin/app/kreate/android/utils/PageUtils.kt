@@ -1,5 +1,7 @@
 package app.kreate.android.utils
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -20,14 +22,14 @@ fun LazyListScope.renderDescription( description: String ) = item( "description"
     ) {
         BasicText(
             text = "“",
-            style = typography().xxl.semiBold,
+            style = LumaType.Title,
             modifier = Modifier.offset( y = (-8).dp )
                                .align( Alignment.Top )
         )
 
         BasicText(
             text = description,
-            style = typography().xxs
+            style = LumaType.Numeral
                                 .secondary
                                 .align( TextAlign.Justify ),
             modifier = Modifier.padding( horizontal = 8.dp )
@@ -36,7 +38,7 @@ fun LazyListScope.renderDescription( description: String ) = item( "description"
 
         BasicText(
             text = "„",
-            style = typography().xxl.semiBold,
+            style = LumaType.Title,
             modifier = Modifier.offset( y = 4.dp )
                                .align( Alignment.Bottom )
         )

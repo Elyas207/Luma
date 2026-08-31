@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,9 +43,9 @@ class TextIconButton(
             BasicText(
                 text = text,
                 style =  TextStyle(
-                    fontSize = typography().xs.semiBold.fontSize,
-                    fontWeight = typography().xs.semiBold.fontWeight,
-                    fontFamily = typography().xs.semiBold.fontFamily,
+                    fontSize = LumaType.Meta.fontSize,
+                    fontFamily = LumaType.Meta.fontFamily,
+                    fontWeight = LumaType.Meta.fontWeight,
                     color = color,
                 ),
                 maxLines = 2,

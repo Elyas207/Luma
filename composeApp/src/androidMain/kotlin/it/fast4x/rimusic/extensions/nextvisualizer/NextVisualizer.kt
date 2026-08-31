@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.extensions.nextvisualizer
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
@@ -116,7 +118,7 @@ fun NextVisualizer( player: StatefulPlayer = koinInject() ) {
                 BasicText(
                     text = stringResource(R.string.require_mic_permission),
                     modifier = Modifier.fillMaxWidth(0.75f),
-                    style = typography().xs.semiBold
+                    style = LumaType.Meta
                 )
                 /*
                 Spacer(modifier = Modifier.height(12.dp))
@@ -162,7 +164,7 @@ fun NextVisualizer( player: StatefulPlayer = koinInject() ) {
                         .border(
                             BorderStroke(
                                 8.dp,
-                                colorPalette().accent
+                                LumaColor.Ember
                             )
                         ),
                          */
@@ -203,20 +205,20 @@ fun NextVisualizer( player: StatefulPlayer = koinInject() ) {
                                 if (currentVisualizer < 0) currentVisualizer = visualizersList.lastIndex
                             },
                             icon = R.drawable.arrow_left,
-                            color = colorPalette().text,
+                            color = LumaColor.Ink,
                             modifier = Modifier
                                 .size(32.dp)
                         )
                         
                         BasicText(
                             text = "${currentVisualizer + 1}/${visualizersList.size}",
-                            style = typography().xs.semiBold.copy(color = colorPalette().text),
+                            style = LumaType.Meta.copy(color = LumaColor.Ink),
                         )
                         
                         IconButton(
                             onClick = { if (currentVisualizer < visualizersList.lastIndex) currentVisualizer++ else currentVisualizer = 0 },
                             icon = R.drawable.arrow_right,
-                            color = colorPalette().text,
+                            color = LumaColor.Ink,
                             modifier = Modifier
                                 .size(32.dp)
                         )
@@ -235,7 +237,7 @@ fun getVisualizers( player: StatefulPlayer = koinInject() ): List<Painter> {
     val circleBitmap: Bitmap
     val ampR = 3f
     val yR = 0.2f
-    val color = colorPalette().text.hashCode()
+    val color = LumaColor.Ink.hashCode()
     var bitmapCover by remember {
         mutableStateOf(AppIcon.Round.bitmap( context ) )
     }

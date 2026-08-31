@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -645,7 +649,7 @@ fun Lyrics(
                                 isPicking = true
                             },
                             modifier = Modifier
-                                .background(shape = RoundedCornerShape(4.dp), color = Color.White)
+                                .background(shape = RoundedCornerShape( LumaRadius.Tight ), color = Color.White)
                                 .padding(all = 4.dp)
                                 .size(24.dp)
                                 .align(Alignment.CenterVertically)
@@ -726,7 +730,7 @@ fun Lyrics(
                                             },
                                             singleLine = true,
                                             colors = textFieldColors,
-                                            modifier = Modifier.background( colorPalette().background1 )
+                                            modifier = Modifier.background( LumaColor.Raised )
                                                                .padding( horizontal = 6.dp )
                                                                .weight( 1f )
                                         )
@@ -737,7 +741,7 @@ fun Lyrics(
                                             },
                                             singleLine = true,
                                             colors = textFieldColors,
-                                            modifier = Modifier.background( colorPalette().background1 )
+                                            modifier = Modifier.background( LumaColor.Raised )
                                                                .padding( horizontal = 6.dp )
                                                                .weight( 1f )
                                         )
@@ -751,7 +755,7 @@ fun Lyrics(
                                             },
                                             modifier = Modifier
                                                 .background(
-                                                    shape = RoundedCornerShape(4.dp),
+                                                    shape = RoundedCornerShape( LumaRadius.Tight ),
                                                     color = Color.White
                                                 )
                                                 .padding(all = 4.dp)
@@ -835,7 +839,7 @@ fun Lyrics(
             ) {
                 BasicText(
                     text = stringResource(R.string.an_error_has_occurred_while_fetching_the_lyrics),
-                    style = typography().xs.center.medium.color(PureBlackColorPalette.text),
+                    style = LumaType.Meta.center.medium.color(PureBlackColorPalette.text),
                     modifier = Modifier
                         .background(
                             if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(
@@ -894,7 +898,7 @@ fun Lyrics(
 
                     var modifierBG = Modifier.verticalFadingEdge()
                     if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
-                        modifierBG.background(colorPalette().accent)
+                        modifierBG.background(LumaColor.Ember)
 
                     LazyColumn(
                         state = lazyListState,
@@ -968,10 +972,10 @@ fun Lyrics(
                                 Color.Red.copy(0.3f)
                             )
                             val Themegradient =
-                                listOf(colorPalette().background2, colorPalette().accent)
+                                listOf(LumaColor.Raised, LumaColor.Ember)
                             val Themegradient2 = listOf(
-                                colorPalette().background2.copy(0.5f),
-                                colorPalette().accent.copy(0.5f)
+                                LumaColor.Raised.copy(0.5f),
+                                LumaColor.Ember.copy(0.5f)
                             )
                             val oldlyrics =
                                 listOf(PureBlackColorPalette.text, PureBlackColorPalette.text)
@@ -1066,10 +1070,10 @@ fun Lyrics(
                                                     if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                     else Color.Black
                                                 else Color.Transparent,
-                                                fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                                else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                                else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                                else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                                fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                                else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                                else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                                else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                                 else customSize.sp,
                                                 textAlign = lyricsAlignment.selected,
                                                 drawStyle = Stroke(
@@ -1141,10 +1145,10 @@ fun Lyrics(
                                             style = TextStyle(
                                                 textAlign = lyricsAlignment.selected,
                                                 brush = if (lightTheme) brushrainbow else brushrainbowdark,
-                                                fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                                else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                                else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                                else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                                fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                                else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                                else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                                else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                                 else customSize.sp,
                                                 fontWeight = FontWeight.Medium,
                                                 drawStyle = Stroke(
@@ -1184,10 +1188,10 @@ fun Lyrics(
                                         BasicText(
                                             text = translatedText,
                                             style = TextStyle(
-                                                fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                                else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                                else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                                else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                                fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                                else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                                else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                                else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                                 else customSize.sp,
                                                 fontWeight = FontWeight.Medium,
                                                 textAlign = lyricsAlignment.selected,
@@ -1197,7 +1201,7 @@ fun Lyrics(
                                                     color = if (index == synchronizedLyrics.index)
                                                         if (lyricsColor == LyricsColor.Thememode) Color.White.copy(
                                                             0.3f
-                                                        ).compositeOver(colorPalette().text)
+                                                        ).compositeOver(LumaColor.Ink)
                                                         else if (lyricsColor == LyricsColor.White) Color.White.copy(
                                                             0.3f
                                                         ).compositeOver(Color.White)
@@ -1206,7 +1210,7 @@ fun Lyrics(
                                                         ).compositeOver(Color.Black)
                                                         else if (lyricsColor == LyricsColor.Accent) Color.White.copy(
                                                             0.3f
-                                                        ).compositeOver(colorPalette().accent)
+                                                        ).compositeOver(LumaColor.Ember)
                                                         else Color.Transparent
                                                     else Color.Transparent,
                                                     offset = Offset(0f, 0f), blurRadius = 25f
@@ -1241,10 +1245,10 @@ fun Lyrics(
                                         style = TextStyle(
                                             fontWeight = FontWeight.Medium,
                                             color = if (index == synchronizedLyrics.index) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled,
-                                            fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                                       else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                                       else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                                       else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                            fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                                       else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                                       else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                                       else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                                        else customSize.sp,
                                             textAlign = lyricsAlignment.selected,
                                         ),
@@ -1269,12 +1273,12 @@ fun Lyrics(
                                             fontWeight = FontWeight.Medium,
                                             color = if (lyricsColor == LyricsColor.White) Color.White
                                             else if (lyricsColor == LyricsColor.Black) Color.Black
-                                            else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
-                                            else colorPalette().accent,
-                                            fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                            else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                            else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                            else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                            else if (lyricsColor == LyricsColor.Thememode) LumaColor.Ink
+                                            else LumaColor.Ember,
+                                            fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                            else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                            else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                            else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                             else customSize.sp,
                                             textAlign = lyricsAlignment.selected,
                                         ),
@@ -1316,7 +1320,7 @@ fun Lyrics(
                                                 ) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(
                                                     0.5f
                                                 ) else Color.Transparent else Color.Transparent,
-                                                RoundedCornerShape(6.dp)
+                                                RoundedCornerShape( LumaRadius.Tight )
                                             )
                                             .conditional(lyricsHighlight != LyricsHighlight.None) { fillMaxWidth() }
                                     )
@@ -1326,10 +1330,10 @@ fun Lyrics(
                                         text = translatedText,
                                         style = TextStyle(
                                             brush = if (lightTheme) brushrainbow else brushrainbowdark,
-                                            fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                                       else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                                       else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                                       else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                            fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                                       else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                                       else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                                       else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                                        else customSize.sp,
                                             fontWeight = FontWeight.Medium,
                                             textAlign = lyricsAlignment.selected
@@ -1367,24 +1371,24 @@ fun Lyrics(
                                          brush = brushtheme
                                      ).merge(when (fontSize) {
                                          LyricsFontSize.Light ->
-                                             typography().m.center.medium.color(
+                                             LumaType.Row.center.medium.color(
                                                  if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                 else colorPalette().text.copy(0.6f)
+                                                 else LumaColor.Ink.copy(0.6f)
                                              )
                                          LyricsFontSize.Medium ->
-                                             typography().l.center.medium.color(
+                                             LumaType.Section.center.medium.color(
                                                  if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                 else colorPalette().text.copy(0.6f)
+                                                 else LumaColor.Ink.copy(0.6f)
                                              )
                                          LyricsFontSize.Heavy ->
-                                             typography().xl.center.medium.color(
+                                             LumaType.Section.center.medium.color(
                                                  if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                 else colorPalette().text.copy(0.6f)
+                                                 else LumaColor.Ink.copy(0.6f)
                                              )
                                          LyricsFontSize.Large ->
-                                             typography().xlxl.center.medium.color(
+                                             LumaType.Title.center.medium.color(
                                                  if (index == synchronizedLyrics.index) PureBlackColorPalette.text
-                                                 else colorPalette().text.copy(0.6f)
+                                                 else LumaColor.Ink.copy(0.6f)
                                              )
                                      },
                                      ),
@@ -1515,10 +1519,10 @@ fun Lyrics(
                                                 if (colorPaletteMode == ColorPaletteMode.Light) Color.White
                                                 else Color.Black
                                             else Color.Transparent,
-                                            fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                            else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                            else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                            else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                            fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                            else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                            else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                            else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                             else customSize.sp,
                                             drawStyle = Stroke(
                                                 width = if (fontSize == LyricsFontSize.Large)
@@ -1568,10 +1572,10 @@ fun Lyrics(
                                         style = TextStyle(
                                             textAlign = lyricsAlignment.selected,
                                             brush = if (lightTheme) brushrainbow else brushrainbowdark,
-                                            fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                            else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                            else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                            else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                            fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                            else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                            else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                            else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                             else customSize.sp,
                                             fontWeight = FontWeight.Medium,
                                             drawStyle = Stroke(
@@ -1594,10 +1598,10 @@ fun Lyrics(
                                     style = TextStyle(
                                         fontWeight = FontWeight.Medium,
                                         color = PureBlackColorPalette.text,
-                                        fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                        else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                        else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                        else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                        fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                        else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                        else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                        else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                         else customSize.sp,
                                         textAlign = lyricsAlignment.selected,
                                     ),
@@ -1612,12 +1616,12 @@ fun Lyrics(
                                         fontWeight = FontWeight.Medium,
                                         color = if (lyricsColor == LyricsColor.White) Color.White
                                                 else if (lyricsColor == LyricsColor.Black) Color.Black
-                                                else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
-                                                else colorPalette().accent,
-                                        fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                                   else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                                   else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                                   else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                                else if (lyricsColor == LyricsColor.Thememode) LumaColor.Ink
+                                                else LumaColor.Ember,
+                                        fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                                   else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                                   else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                                   else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                                    else customSize.sp,
                                         textAlign = lyricsAlignment.selected,
                                     ),
@@ -1629,10 +1633,10 @@ fun Lyrics(
                                     text = translatedText,
                                     style = TextStyle(
                                         brush = if (lightTheme) brushrainbow else brushrainbowdark,
-                                        fontSize = if (fontSize == LyricsFontSize.Light) typography().m.fontSize
-                                                   else if (fontSize == LyricsFontSize.Medium) typography().l.fontSize
-                                                   else if (fontSize == LyricsFontSize.Heavy) typography().xl.fontSize
-                                                   else if (fontSize == LyricsFontSize.Large) typography().xlxl.fontSize
+                                        fontSize = if (fontSize == LyricsFontSize.Light) LumaType.Row.fontSize
+                                                   else if (fontSize == LyricsFontSize.Medium) LumaType.Section.fontSize
+                                                   else if (fontSize == LyricsFontSize.Heavy) LumaType.Section.fontSize
+                                                   else if (fontSize == LyricsFontSize.Large) LumaType.Title.fontSize
                                                    else customSize.sp,
                                         fontWeight = FontWeight.Medium,
                                         textAlign = lyricsAlignment.selected
@@ -1652,7 +1656,7 @@ fun Lyrics(
                 ) {
                     repeat(4) {
                         TextPlaceholder(
-                            color = colorPalette().onOverlayShimmer,
+                            color = LumaColor.InkFaint,
                             modifier = Modifier
                                 .alpha(1f - it * 0.1f)
                                 .shimmerEffect()
@@ -1681,7 +1685,7 @@ fun Lyrics(
                 if (isLandscape && !showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.chevron_back,
-                        color = colorPalette().accent,
+                        color = LumaColor.Ember,
                         enabled = true,
                         onClick = onDismiss,
                         modifier = Modifier
@@ -1762,7 +1766,7 @@ fun Lyrics(
                     Image(
                         painter = painterResource(R.drawable.play_skip_back),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().text),
+                        colorFilter = ColorFilter.tint(LumaColor.Ink),
                         modifier = Modifier
                             .clickable(
                                 indication = ripple(bounded = false),
@@ -1782,12 +1786,12 @@ fun Lyrics(
                         Box(modifier = Modifier
                             .align(Alignment.Center)
                             .size(45.dp)
-                            .background(colorPalette().accent, RoundedCornerShape(15.dp))
+                            .background(LumaColor.Ember, RoundedCornerShape( LumaRadius.Card ))
                         ){}
                         Image(
                             painter = painterResource(if (player.isPlaying == true) R.drawable.pause else R.drawable.play),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text),
+                            colorFilter = ColorFilter.tint(if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else LumaColor.Ink),
                             modifier = Modifier
                                 .clickable(
                                     indication = ripple(bounded = false),
@@ -1810,7 +1814,7 @@ fun Lyrics(
                     Image(
                         painter = painterResource(R.drawable.play_skip_forward),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().text),
+                        colorFilter = ColorFilter.tint(LumaColor.Ink),
                         modifier = Modifier
                             .clickable(
                                 indication = ripple(bounded = false),
@@ -1838,7 +1842,7 @@ fun Lyrics(
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.translate,
-                        color = if (translateEnabled == true) colorPalette().text else colorPalette().textDisabled,
+                        color = if (translateEnabled == true) LumaColor.Ink else LumaColor.InkFaint,
                         enabled = true,
                         onClick = {
                             translateEnabled = !translateEnabled

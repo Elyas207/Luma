@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings.other
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Context
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -69,7 +71,7 @@ private fun CopyLogIcon(
     Icon(
         painter = painterResource( R.drawable.copy ),
         contentDescription = stringResource( R.string.copy_log_to_clipboard ),
-        tint = colorPalette().background4,
+        tint = LumaColor.Raised,
         modifier = Modifier.size(24.dp)
                            .clickable(
                                enabled = isEnabled,

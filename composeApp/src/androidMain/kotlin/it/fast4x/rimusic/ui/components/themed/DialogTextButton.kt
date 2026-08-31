@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
@@ -24,17 +28,17 @@ fun DialogTextButton(
     primary: Boolean = false,
 ) {
     val textColor = when {
-        !enabled -> colorPalette().textDisabled
-        primary -> colorPalette().onAccent
-        else -> colorPalette().text
+        !enabled -> LumaColor.InkFaint
+        primary -> LumaColor.Ground
+        else -> LumaColor.Ink
     }
 
     BasicText(
         text = text,
-        style = typography().xs.medium.color(textColor),
+        style = LumaType.Meta.color(textColor),
         modifier = modifier
-            .clip(RoundedCornerShape(36.dp))
-            .background(if (primary) colorPalette().accent else Color.Transparent)
+            .clip(RoundedCornerShape( LumaRadius.Full ))
+            .background(if (primary) LumaColor.Ember else Color.Transparent)
             //.background(if (primary) colorPalette.accent else colorPalette.background4)
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 16.dp)

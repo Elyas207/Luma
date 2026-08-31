@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,15 +29,15 @@ fun PrimaryButton(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape( LumaRadius.Card ))
             .clickable(enabled = enabled, onClick = onClick)
-            .background(colorPalette().background2)
+            .background(LumaColor.Raised)
             .size(62.dp)
     ) {
         Image(
             painter = painterResource(iconId),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette().text),
+            colorFilter = ColorFilter.tint(LumaColor.Ink),
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(20.dp)

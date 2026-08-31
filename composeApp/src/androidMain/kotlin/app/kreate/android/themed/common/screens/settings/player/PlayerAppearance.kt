@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings.player
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -522,11 +524,11 @@ fun LazyListScope.playerAppearanceSection( search: SettingEntrySearch, isLandsca
                         Spacer(
                             modifier = Modifier.border(
                                                    width = 1.dp,
-                                                   color = colorPalette().accent,
+                                                   color = LumaColor.Ember,
                                                    shape = thumbnailRoundness.shape
                                                )
                                                .background(
-                                                   color = colorPalette().background1,
+                                                   color = LumaColor.Raised,
                                                    shape = thumbnailRoundness.shape
                                                )
                                                .size( 36.dp )

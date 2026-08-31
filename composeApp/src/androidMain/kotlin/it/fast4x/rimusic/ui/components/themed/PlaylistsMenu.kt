@@ -1,5 +1,7 @@
 ﻿package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -96,7 +98,7 @@ class PlaylistsMenu private constructor(
             trailingContent = {
                 IconButton(
                     icon = R.drawable.open,
-                    color = colorPalette().text,
+                    color = LumaColor.Ink,
                     onClick = {
                         menuState.hide()
                         NavRoutes.localPlaylist.navigateHere( navController, playlist.id.toString() )
@@ -146,7 +148,7 @@ class PlaylistsMenu private constructor(
                 IconButton(
                     onClick = ::onShortClick,
                     icon = R.drawable.chevron_back,
-                    color = colorPalette().textSecondary,
+                    color = LumaColor.InkSoft,
                     modifier = Modifier
                         .padding(all = 4.dp)
                         .size(20.dp)
@@ -157,7 +159,7 @@ class PlaylistsMenu private constructor(
             if (pinnedPlaylists.isNotEmpty()) {
                 BasicText(
                     text = stringResource(R.string.pinned_playlists),
-                    style = typography().m.semiBold,
+                    style = LumaType.Row,
                     modifier = Modifier.padding(start = 20.dp, top = 5.dp)
                 )
 
@@ -167,7 +169,7 @@ class PlaylistsMenu private constructor(
             if (unpinnedPlaylists.isNotEmpty()) {
                 BasicText(
                     text = stringResource(R.string.playlists),
-                    style = typography().m.semiBold,
+                    style = LumaType.Row,
                     modifier = Modifier.padding(start = 20.dp, top = 5.dp)
                 )
 

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.search
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -167,7 +169,7 @@ fun OnlineSearch(
 
     Box(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -217,7 +219,7 @@ fun OnlineSearch(
                         BasicTextField(
                             value = textFieldValue,
                             onValueChange = onTextFieldValueChanged,
-                            textStyle = typography().l.medium.align(TextAlign.Start),
+                            textStyle = LumaType.Section.medium.align(TextAlign.Start),
                             singleLine = true,
                             maxLines = 1,
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -227,12 +229,12 @@ fun OnlineSearch(
                                         onSearch( textFieldValue.text )
                                 }
                             ),
-                            cursorBrush = SolidColor(colorPalette().text),
+                            cursorBrush = SolidColor(LumaColor.Ink),
                             decorationBox = decorationBox,
                             modifier = Modifier
                                 .background(
-                                    //colorPalette().background4,
-                                    colorPalette().background1,
+                                    //LumaColor.Raised,
+                                    LumaColor.Raised,
                                     shape = thumbnailRoundness.shape
                                 )
                                 .padding(all = 4.dp)
@@ -252,21 +254,21 @@ fun OnlineSearch(
                             IconButton(
                                 onClick = onAction1,
                                 icon = R.drawable.globe,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
                             IconButton(
                                 onClick = onAction2,
                                 icon = R.drawable.library,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
                             IconButton(
                                 onClick = onAction3,
                                 icon = R.drawable.link,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -275,7 +277,7 @@ fun OnlineSearch(
                             IconButton(
                                 onClick = onAction4,
                                 icon = R.drawable.chevron_back,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -316,7 +318,7 @@ fun OnlineSearch(
                             val y = size.height - strokeWidth / 2
 
                             drawLine(
-                                color = colorPalette().textDisabled,
+                                color = LumaColor.InkFaint,
                                 start = Offset(x = 0f, y = y/2),
                                 end = Offset(x = size.maxDimension, y = y/2),
                                 strokeWidth = 2.dp.toPx()
@@ -403,7 +405,7 @@ fun OnlineSearch(
 
                         BasicText(
                             text = query,
-                            style = typography().s.secondary,
+                            style = LumaType.Tile,
                             modifier = Modifier
                                 .padding(horizontal = 8.dp)
                                 .weight(1f)
@@ -412,7 +414,7 @@ fun OnlineSearch(
                         Image(
                             painter = painterResource(R.drawable.pencil),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette().textDisabled),
+                            colorFilter = ColorFilter.tint(LumaColor.InkFaint),
                             modifier = Modifier
                                 .clickable(
                                     indication = rippleIndication,
@@ -447,7 +449,7 @@ fun OnlineSearch(
                         /*
                         BasicText(
                             text = stringResource(R.string.error),
-                            style = typography().s.secondary.center,
+                            style = LumaType.Tile.center,
                             modifier = Modifier
                                 .align(Alignment.Center)
                         )
@@ -487,13 +489,13 @@ fun OnlineSearch(
                             .size(20.dp)
                             .paint(
                                 painter = timeIconPainter,
-                                colorFilter = ColorFilter.tint(colorPalette().textDisabled)
+                                colorFilter = ColorFilter.tint(LumaColor.InkFaint)
                             )
                     )
 
                     BasicText(
                         text = searchQuery.query,
-                        style = typography().s.secondary,
+                        style = LumaType.Tile,
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .weight(1f)
@@ -502,7 +504,7 @@ fun OnlineSearch(
                     Image(
                         painter = closeIconPainter,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().textDisabled),
+                        colorFilter = ColorFilter.tint(LumaColor.InkFaint),
                         modifier = Modifier
                             .combinedClickable(
                                 indication = rippleIndication,
@@ -526,7 +528,7 @@ fun OnlineSearch(
                     Image(
                         painter = painterResource(R.drawable.pencil),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().textDisabled),
+                        colorFilter = ColorFilter.tint(LumaColor.InkFaint),
                         modifier = Modifier
                             .clickable(
                                 indication = rippleIndication,

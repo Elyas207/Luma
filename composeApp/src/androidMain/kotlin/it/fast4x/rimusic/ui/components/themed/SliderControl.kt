@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -63,9 +65,9 @@ fun SliderControl(
                 text = toDisplay(state),
                 style = TextStyle(
                     textAlign = TextAlign.Center,
-                    color = typography().xs.semiBold.color.copy(alpha = if (isEnabled) 1.0f else 0.5f),
-                    fontSize = typography().xs.semiBold.center.fontSize,
-                    fontWeight = typography().xs.semiBold.center.fontWeight
+                    color = LumaColor.Ink.copy(alpha = if (isEnabled) 1.0f else 0.5f),
+                    fontSize = LumaType.Meta.center.fontSize,
+                    fontWeight = LumaType.Meta.center.fontWeight
                 ),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,

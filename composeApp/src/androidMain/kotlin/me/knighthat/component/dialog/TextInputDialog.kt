@@ -1,5 +1,7 @@
 package me.knighthat.component.dialog
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Context
 import androidx.annotation.CallSuper
 import androidx.compose.animation.AnimatedVisibility
@@ -84,8 +86,8 @@ abstract class TextInputDialog(
                                },
             colors = InputDialog.defaultTextFieldColors()
                                 .copy(
-                                    errorTextColor = colorPalette().text,
-                                    errorContainerColor = colorPalette().background1,
+                                    errorTextColor = LumaColor.Ink,
+                                    errorContainerColor = LumaColor.Raised,
                                     errorIndicatorColor = Color.Red
                                 ),
             isError = errorMessage.isNotEmpty()
@@ -97,7 +99,7 @@ abstract class TextInputDialog(
         ) {
             BasicText(
                 text = errorMessage,
-                style = typography().xs.copy( color = Color(android.graphics.Color.RED) ),
+                style = LumaType.Meta.copy( color = Color(android.graphics.Color.RED) ),
                 modifier = Modifier.fillMaxWidth( .7f )
                                     .padding( top = Dialog.VERTICAL_PADDING.dp )
             )

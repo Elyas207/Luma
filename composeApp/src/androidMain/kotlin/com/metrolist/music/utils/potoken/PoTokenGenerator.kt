@@ -130,9 +130,28 @@ class PoTokenGenerator {
 
         logger.d("poToken generated successfully: session=${streamingPot.take(20)}..., video=${playerPot.take(20)}...")
 
+        /*
+         * These two were the wrong way round, and it is the reason playback died at roughly half a
+         * megabyte.
+         *
+         * BotGuard mints a token *bound to whatever identifier you hand it*:
+         *   - `streamingPot` was minted from the **session id** (the visitorData)
+         *   - `playerPot`    was minted from the **videoId**
+         *
+         * YouTube expects the opposite pairing to the one that was being sent: the `/player`
+         * request must carry the token bound to the video, and the media URL's `pot=` must carry
+         * the token bound to the session. Swapped, the `pot` on every stream URL was a token for
+         * the wrong subject, so googlevideo treated the request as unattested and served only a
+         * ~0.5 MB prefix — measured directly: ranges up to ~450 KB returned 206 and everything
+         * past that returned 403, on a 496 MB file as readily as on a 566 KB one.
+         *
+         * Naming it explicitly here because the two are indistinguishable at the call site: both
+         * are opaque base64 strings, and getting them the wrong way round fails silently as a
+         * *throttle* rather than as an error.
+         */
         return PoTokenResult(
-            playerRequestPoToken = streamingPot,
-            streamingDataPoToken = playerPot,
+            playerRequestPoToken = playerPot,
+            streamingDataPoToken = streamingPot,
         )
     }
 }

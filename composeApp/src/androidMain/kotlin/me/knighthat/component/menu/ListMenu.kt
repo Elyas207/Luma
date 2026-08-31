@@ -1,5 +1,7 @@
 package me.knighthat.component.menu
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -75,7 +77,7 @@ object ListMenu {
             Text(
                 text = text,
                 overflow = TextOverflow.Ellipsis,
-                color = colorPalette().text,
+                color = LumaColor.Ink,
                 textAlign = TextAlign.Start,
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth()

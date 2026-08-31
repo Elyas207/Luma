@@ -1,5 +1,9 @@
 package me.knighthat.component
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +35,7 @@ fun FolderItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy( 12.dp ),
-        modifier = modifier.clip( RoundedCornerShape(10.dp) )
+        modifier = modifier.clip( RoundedCornerShape( LumaRadius.Panel ) )
                            .fillMaxWidth()
                            .padding(
                                vertical = Dimensions.itemsVerticalPadding,
@@ -44,7 +48,7 @@ fun FolderItem(
         ) {
             Icon(
                 painter = painterResource( R.drawable.folder ),
-                tint = colorPalette().text,
+                tint = LumaColor.Ink,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )
@@ -52,7 +56,7 @@ fun FolderItem(
 
         BasicText(
             text = text,
-            style = typography().m.copy( colorPalette().text )
+            style = LumaType.Row.copy( LumaColor.Ink )
         )
     }
 }

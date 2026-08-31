@@ -10,6 +10,8 @@ import app.kreate.database.AlbumTable
 import app.kreate.database.AppDatabase
 import app.kreate.database.ArtistTable
 import app.kreate.database.EventTable
+import app.kreate.database.ListeningEventTable
+import app.kreate.database.ListeningSignalTable
 import app.kreate.database.FormatTable
 import app.kreate.database.LyricsTable
 import app.kreate.database.PlaylistTable
@@ -50,6 +52,12 @@ object Database : KoinComponent {
         get() = _internal.eventTable
     val formatTable: FormatTable
         get() = _internal.formatTable
+
+    val listeningSignalTable: ListeningSignalTable
+        get() = _internal.listeningSignalTable
+
+    val listeningEventTable: ListeningEventTable
+        get() = _internal.listeningEventTable
     val lyricsTable: LyricsTable
         get() = _internal.lyricsTable
     val playlistTable: PlaylistTable

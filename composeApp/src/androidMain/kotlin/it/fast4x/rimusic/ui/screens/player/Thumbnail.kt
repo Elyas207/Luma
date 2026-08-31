@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -22,7 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -197,8 +199,8 @@ fun Thumbnail(
                         .aspectRatio(1f)
                         //.size(thumbnailSizeDp)
                         .fillMaxSize()
-                        //.dropShadow(thumbnailShape(), colorPalette().overlay.copy(0.1f), 6.dp, 2.dp, 2.dp)
-                        //.dropShadow(thumbnailShape(), colorPalette().overlay.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
+                        //.dropShadow(thumbnailShape(), LumaColor.Ground.copy(0.1f), 6.dp, 2.dp, 2.dp)
+                        //.dropShadow(thumbnailShape(), LumaColor.Ground.copy(0.1f), 6.dp, (-2).dp, (-2).dp)
                         .doubleShadowDrop(if (showCoverThumbnailAnimation) CircleShape else thumbnailShape(), 4.dp, 8.dp)
                         //.clip(thumbnailShape())
                         .clip(if (showCoverThumbnailAnimation) CircleShape else thumbnailShape())
@@ -309,7 +311,7 @@ fun Thumbnail(
                     } else {
                         Image(
                             painter = painterResource(R.drawable.ic_banner_foreground),
-                            colorFilter = ColorFilter.tint(colorPalette().accent),
+                            colorFilter = ColorFilter.tint(LumaColor.Ember),
                             modifier = Modifier
                                 .pointerInput(Unit) {
                                     detectTapGestures(
@@ -359,30 +361,34 @@ fun Thumbnail(
                     )
                 }
 
-                var errorCounter by remember { mutableIntStateOf(0) }
+                // Reporting an error is a side effect, so it belongs in a LaunchedEffect keyed on
+                // the error itself — it then runs exactly once per distinct failure.
+                //
+                // This previously incremented a counter *during* composition. Writing state while
+                // composing invalidates the composition, which recomposes, which writes again: an
+                // unbounded recomposition loop that spun at ~35 passes/second for as long as an
+                // error was on screen. The `errorCounter < 3` guard capped the logging, not the
+                // loop, which is why it stayed invisible — it only showed up as heat and jank.
+                LaunchedEffect( error ) {
+                    val cause = error?.cause?.cause ?: return@LaunchedEffect
 
-                if (error != null) {
-                    errorCounter = errorCounter.plus(1)
-                    if (errorCounter < 3) {
-                        Logger.e( error?.cause?.cause ) { "Playback error" }
-                        Toaster.e(
-                            if (currentWindow.mediaItem.isLocal)
-                                localMusicFileNotFoundError
-                            else when (error?.cause?.cause) {
-                                is UnresolvedAddressException, is UnknownHostException -> networkerror
-                                is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
-                                is UnplayableException -> originalvideodeletederror
-                                is LoginRequiredException -> songnotplayabledueserverrestrictionerror
-                                is VideoIdMismatchException -> videoidmismatcherror
-                                is PlayableFormatNonSupported -> formatUnsupported
-                                is NoInternetException -> nointerneterror
-                                is TimeoutException -> timeouterror
-                                is UnknownException -> unknownerror
-                                else -> unknownplaybackerror
-                            }
-                        )
-                    //    player.seekToNext()
-                    } else errorCounter = 0
+                    Logger.e( cause ) { "Playback error" }
+                    Toaster.e(
+                        if (currentWindow.mediaItem.isLocal)
+                            localMusicFileNotFoundError
+                        else when (cause) {
+                            is UnresolvedAddressException, is UnknownHostException -> networkerror
+                            is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
+                            is UnplayableException -> originalvideodeletederror
+                            is LoginRequiredException -> songnotplayabledueserverrestrictionerror
+                            is VideoIdMismatchException -> videoidmismatcherror
+                            is PlayableFormatNonSupported -> formatUnsupported
+                            is NoInternetException -> nointerneterror
+                            is TimeoutException -> timeouterror
+                            is UnknownException -> unknownerror
+                            else -> unknownplaybackerror
+                        }
+                    )
                 }
             }
             /*

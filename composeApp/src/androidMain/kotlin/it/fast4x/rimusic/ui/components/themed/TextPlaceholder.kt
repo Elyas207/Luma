@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +19,7 @@ import kotlin.random.Random
 @Composable
 fun TextPlaceholder(
     modifier: Modifier = Modifier,
-    color: Color = colorPalette().shimmer
+    color: Color = LumaColor.Raised
 ) {
     Spacer(
         modifier = modifier

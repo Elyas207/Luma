@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.tab
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -84,7 +86,7 @@ class DownloadAllDialog(
 
             BasicText(
                 text = stringResource( R.string.dialog_text_download_all_warning ),
-                style = typography().s.bold.copy( colorResource( R.color.yellow_warning ) )
+                style = LumaType.Tile.copy( colorResource( R.color.yellow_warning ) )
             )
         }
     }

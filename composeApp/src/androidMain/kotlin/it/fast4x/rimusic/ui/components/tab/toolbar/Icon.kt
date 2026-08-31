@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.tab.toolbar
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +18,7 @@ interface Icon: Button {
     val iconId: Int
     val color: Color
         @Composable
-        get() = colorPalette().text
+        get() = LumaColor.Ink
     val sizeDp: Dp
         get() = TabToolBar.TOOLBAR_ICON_SIZE
     val icon: Painter

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.localplaylist
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -65,7 +67,7 @@ fun LocalPlaylistScreen(
 
     androidx.compose.material3.Scaffold(
         modifier = modifier,
-        containerColor = colorPalette().background0,
+        containerColor = LumaColor.Ground,
         topBar = {
             if( UiType.RiMusic.isCurrent() )
                 AppHeader( navController ).Draw()
@@ -80,7 +82,7 @@ fun LocalPlaylistScreen(
 
             Row(
                 modifier = modifier
-                    .background(colorPalette().background0)
+                    .background(LumaColor.Ground)
                     .fillMaxSize()
             ) {
                 val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp

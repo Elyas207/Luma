@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -138,7 +140,7 @@ fun PlaybackError(
         ) {
             BasicText(
                 text = remember { messageProvider() },
-                style = typography().xs.center.medium.color(PureBlackColorPalette.text),
+                style = LumaType.Meta.center.medium.color(PureBlackColorPalette.text),
                 modifier = Modifier
                     .background(Color.Black.copy(0.4f))
                     .padding(all = 8.dp)

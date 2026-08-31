@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.search
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -109,7 +111,7 @@ fun LocalSongSearch(
     //val contentWidth = context.preferences.getFloat(contentWidthKey,0.8f)
     Box(
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             //.fillMaxSize()
             .fillMaxHeight()
             .fillMaxWidth(
@@ -159,15 +161,15 @@ fun LocalSongSearch(
                         BasicTextField(
                             value = textFieldValue,
                             onValueChange = onTextFieldValueChanged,
-                            textStyle = typography().l.medium.align(TextAlign.Start),
+                            textStyle = LumaType.Section.medium.align(TextAlign.Start),
                             singleLine = true,
                             maxLines = 1,
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                            cursorBrush = SolidColor(colorPalette().text),
+                            cursorBrush = SolidColor(LumaColor.Ink),
                             decorationBox = decorationBox,
                             modifier = Modifier
                                 .background(
-                                    colorPalette().background1,
+                                    LumaColor.Raised,
                                     shape = thumbnailRoundness.shape
                                 )
                                 .padding(all = 4.dp)
@@ -187,21 +189,21 @@ fun LocalSongSearch(
                             IconButton(
                                 onClick = onAction1,
                                 icon = R.drawable.globe,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
                             IconButton(
                                 onClick = onAction2,
                                 icon = R.drawable.library,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
                             IconButton(
                                 onClick = onAction3,
                                 icon = R.drawable.link,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -209,7 +211,7 @@ fun LocalSongSearch(
                             IconButton(
                                 onClick = onAction4,
                                 icon = R.drawable.chevron_back,
-                                color = colorPalette().favoritesIcon,
+                                color = LumaColor.Ember,
                                 modifier = Modifier
                                     .size(24.dp)
                             )
@@ -234,7 +236,7 @@ fun LocalSongSearch(
                             val y = size.height - strokeWidth / 2
 
                             drawLine(
-                                color = colorPalette().textDisabled,
+                                color = LumaColor.InkFaint,
                                 start = Offset(x = 0f, y = y/2),
                                 end = Offset(x = size.maxDimension, y = y/2),
                                 strokeWidth = 2.dp.toPx()

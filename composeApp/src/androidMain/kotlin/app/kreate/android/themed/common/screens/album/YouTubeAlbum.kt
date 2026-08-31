@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.album
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -170,7 +172,7 @@ private fun LazyListScope.renderSection(
                 stringResource( R.string.songs )
             else
                 "",
-            style = typography().m.semiBold,
+            style = LumaType.Row,
             modifier = sectionTextModifier.fillMaxWidth()
         )
     }
@@ -377,7 +379,7 @@ fun YouTubeAlbum(
                                 painter = painterResource( R.drawable.share_social ),
                                 // TODO: Make a separate string for this (i.e. Share to...)
                                 contentDescription = stringResource( R.string.listen_on_youtube_music ),
-                                tint = colorPalette().text.copy( .5f ),
+                                tint = LumaColor.Ink.copy( .5f ),
                                 modifier = Modifier.padding( all = 5.dp )
                                                    .size( 40.dp )
                                                    .align( Alignment.TopEnd )
@@ -398,11 +400,11 @@ fun YouTubeAlbum(
 
                             AutoResizeText(
                                 text = dbAlbum?.cleanTitle().orEmpty(),
-                                style = typography().l.semiBold,
+                                style = LumaType.Section,
                                 fontSizeRange = FontSizeRange( 32.sp, 38.sp ),
-                                fontWeight = typography().l.semiBold.fontWeight,
-                                fontFamily = typography().l.semiBold.fontFamily,
-                                color = typography().l.semiBold.color,
+                                fontWeight = LumaType.Section.fontWeight,
+                                fontFamily = LumaType.Section.fontFamily,
+                                color = LumaColor.Ink,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
@@ -422,7 +424,7 @@ fun YouTubeAlbum(
                         }
                         BasicText(
                             text = text,
-                            style = typography().xs.medium.copy( colorPalette().textSecondary ),
+                            style = LumaType.Meta.copy( LumaColor.InkSoft ),
                             maxLines = 1
                         )
                     }
@@ -430,7 +432,7 @@ fun YouTubeAlbum(
                     item( "subtitle" ) {
                         BasicText(
                             text = albumPage?.subtitle?.runs?.fastJoinToString( "" ) { it.text }.orEmpty(),
-                            style = typography().xs.medium.copy( colorPalette().textSecondary ),
+                            style = LumaType.Meta.copy( LumaColor.InkSoft ),
                             maxLines = 1
                         )
                     }
@@ -467,7 +469,7 @@ fun YouTubeAlbum(
                     stickyHeader( "songs" ) {
                         Text(
                             text = stringResource( R.string.songs ),
-                            style = typography().m.semiBold,
+                            style = LumaType.Row,
                             modifier = sectionTextModifier.fillMaxWidth()
                         )
                     }
@@ -497,11 +499,11 @@ fun YouTubeAlbum(
                                     thumbnailOverlay = {
                                         BasicText(
                                             text = "${index + 1}",
-                                            style = typography().s
+                                            style = LumaType.Tile
                                                                 .semiBold
                                                                 .center
                                                                 .color(
-                                                                    colorPalette().textDisabled
+                                                                    LumaColor.InkFaint
                                                                 ),
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,

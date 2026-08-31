@@ -104,8 +104,30 @@ private fun BlurFilter(
                                    rotationZ = angle
                                }
         )
+
+        /*
+         * Scrim over the cover.
+         *
+         * The player draws its text with a palette derived from the artwork on the assumption of a
+         * dark backdrop — but the backdrop *is* the artwork, and a bright cover leaves near-white
+         * text on a near-white blur. On a yellow sleeve the track title was effectively invisible.
+         *
+         * Blur alone does not fix this: blurring a bright image yields a bright image. Only
+         * lowering the backdrop's luminance guarantees the contrast, so this darkens whatever is
+         * behind the text rather than trying to out-guess the palette per cover.
+         */
+        Box(
+            Modifier.matchParentSize()
+                    .background( Color.Black.copy( alpha = SCRIM_ALPHA ) )
+        )
     }
 }
+
+/**
+ * Enough to hold text legible over a white cover, light enough that the artwork still reads as the
+ * background rather than as a grey panel.
+ */
+private const val SCRIM_ALPHA = 0.45f
 
 @Composable
 private fun Backdrop( blurAdjuster: BlurAdjuster, modifier: Modifier = Modifier ) {

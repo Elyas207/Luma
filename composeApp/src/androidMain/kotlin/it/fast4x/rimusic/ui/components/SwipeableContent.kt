@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.ui.components
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -78,7 +82,7 @@ fun SwipeableContent(
             gesturesEnabled = isSwipeToActionEnabled,
             modifier = modifier,
             //.padding(horizontal = 16.dp)
-            //.clip(RoundedCornerShape(12.dp)),
+            //.clip(RoundedCornerShape( LumaRadius.Panel )),
             state = dismissState,
             backgroundContent = {
                 Row(
@@ -108,7 +112,7 @@ fun SwipeableContent(
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = colorPalette().accent,
+                            tint = LumaColor.Ember,
                         )
                 }
             }

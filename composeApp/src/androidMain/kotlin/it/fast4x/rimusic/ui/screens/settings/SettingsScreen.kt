@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.settings
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -174,14 +176,14 @@ fun SettingsEntry(
         ) {
             BasicText(
                 text = title,
-                style = typography().xs.semiBold.copy(color = colorPalette().text),
+                style = LumaType.Meta.copy(color = LumaColor.Ink),
                 modifier = Modifier
                     .padding(bottom = 4.dp)
             )
             if (text != "")
                 BasicText(
                     text = text,
-                    style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
+                    style = LumaType.Meta.copy(color = LumaColor.InkSoft),
                 )
         }
 
@@ -190,7 +192,7 @@ fun SettingsEntry(
         if (titleSecondary != null) {
             BasicText(
                 text = titleSecondary,
-                style = typography().xxs.secondary,
+                style = LumaType.Numeral,
                 maxLines = 2,
                 overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 //modifier = Modifier

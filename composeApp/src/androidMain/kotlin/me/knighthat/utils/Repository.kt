@@ -8,7 +8,16 @@ object Repository {
     const val GITHUB_API = "https://api.github.com"
 
     const val OWNER = "knighthat"
-    const val REPO = "$OWNER/${BuildConfig.APP_NAME}"
+
+    /**
+     * Upstream repository name.
+     *
+     * Pinned rather than derived from `BuildConfig.APP_NAME`. It used to be built from the app
+     * name, so renaming the app to Luma silently repointed every "report an issue", "discussions"
+     * and update-check URL at `knighthat/Luma`, which does not exist. The upstream project is
+     * still called Kreate; the product name and the repository name are simply different things.
+     */
+    const val REPO = "$OWNER/Kreate"
     const val REPO_URL = "$GITHUB/$REPO"
 
     const val LATEST_TAG_URL = "$REPO/releases/latest"

@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.utils
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -86,7 +90,7 @@ fun GetSeekBar(
         if (duration == C.TIME_UNSET)
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
-                color = colorPalette().collapsedPlayerProgressBar
+                color = LumaColor.Ember
             )
 
         if (playerTimelineType != PlayerTimelineType.Default
@@ -114,9 +118,9 @@ fun GetSeekBar(
                     scrubbingPosition?.let(player::seekTo)
                     scrubbingPosition = null
                 },
-                color = colorPalette().collapsedPlayerProgressBar,
-                backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp),
+                color = LumaColor.Ember,
+                backgroundColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
+                shape = RoundedCornerShape( LumaRadius.Panel ),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
@@ -139,9 +143,9 @@ fun GetSeekBar(
                     scrubbingPosition?.let(player::seekTo)
                     scrubbingPosition = null
                 },
-                color = colorPalette().collapsedPlayerProgressBar,
-                backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp),
+                color = LumaColor.Ember,
+                backgroundColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
+                shape = RoundedCornerShape( LumaRadius.Panel ),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
@@ -164,9 +168,9 @@ fun GetSeekBar(
                     scrubbingPosition?.let(player::seekTo)
                     scrubbingPosition = null
                 },
-                color = colorPalette().collapsedPlayerProgressBar,
-                backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp),
+                color = LumaColor.Ember,
+                backgroundColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
+                shape = RoundedCornerShape( LumaRadius.Panel ),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
 
@@ -212,10 +216,10 @@ fun GetSeekBar(
                 }
                  */
                 },
-                color = colorPalette().collapsedPlayerProgressBar,
+                color = LumaColor.Ember,
                 isActive = player.isPlaying,
-                backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp),
+                backgroundColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
+                shape = RoundedCornerShape( LumaRadius.Panel ),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position.toFloat(), isVisible = true)
             )
         }
@@ -223,8 +227,8 @@ fun GetSeekBar(
         if (playerTimelineType == PlayerTimelineType.FakeAudioBar)
             SeekBarAudioWaves(
                 progressPercentage = ProgressPercentage((position.toFloat() / duration.toFloat()).coerceIn(0f,1f)),
-                playedColor = colorPalette().accent,
-                notPlayedColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
+                playedColor = LumaColor.Ember,
+                notPlayedColor = if (transparentbar) Color.Transparent else LumaColor.InkSoft,
                 waveInteraction = {
                     scrubbingPosition = (it.value * duration.toFloat()).toLong()
                     player.seekTo(scrubbingPosition!!)
@@ -255,9 +259,9 @@ fun GetSeekBar(
                     scrubbingPosition?.let(player::seekTo)
                     scrubbingPosition = null
                 },
-                color = colorPalette().collapsedPlayerProgressBar,
-                backgroundColor = colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp)
+                color = LumaColor.Ember,
+                backgroundColor = LumaColor.InkSoft,
+                shape = RoundedCornerShape( LumaRadius.Panel )
             )
 
 

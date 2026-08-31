@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player.components.controls
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
@@ -145,7 +147,7 @@ fun InfoAlbumAndArtistEssential(
                     if (isExplicit) {
                         IconButton(
                             icon = R.drawable.explicit,
-                            color = colorPalette().text,
+                            color = LumaColor.Ink,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
@@ -170,7 +172,7 @@ fun InfoAlbumAndArtistEssential(
                     if ( mediaItem.isExplicit ) {
                         IconButton(
                             icon = R.drawable.explicit,
-                            color = colorPalette().text,
+                            color = LumaColor.Ink,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
@@ -186,19 +188,19 @@ fun InfoAlbumAndArtistEssential(
                             style = TextStyle(
                                 textAlign = TextAlign.Center,
                                 color = if (albumId == null)
-                                /*if (showthumbnail) colorPalette().textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette().textDisabled.copy(0.5f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
-                                else colorPalette().text,*/
-                                    if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) colorPalette().textDisabled.copy(
+                                /*if (showthumbnail) LumaColor.InkFaint else if (colorPaletteMode == ColorPaletteMode.Light) LumaColor.InkFaint.copy(0.5f).compositeOver(Color.Black) else LumaColor.InkFaint.copy(0.35f).compositeOver(Color.White)
+                                else LumaColor.Ink,*/
+                                    if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) LumaColor.InkFaint.copy(
                                         0.35f
                                     )
-                                        .compositeOver(Color.Black) else colorPalette().textDisabled.copy(
+                                        .compositeOver(Color.Black) else LumaColor.InkFaint.copy(
                                         0.35f
                                     ).compositeOver(Color.White)
-                                else colorPalette().text,
-                                fontStyle = typography().l.bold.fontStyle,
-                                fontWeight = typography().l.bold.fontWeight,
-                                fontSize = typography().l.bold.fontSize,
-                                fontFamily = typography().l.bold.fontFamily
+                                else LumaColor.Ink,
+                                fontStyle = LumaType.Section.fontStyle,
+                                fontWeight = LumaType.Section.fontWeight,
+                                fontSize = LumaType.Section.fontSize,
+                                fontFamily = LumaType.Section.fontFamily
                             ),
                             maxLines = 1,
                         )
@@ -211,10 +213,10 @@ fun InfoAlbumAndArtistEssential(
                                     0.5f
                                 )
                                 else Color.Black,
-                                fontStyle = typography().l.bold.fontStyle,
-                                fontWeight = typography().l.bold.fontWeight,
-                                fontSize = typography().l.bold.fontSize,
-                                fontFamily = typography().l.bold.fontFamily
+                                fontStyle = LumaType.Section.fontStyle,
+                                fontWeight = LumaType.Section.fontWeight,
+                                fontSize = LumaType.Section.fontSize,
+                                fontFamily = LumaType.Section.fontFamily
                             ),
                             maxLines = 1,
                         )
@@ -229,7 +231,7 @@ fun InfoAlbumAndArtistEssential(
                 ) {
                     likeButtonWidth = maxWidth
                     IconButton(
-                        color = colorPalette().favoritesIcon,
+                        color = LumaColor.Ember,
                         icon = getLikeState( mediaItem.mediaId ),
                         onClick = {
                             CoroutineScope( Dispatchers.IO ).launch {
@@ -245,7 +247,7 @@ fun InfoAlbumAndArtistEssential(
                     if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
                         Icon(
                             painter = Preferences.LIKE_ICON.value.neutralIcon,
-                            tint = colorPalette().text,
+                            tint = LumaColor.Ink,
                             contentDescription = null,
                             modifier = Modifier
                                 .padding(start = 5.dp)
@@ -312,14 +314,14 @@ fun InfoAlbumAndArtistEssential(
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = if (artistIds?.isEmpty() == true)
-                        /*if (showthumbnail) colorPalette().textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette().textDisabled.copy(0.5f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
-                            else colorPalette().text,*/
-                        if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) colorPalette().textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
-                        else colorPalette().text,
-                    fontStyle = typography().m.bold.fontStyle,
-                    fontSize = typography().m.bold.fontSize,
-                    //fontWeight = typography().m.bold.fontWeight,
-                    fontFamily = typography().m.bold.fontFamily
+                        /*if (showthumbnail) LumaColor.InkFaint else if (colorPaletteMode == ColorPaletteMode.Light) LumaColor.InkFaint.copy(0.5f).compositeOver(Color.Black) else LumaColor.InkFaint.copy(0.35f).compositeOver(Color.White)
+                            else LumaColor.Ink,*/
+                        if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) LumaColor.InkFaint.copy(0.35f).compositeOver(Color.Black) else LumaColor.InkFaint.copy(0.35f).compositeOver(Color.White)
+                        else LumaColor.Ink,
+                    fontStyle = LumaType.Row.fontStyle,
+                    fontSize = LumaType.Row.fontSize,
+                    //fontWeight = LumaType.Row.fontWeight,
+                    fontFamily = LumaType.Row.fontFamily
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
@@ -333,10 +335,10 @@ fun InfoAlbumAndArtistEssential(
                     textAlign = TextAlign.Center,
                     color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
                     else Color.Black,
-                    fontStyle = typography().m.bold.fontStyle,
-                    fontSize = typography().m.bold.fontSize,
-                    //fontWeight = typography().m.bold.fontWeight,
-                    fontFamily = typography().m.bold.fontFamily
+                    fontStyle = LumaType.Row.fontStyle,
+                    fontSize = LumaType.Row.fontSize,
+                    //fontWeight = LumaType.Row.fontWeight,
+                    fontFamily = LumaType.Row.fontFamily
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
@@ -383,7 +385,7 @@ fun ControlsEssential(
 
     Box {
         IconButton(
-            color = colorPalette().favoritesIcon,
+            color = LumaColor.Ember,
             icon = getLikeState(mediaId),
             onClick = {
                 CoroutineScope( Dispatchers.IO ).launch {
@@ -399,7 +401,7 @@ fun ControlsEssential(
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
             Icon(
                 painter = Preferences.LIKE_ICON.value.neutralIcon,
-                tint = colorPalette().text,
+                tint = LumaColor.Ink,
                 contentDescription = null,
                 modifier = Modifier
                     //.padding(10.dp)
@@ -412,7 +414,7 @@ fun ControlsEssential(
     Image(
         painter = painterResource(R.drawable.play_skip_back),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette().text),
+        colorFilter = ColorFilter.tint(LumaColor.Ink),
         modifier = Modifier
             .combinedClickable(
                 indication = ripple(bounded = false),
@@ -456,17 +458,17 @@ fun ControlsEssential(
                         when (playerPlayButtonType) {
                             PlayerPlayButtonType.CircularRibbed, PlayerPlayButtonType.Disabled -> Color.Transparent
                             else -> {
-                                if (isGradientBackgroundEnabled) colorPalette().background1
-                                else colorPalette().background2
+                                if (isGradientBackgroundEnabled) LumaColor.Raised
+                                else LumaColor.Raised
                             }
                         }
                     }
 
                     ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ->
                         if (playerPlayButtonType == PlayerPlayButtonType.CircularRibbed)
-                            colorPalette().background1 else
+                            LumaColor.Raised else
                             if (playerPlayButtonType != PlayerPlayButtonType.Disabled)
-                                colorPalette().background4 else Color.Transparent
+                                LumaColor.Raised else Color.Transparent
                 }
             )
             .width(playerPlayButtonType.width.dp)
@@ -479,9 +481,9 @@ fun ControlsEssential(
                 painter = painterResource(R.drawable.a13shape),
                 colorFilter = ColorFilter.tint(
                     when (colorPaletteName) {
-                        ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> colorPalette().background4
-                        else -> if (isGradientBackgroundEnabled) colorPalette().background1
-                        else colorPalette().background2
+                        ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack -> LumaColor.Raised
+                        else -> if (isGradientBackgroundEnabled) LumaColor.Raised
+                        else LumaColor.Raised
                     }
                 ),
                 modifier = Modifier
@@ -495,7 +497,7 @@ fun ControlsEssential(
         Image(
             painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(if ((playerPlayButtonType == PlayerPlayButtonType.Disabled) || ((colorPaletteName == ColorPaletteName.Dynamic) && (colorPaletteMode == ColorPaletteMode.PitchBlack))) colorPalette().accent else colorPalette().text),
+            colorFilter = ColorFilter.tint(if ((playerPlayButtonType == PlayerPlayButtonType.Disabled) || ((colorPaletteName == ColorPaletteName.Dynamic) && (colorPaletteMode == ColorPaletteMode.PitchBlack))) LumaColor.Ember else LumaColor.Ink),
             modifier = Modifier
                 .rotate(rotationAngle)
                 .align(Alignment.Center)
@@ -513,9 +515,9 @@ fun ControlsEssential(
                 BasicText(
                     text = fmtSpeed,
                     style = TextStyle(
-                        color = colorPalette().text,
-                        fontStyle = typography().xxxs.semiBold.fontStyle,
-                        fontSize = typography().xxxs.semiBold.fontSize
+                        color = LumaColor.Ink,
+                        fontStyle = LumaType.Numeral.fontStyle,
+                        fontSize = LumaType.Numeral.fontSize
                     ),
                     maxLines = 1,
                     modifier = Modifier
@@ -530,7 +532,7 @@ fun ControlsEssential(
     Image(
         painter = painterResource(R.drawable.play_skip_forward),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette().text),
+        colorFilter = ColorFilter.tint(LumaColor.Ink),
         modifier = Modifier
             .combinedClickable(
                 indication = ripple(bounded = false),
@@ -550,7 +552,7 @@ fun ControlsEssential(
 
     IconButton(
         icon = queueLoopType.androidIconId,
-        color = colorPalette().text,
+        color = LumaColor.Ink,
         onClick = { queueLoopType = queueLoopType.next() },
         modifier = Modifier.size( 26.dp )
     )

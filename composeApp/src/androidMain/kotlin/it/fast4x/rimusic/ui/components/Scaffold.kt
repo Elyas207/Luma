@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -114,7 +116,7 @@ fun Scaffold(
 
         androidx.compose.material3.Scaffold(
             modifier = customModifier,
-            containerColor = colorPalette().background0,
+            containerColor = LumaColor.Ground,
             topBar = {
                 if( UiType.RiMusic.isCurrent() ) AppHeader( navController ).Draw()
             },
@@ -151,7 +153,7 @@ fun Scaffold(
 
                 Row(
                     modifier = modifier
-                        .background( colorPalette().background0 )
+                        .background( LumaColor.Ground )
                         .fillMaxSize()
                 ) {
                     val verticalNavBar = VerticalNavigationBar( tabIndex, onTabChanged, navController )

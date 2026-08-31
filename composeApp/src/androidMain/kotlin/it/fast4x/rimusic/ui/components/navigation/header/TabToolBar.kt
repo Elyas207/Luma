@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.navigation.header
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -25,10 +27,25 @@ object TabToolBar {
     val HORIZONTAL_PADDING = 12.dp
     val VERTICAL_PADDING = 4.dp
 
+    /**
+     * How many bare icons a toolbar may show before the rest move into the ellipsis menu.
+     *
+     * Four is about the limit of what reads as a set of distinct actions rather than a wall of
+     * glyphs. Beyond that, an unlabelled icon costs more to decode than a labelled menu row does
+     * to open — so the overflow is genuinely the friendlier place for anything less common.
+     */
+    private const val MAX_VISIBLE_BUTTONS = 4
+
     @Composable
     fun Buttons(
         buttons: List<Button>,
-        horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceEvenly,
+        /*
+         * Grouped from the left rather than spread across the full width. On a tablet
+         * [Arrangement.SpaceEvenly] pushed four controls to opposite ends of a 1280dp screen, so
+         * they read as unrelated strays instead of one toolbar — and it put them out of line with
+         * the tab title and filter chips, which are both left-aligned.
+         */
+        horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy( 20.dp ),
         verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
         modifier: Modifier = Modifier
     ) {
@@ -51,7 +68,20 @@ object TabToolBar {
         var isClustered by remember { mutableStateOf(false) }
 
         LaunchedEffect( availableWidth ) {
+            /*
+             * Fitting is a *limit*, not a target.
+             *
+             * This used to show as many icons as the width allowed. On a phone that quietly capped
+             * itself at six or seven, but on a tablet every button fitted — so a library screen
+             * opened with fourteen unlabelled icons in a row, none of which say what they do. That
+             * is not a toolbar, it is a puzzle.
+             *
+             * Everything past [MAX_VISIBLE_BUTTONS] moves into the ellipsis menu, where each entry
+             * is drawn *with its name*. Nothing is removed and nothing becomes harder to reach —
+             * the rarely-used actions simply become readable instead of guessable.
+             */
             canDisplay = (availableWidth / sizeWithSpacing).toInt()
+                                                          .coerceAtMost( MAX_VISIBLE_BUTTONS )
             isClustered = buttons.size > canDisplay
         }
 
@@ -100,7 +130,7 @@ object TabToolBar {
     @Composable
     fun Buttons(
         vararg buttons: Button,
-        horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceEvenly,
+        horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy( 20.dp ),
         verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
         modifier: Modifier = Modifier
     ) = Buttons( listOf( *buttons ), horizontalArrangement, verticalAlignment, modifier )
@@ -108,7 +138,7 @@ object TabToolBar {
     @Composable
     fun Icon(
         icon: Painter,
-        tint: Color = colorPalette().text,
+        tint: Color = LumaColor.Ink,
         size: Dp = TOOLBAR_ICON_SIZE,
         enabled: Boolean = true,
         modifier: Modifier = Modifier,
@@ -132,7 +162,7 @@ object TabToolBar {
     @Composable
     fun Icon(
         icon: Painter,
-        tint: Color = colorPalette().text,
+        tint: Color = LumaColor.Ink,
         size: Dp = TOOLBAR_ICON_SIZE,
         enabled: Boolean = true,
         modifier: Modifier = Modifier,
@@ -154,7 +184,7 @@ object TabToolBar {
     @Composable
     fun Icon(
         @DrawableRes iconId: Int,
-        tint: Color = colorPalette().text,
+        tint: Color = LumaColor.Ink,
         size: Dp = TOOLBAR_ICON_SIZE,
         enabled: Boolean = true,
         modifier: Modifier = Modifier,
@@ -179,7 +209,7 @@ object TabToolBar {
     @Composable
     fun Icon(
         @DrawableRes iconId: Int,
-        tint: Color = colorPalette().text,
+        tint: Color = LumaColor.Ink,
         size: Dp = TOOLBAR_ICON_SIZE,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
@@ -203,7 +233,7 @@ object TabToolBar {
         @DrawableRes onIconId: Int,
         @DrawableRes offIconId: Int,
         toggleCondition: Boolean,
-        tint: Color = colorPalette().text,
+        tint: Color = LumaColor.Ink,
         size: Dp = TOOLBAR_ICON_SIZE,
         modifier: Modifier = Modifier,
         onClick: () -> Unit
@@ -223,7 +253,7 @@ object TabToolBar {
         @DrawableRes onIconId: Int,
         @DrawableRes offIconId: Int,
         toggleCondition: Boolean,
-        tint: Color = colorPalette().text,
+        tint: Color = LumaColor.Ink,
         size: Dp = TOOLBAR_ICON_SIZE,
         modifier: Modifier = Modifier,
         onShortClick: () -> Unit,
@@ -245,8 +275,8 @@ object TabToolBar {
     @Composable
     fun Toggleable(
         @DrawableRes iconId: Int,
-        tintOn: Color = colorPalette().text,
-        tintOff: Color = colorPalette().textDisabled,
+        tintOn: Color = LumaColor.Ink,
+        tintOff: Color = LumaColor.InkFaint,
         toggleCondition: Boolean,
         enabled: Boolean,
         size: Dp = TOOLBAR_ICON_SIZE,
@@ -267,8 +297,8 @@ object TabToolBar {
     @Composable
     fun Toggleable(
         @DrawableRes iconId: Int,
-        tintOn: Color = colorPalette().text,
-        tintOff: Color = colorPalette().textDisabled,
+        tintOn: Color = LumaColor.Ink,
+        tintOff: Color = LumaColor.InkFaint,
         toggleCondition: Boolean,
         enabled: Boolean,
         size: Dp = TOOLBAR_ICON_SIZE,

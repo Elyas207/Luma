@@ -56,8 +56,12 @@ object ImageFactory : KoinComponent {
                     .data( thumbnailUrl.thumbnail( THUMBNAIL_SIZE ) )
                     .diskCacheKey( thumbnailUrl )
                     .placeholder( R.drawable.loader )
-                    .error( R.drawable.noimage )
-                    .fallback( R.drawable.image )
+                    // Both point at the same tile. Coil distinguishes "load failed" (error) from
+                    // "no url given" (fallback), but the user cannot act on that difference and
+                    // the previous pair — a crossed-out frame and a picture icon — made routine
+                    // missing art look like breakage. See [R.drawable.artwork_missing].
+                    .error( R.drawable.artwork_missing )
+                    .fallback( R.drawable.artwork_missing )
                     .apply( builder )
                     .build()
 

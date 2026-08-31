@@ -1,5 +1,7 @@
 package me.knighthat.component
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -28,7 +30,7 @@ abstract class RenameDialog(
     @Composable
     override fun LeadingIcon() = Icon(
         painter = icon,
-        tint = colorPalette().text,
+        tint = LumaColor.Ink,
         contentDescription = "Rename dialog text box icon",
         modifier = Modifier.size( 20.dp )
     )

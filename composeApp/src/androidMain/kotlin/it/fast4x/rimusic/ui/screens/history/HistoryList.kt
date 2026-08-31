@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.history
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.OptIn
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -137,7 +139,7 @@ fun HistoryList(
 
     Column (
         modifier = Modifier
-            .background(colorPalette().background0)
+            .background(LumaColor.Ground)
             .fillMaxHeight()
             .fillMaxWidth(
                 if( NavigationBarPosition.Right.isCurrent() )
@@ -156,7 +158,7 @@ fun HistoryList(
             contentPadding = LocalPlayerAwareWindowInsets.current
                 .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
             modifier = Modifier
-                .background(colorPalette().background0)
+                .background(LumaColor.Ground)
                 .fillMaxSize()
         ) {
 
@@ -182,13 +184,30 @@ fun HistoryList(
                 )
             }
 
+            /*
+             * A blank body is how a working screen looks broken.
+             *
+             * On a fresh install this screen rendered a title, two tabs and then nothing at all —
+             * the user cannot tell "you have not played anything yet" from "this failed to load".
+             * Both history tabs get an explicit state saying which it is.
+             */
+            if ( historyType == HistoryType.History && events.isEmpty() )
+                item( key = "empty-history" ) {
+                    app.kreate.android.themed.common.component.EmptyState(
+                        iconId = R.drawable.history,
+                        titleId = R.string.history_is_empty,
+                        descriptionId = R.string.history_empty_explanation,
+                        modifier = Modifier.fillParentMaxHeight( 0.7f )
+                    )
+                }
+
             if( historyType == HistoryType.History )
                 events.forEach { (headerStr, details) ->
                     stickyHeader {
                         Title(
                             title = headerStr,
                             modifier = Modifier.background(
-                                color = colorPalette().background3,
+                                color = LumaColor.Raised,
                                 shape = thumbnailShape()
                             )
                         )
@@ -221,7 +240,7 @@ fun HistoryList(
                         Title(
                             title = section.title,
                             modifier = Modifier.background(
-                                color = colorPalette().background3,
+                                color = LumaColor.Raised,
                                 shape = thumbnailShape()
                             )
                         )

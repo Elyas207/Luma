@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.navigation.header
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.content.pm.PackageManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,8 +31,15 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.ytAccountThumbnail
 
+/**
+ * The app's secondary destinations.
+ *
+ * `internal` rather than private because Home needs the *same* menu: until now these routes existed
+ * only behind the overflow on the search-results screen, so reaching Settings meant performing a
+ * search first (finding 5). Duplicating the list would guarantee the two drift apart.
+ */
 @Composable
-private fun HamburgerMenu(
+internal fun HamburgerMenu(
     expanded: Boolean,
     onItemClick: (NavRoutes) -> Unit,
     onDismissRequest: () -> Unit
@@ -40,7 +49,7 @@ private fun HamburgerMenu(
 
     val menu = DropdownMenu(
         expanded = expanded,
-        modifier = Modifier.background( colorPalette().background0.copy(0.90f) ),
+        modifier = Modifier.background( LumaColor.Ground.copy(0.90f) ),
         onDismissRequest = onDismissRequest
     )
     // History button
@@ -78,6 +87,38 @@ private fun HamburgerMenu(
             ) { pipHandler.enterPictureInPictureMode() }
         )
     menu.add { HorizontalDivider() }
+    // Appearance — skins are a first-class choice, not buried in a settings sub-tab
+    menu.add(
+        DropdownMenu.Item(
+            R.drawable.color_palette,
+            R.string.appearance
+        ) { onItemClick( NavRoutes.appearance ) }
+    )
+    // Your listening — the transparency surface for personalisation. Sits next to Appearance
+    // because both are "how the app behaves for me" rather than settings in the plumbing sense.
+    menu.add(
+        DropdownMenu.Item(
+            R.drawable.sparkles,
+            R.string.your_listening
+        ) { onItemClick( NavRoutes.listening ) }
+    )
+    // Continue on another device
+    menu.add(
+        DropdownMenu.Item(
+            R.drawable.play_skip_forward,
+            R.string.continue_on_device
+        ) { onItemClick( NavRoutes.handoff ) }
+    )
+    // Car Mode — deliberately an explicit choice rather than something the app infers from screen
+    // size or a Bluetooth connection. Guessing wrong here means replacing the whole interface at
+    // the worst possible moment, so entering and leaving stay entirely under the user's control.
+    menu.add(
+        DropdownMenu.Item(
+            R.drawable.car,
+            R.string.car_mode
+        ) { onItemClick( NavRoutes.carMode ) }
+    )
+    menu.add { HorizontalDivider() }
     // Settings button
     menu.add(
         DropdownMenu.Item(
@@ -97,7 +138,7 @@ fun ActionBar(
     var expanded by remember { mutableStateOf(false) }
 
     // Search Icon
-    HeaderIcon( R.drawable.search ) {
+    HeaderIcon( R.drawable.search, contentDescription = "Search" ) {
         navController.navigate( NavRoutes.search.name ) {
             if( Preferences.SINGLE_BACK_FROM_SEARCH.value )
                 popUpTo( NavRoutes.search.name )
@@ -115,8 +156,8 @@ fun ActionBar(
                                    .clip( thumbnailShape() )
                                    .clickable { expanded = !expanded }
             )
-        else HeaderIcon( R.drawable.ytmusic, size = 30.dp ) { expanded = !expanded }
-    } else HeaderIcon( R.drawable.burger ) { expanded = !expanded }
+        else HeaderIcon( R.drawable.ytmusic, size = 30.dp, contentDescription = "More" ) { expanded = !expanded }
+    } else HeaderIcon( R.drawable.ellipsis_vertical, contentDescription = "More" ) { expanded = !expanded }
 
     // Define actions for when item inside menu clicked,
     // and when user clicks on places other than the menu (dismiss)

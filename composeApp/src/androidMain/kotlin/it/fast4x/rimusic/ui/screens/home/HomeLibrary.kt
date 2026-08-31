@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.home
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -49,7 +51,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -167,7 +168,7 @@ fun HomeLibrary(
     ) {
         Box(
             modifier = Modifier
-                .background(colorPalette().background0)
+                .background(LumaColor.Ground)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 .fillMaxWidth(
@@ -178,10 +179,7 @@ fun HomeLibrary(
                 )
         ) {
             Column( Modifier.fillMaxSize() ) {
-                // Sticky tab's title
-                TabHeader( R.string.playlists ) {
-                    HeaderInfo( itemsOnDisplay.size.toString(), R.drawable.playlist )
-                }
+                // No section heading: the library rail above already names the section.
 
                 // Sticky tab's tool bar
                 TabToolBar.Buttons( sort, search, shuffle, newPlaylistDialog, importPlaylistDialog, itemSize )
@@ -192,7 +190,7 @@ fun HomeLibrary(
                 LazyVerticalGrid(
                     state = lazyGridState,
                     columns = GridCells.Adaptive( itemSize.size.dp ),
-                    modifier = Modifier.background( colorPalette().background0 ),
+                    modifier = Modifier.background( LumaColor.Ground ),
                     verticalArrangement = Arrangement.spacedBy( PlaylistItem.ROW_SPACING.dp ),
                     contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
                 ) {

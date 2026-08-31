@@ -6,7 +6,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
@@ -16,7 +15,7 @@ import app.kreate.android.themed.rimusic.screen.home.HomeSongsScreen
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.toUiMood
-import it.fast4x.rimusic.ui.components.Skeleton
+import app.kreate.android.themed.library.LibraryScaffold
 
 
 @ExperimentalMaterial3Api
@@ -37,19 +36,23 @@ fun HomeScreen(
 
     val (tabIndex, onTabChanged) = Preferences.HOME_TAB_INDEX
 
-    Skeleton(
-        navController,
-        tabIndex,
-        onTabChanged,
-        miniPlayer,
-        navBarContent = { Item ->
-            if ( Preferences.QUICK_PICKS_PAGE.value )
-                Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
-            Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
-            Item(2, stringResource(R.string.artists), R.drawable.people)
-            Item(3, stringResource(R.string.albums), R.drawable.album)
-            Item(4, stringResource(R.string.playlists), R.drawable.library)
-        }
+    // The rail replaces both the five-icon tab bar and the per-section `<h1>`; see [LibraryScaffold]
+    // for why the two were saying the same thing twice.
+    val sections = buildList {
+        if ( Preferences.QUICK_PICKS_PAGE.value )
+            add( 0 to R.string.quick_picks )
+        add( 1 to R.string.songs )
+        add( 2 to R.string.artists )
+        add( 3 to R.string.albums )
+        add( 4 to R.string.playlists )
+    }
+
+    LibraryScaffold(
+        navController = navController,
+        sections = sections,
+        tabIndex = tabIndex,
+        onTabChanged = onTabChanged,
+        miniPlayer = miniPlayer
     ) { currentTabIndex ->
         saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
             when (currentTabIndex) {

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -60,6 +63,8 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.service.player.StatefulPlayer
@@ -191,8 +196,13 @@ fun MiniPlayer(
 
     SwipeToDismissBox(
         modifier = Modifier
+            // The mini player floats above the content, so nothing else reserves room for the
+            // system navigation bar — without this the back, home and recents glyphs are drawn
+            // straight over the artist name, which is exactly how it rendered on a 3-button
+            // navigation device (refinement pass 1).
+            .navigationBarsPadding()
             .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape( LumaRadius.Panel )),
         state = dismissState,
         backgroundContent = {
             /*
@@ -209,7 +219,7 @@ fun MiniPlayer(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colorPalette().background1)
+                    .background(LumaColor.Raised)
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = when (dismissState.targetValue) {
                     SwipeToDismissBoxValue.StartToEnd -> Arrangement.Start
@@ -232,7 +242,7 @@ fun MiniPlayer(
                         SwipeToDismissBoxValue.Settled ->  ImageVector.vectorResource(R.drawable.play)
                     },
                     contentDescription = null,
-                    tint = colorPalette().iconButtonPlayer,
+                    tint = app.kreate.android.themed.luma.LumaColor.Ink,
                 )
             }
         }
@@ -274,8 +284,12 @@ fun MiniPlayer(
                         }
                     )
                 }
-                .background(colorPalette().background2)
+                // A bar welded to the bottom edge is what every media app docks; a capsule that
+                // floats clear of the edges reads as the player *shrunk*, which is what it is.
+                .padding( horizontal = 12.dp )
                 .fillMaxWidth()
+                .clip( androidx.compose.foundation.shape.RoundedCornerShape( LumaRadius.Sleeve ) )
+                .background( app.kreate.android.themed.luma.LumaColor.Raised )
                 .drawBehind {
                     if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.MiniPlayer) {
                         drawRect(
@@ -303,10 +317,17 @@ fun MiniPlayer(
                 ImageFactory.AsyncImage(
                     thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString(),
                     contentScale = ContentScale.FillHeight,
-                    modifier = Modifier.clip( thumbnailShape() )
-                                       .size( 48.dp )
+                    modifier = Modifier.clip( androidx.compose.foundation.shape.CircleShape )
+                                       .size( 44.dp )
                 )
-                NowPlayingSongIndicator(mediaItem.mediaId, player)
+                // No now-playing indicator here. It defaulted to the list-row thumbnail size, which
+                // is far larger than this 44dp disc, so the equaliser animation spilled outside the
+                // artwork and rendered as stray blobs across the reciter's face (finding 10).
+                //
+                // Sizing it correctly fixed the spill but left the real problem: the mini player is
+                // *by definition* the thing that is playing, so an "this is playing" badge on its
+                // own artwork is redundant, and it competes with the one image on the control.
+                // It stays in the list rows, where it distinguishes one row from the others.
             }
 
             Column(
@@ -322,7 +343,7 @@ fun MiniPlayer(
                     if ( mediaItem.isExplicit )
                         it.fast4x.rimusic.ui.components.themed.IconButton(
                             icon = R.drawable.explicit,
-                            color = colorPalette().text,
+                            color = LumaColor.Ink,
                             enabled = true,
                             onClick = {},
                             modifier = Modifier
@@ -330,7 +351,9 @@ fun MiniPlayer(
                         )
                     BasicText(
                         text = cleanPrefix( mediaItem.mediaMetadata.title.toString() ),
-                        style = typography().xxs.semiBold,
+                        style = app.kreate.android.themed.luma.LumaType.Tile.copy(
+                            color = app.kreate.android.themed.luma.LumaColor.Ink
+                        ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.scrollingText()
@@ -339,10 +362,16 @@ fun MiniPlayer(
 
                 BasicText(
                     text = cleanPrefix( mediaItem.mediaMetadata.artist.toString() ),
-                    style = typography().xxs.semiBold,
+                    style = app.kreate.android.themed.luma.LumaType.Meta.copy(
+                        color = app.kreate.android.themed.luma.LumaColor.InkSoft
+                    ),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.scrollingText()
+                    overflow = TextOverflow.Ellipsis
+                    // No marquee on this line. With both lines scrolling independently the mini
+                    // player reads as garbled at any given instant — the title showing its tail
+                    // above the artist showing its middle — and two things moving in a control
+                    // this small is noise rather than information. The title still scrolls; the
+                    // artist truncates. It is also one less animation running during playback.
                 )
             }
 
@@ -360,7 +389,7 @@ fun MiniPlayer(
                if (miniPlayerType == MiniPlayerType.Essential)
                 it.fast4x.rimusic.ui.components.themed.IconButton(
                     icon = R.drawable.play_skip_back,
-                    color = colorPalette().iconButtonPlayer,
+                    color = app.kreate.android.themed.luma.LumaColor.Ink,
                     onClick = {
                         player.playPrevious()
                         if (effectRotationEnabled) isRotated = !isRotated
@@ -382,13 +411,13 @@ fun MiniPlayer(
                             }
                             if (effectRotationEnabled) isRotated = !isRotated
                         }
-                        .background(colorPalette().background2)
+                        .background(app.kreate.android.themed.luma.LumaColor.Raised)
                         .size(42.dp)
                 ) {
                     Image(
                         painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().iconButtonPlayer),
+                        colorFilter = ColorFilter.tint(app.kreate.android.themed.luma.LumaColor.Ink),
                         modifier = Modifier
                             .rotate(rotationAngle)
                             .align(Alignment.Center)
@@ -398,7 +427,7 @@ fun MiniPlayer(
                if (miniPlayerType == MiniPlayerType.Essential)
                 it.fast4x.rimusic.ui.components.themed.IconButton(
                     icon = R.drawable.play_skip_forward,
-                    color = colorPalette().iconButtonPlayer,
+                    color = app.kreate.android.themed.luma.LumaColor.Ink,
                     onClick = {
                         player.playNext()
                         if (effectRotationEnabled) isRotated = !isRotated
@@ -416,7 +445,7 @@ fun MiniPlayer(
                     }}
                     it.fast4x.rimusic.ui.components.themed.IconButton(
                         icon = iconId,
-                        color = colorPalette().favoritesIcon,
+                        color = app.kreate.android.themed.luma.LumaColor.Ember,
                         onClick = ::toggleLike,
                         modifier = Modifier
                             .rotate(rotationAngle)

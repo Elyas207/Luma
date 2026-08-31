@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import android.text.format.Formatter
 import androidx.compose.animation.AnimatedVisibility
@@ -133,7 +135,7 @@ fun StatsForNerds(
                         }
                     )
                 }
-                .background(colorPalette().overlay)
+                .background(LumaColor.Ground)
                 .fillMaxSize()
         ) {
             Row(
@@ -145,43 +147,43 @@ fun StatsForNerds(
                 Column(horizontalAlignment = Alignment.End) {
                     BasicText(
                         text = stringResource(R.string.id),
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        style = LumaType.Meta.color(LumaColor.Ink)
                     )
                     if( isLocal == false ) {
                         BasicText(
                             text = "itag",
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
                         BasicText(
                             text = stringResource(R.string.quality),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
                     }
                     BasicText(
                         text = stringResource(R.string.bitrate),
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        style = LumaType.Meta.color(LumaColor.Ink)
                     )
                     BasicText(
                         text = stringResource(R.string.size),
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        style = LumaType.Meta.color(LumaColor.Ink)
                     )
 
                     if( isLocal == true )
                         BasicText(
                             text = stringResource(R.string.cached),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
 
                     if( isLocal == false ) {
                         BasicText(
                             text = if (downloadCachedBytes == 0L) stringResource(R.string.cached)
                             else stringResource(R.string.downloaded),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
 
                         BasicText(
                             text = stringResource(R.string.loudness),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
                     }
                 }
@@ -190,7 +192,7 @@ fun StatsForNerds(
                     BasicText(
                         text = mediaId,
                         maxLines = 1,
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        style = LumaType.Meta.color(LumaColor.Ink)
                     )
 
                     if( isLocal == false ) {
@@ -198,18 +200,18 @@ fun StatsForNerds(
                             text = format?.itag?.toString()
                                 ?: stringResource(R.string.audio_quality_format_unknown),
                             maxLines = 1,
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
                         BasicText(
                             text = getQuality(format!!),
                             maxLines = 1,
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
                     }
                     BasicText(
                         text = format?.bitrate?.let { "${it / 1000} kbps" } ?: stringResource(R.string.audio_quality_format_unknown),
                         maxLines = 1,
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        style = LumaType.Meta.color(LumaColor.Ink)
                     )
                     BasicText(
 //                        text = format?.contentLength
@@ -230,13 +232,13 @@ fun StatsForNerds(
                             }
                         },
                         maxLines = 1,
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        style = LumaType.Meta.color(LumaColor.Ink)
                     )
 //                    if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == true) {
 //                        BasicText(
 //                            text = "100%",
 //                            maxLines = 1,
-//                            style = typography().xs.medium.color(colorPalette().onOverlay)
+//                            style = LumaType.Meta.color(LumaColor.Ink)
 //                        )
 //                    }
                     if( isLocal == false ) {
@@ -254,13 +256,13 @@ fun StatsForNerds(
 //                                }
 //                            ,
 //                            maxLines = 1,
-//                            style = typography().xs.medium.color(colorPalette().onOverlay)
+//                            style = LumaType.Meta.color(LumaColor.Ink)
 //                        )
                         BasicText(
                             text = format?.loudnessDb?.let { "%.2f dB".format(it) }
                                 ?: stringResource(R.string.audio_quality_format_unknown),
                             maxLines = 1,
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
                     }
                 }
@@ -276,7 +278,7 @@ fun StatsForNerds(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = modifier
-                        .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                        .background(LumaColor.Raised.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
                         .padding(vertical = 5.dp)
                         .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                 ) {
@@ -290,7 +292,7 @@ fun StatsForNerds(
                                 text = stringResource(R.string.quality) + " : " + getQuality(format!!),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                style = typography().xs.medium.color(colorPalette().text)
+                                style = LumaType.Meta.color(LumaColor.Ink)
                             )
                         }
                     }
@@ -304,7 +306,7 @@ fun StatsForNerds(
                                 ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            style = typography().xs.medium.color(colorPalette().text)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
                     }
                     Box(
@@ -317,7 +319,7 @@ fun StatsForNerds(
                                 ?: (stringResource(R.string.size) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            style = typography().xs.medium.color(colorPalette().text)
+                            style = LumaType.Meta.color(LumaColor.Ink)
                         )
                     }
                     Box(
@@ -326,7 +328,7 @@ fun StatsForNerds(
                     ) {
                         IconButton(
                             icon = R.drawable.chevron_up,
-                            color = colorPalette().text,
+                            color = LumaColor.Ink,
                             onClick = {statsfornerdsfull = !statsfornerdsfull},
                             modifier = Modifier
                                 .size(18.dp)
@@ -340,7 +342,7 @@ fun StatsForNerds(
                           verticalAlignment = Alignment.CenterVertically,
                           horizontalArrangement = Arrangement.Center,
                           modifier = modifier
-                              .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                              .background(LumaColor.Raised.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
                               .padding(vertical = 5.dp)
                               .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                       ) {
@@ -351,7 +353,7 @@ fun StatsForNerds(
                               BasicText(
                                   text = stringResource(R.string.id) + " : " + mediaId,
                                   maxLines = 1,
-                                  style = typography().xs.medium.color(colorPalette().text)
+                                  style = LumaType.Meta.color(LumaColor.Ink)
                               )
                           }
                           if ( isLocal == false ) {
@@ -362,7 +364,7 @@ fun StatsForNerds(
                                   BasicText(
                                       text = "itag: %d".format( format?.itag ),
                                       maxLines = 1,
-                                      style = typography().xs.medium.color(colorPalette().text)
+                                      style = LumaType.Meta.color(LumaColor.Ink)
                                   )
                               }
                           }
@@ -371,7 +373,7 @@ fun StatsForNerds(
                           verticalAlignment = Alignment.CenterVertically,
                           horizontalArrangement = Arrangement.Center,
                           modifier = modifier
-                              .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                              .background(LumaColor.Raised.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
                               .padding(vertical = 5.dp)
                               .fillMaxWidth(if (isLandscape) 0.8f else 1f)
                       ) {
@@ -383,7 +385,7 @@ fun StatsForNerds(
                                   BasicText(
                                       text = stringResource(R.string.cached) + " : " + "100%",
                                       maxLines = 1,
-                                      style = typography().xs.medium.color(colorPalette().text)
+                                      style = LumaType.Meta.color(LumaColor.Ink)
                                   )
                               }
                           }
@@ -410,7 +412,7 @@ fun StatsForNerds(
                                           }
                                       ,
                                       maxLines = 1,
-                                      style = typography().xs.medium.color(colorPalette().text)
+                                      style = LumaType.Meta.color(LumaColor.Ink)
                                   )
                               }
                               Box(
@@ -427,7 +429,7 @@ fun StatsForNerds(
                                               R.string.audio_quality_format_unknown
                                           )),
                                       maxLines = 1,
-                                      style = typography().xs.medium.color(colorPalette().text)
+                                      style = LumaType.Meta.color(LumaColor.Ink)
                                   )
                               }
                           }

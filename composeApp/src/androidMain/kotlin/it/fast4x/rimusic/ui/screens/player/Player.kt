@@ -1,5 +1,9 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import app.kreate.android.themed.luma.LumaRadius
+
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.annotation.SuppressLint
 import android.graphics.RenderEffect
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -464,7 +468,7 @@ fun Player(
 
                 BasicText(
                     text = stringResource(R.string.set_sleep_timer),
-                    style = typography().s.semiBold,
+                    style = LumaType.Tile,
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 24.dp)
                 )
@@ -486,11 +490,11 @@ fun Player(
                                 .clip(CircleShape)
                                 .clickable(enabled = amount > 1) { amount-- }
                                 .size(48.dp)
-                                .background(colorPalette().background0)
+                                .background(LumaColor.Ground)
                         ) {
                             BasicText(
                                 text = "-",
-                                style = typography().xs.semiBold
+                                style = LumaType.Meta
                             )
                         }
 
@@ -500,7 +504,7 @@ fun Player(
                                     R.string.left,
                                     (amount * 5).toDuration( DurationUnit.MINUTES ).readableText()
                                 ),
-                                style = typography().s.semiBold,
+                                style = LumaType.Tile,
                                 modifier = Modifier
                                     .clickable {
                                         showCircularSlider = !showCircularSlider
@@ -515,18 +519,18 @@ fun Player(
                                 .clip(CircleShape)
                                 .clickable(enabled = amount < 60) { amount++ }
                                 .size(48.dp)
-                                .background(colorPalette().background0)
+                                .background(LumaColor.Ground)
                         ) {
                             BasicText(
                                 text = "+",
-                                style = typography().xs.semiBold
+                                style = LumaType.Meta
                             )
                         }
 
                     } else {
                         CircularSlider(
                             stroke = 40f,
-                            thumbColor = colorPalette().accent,
+                            thumbColor = LumaColor.Ember,
                             text = (amount * 5).toDuration( DurationUnit.MINUTES ).readableText(),
                             modifier = Modifier
                                 .size(300.dp),
@@ -565,12 +569,12 @@ fun Player(
                     IconButton(
                         onClick = { showCircularSlider = !showCircularSlider },
                         icon = R.drawable.time,
-                        color = colorPalette().text
+                        color = LumaColor.Ink
                     )
                     IconButton(
                         onClick = { isShowingSleepTimerDialog = false },
                         icon = R.drawable.close,
-                        color = colorPalette().text
+                        color = LumaColor.Ink
                     )
                     IconButton(
                         enabled = amount > 0,
@@ -581,7 +585,7 @@ fun Player(
                             isShowingSleepTimerDialog = false
                         },
                         icon = R.drawable.checkmark,
-                        color = colorPalette().accent
+                        color = LumaColor.Ember
                     )
                 }
             }
@@ -808,7 +812,7 @@ fun Player(
                             Offset(sizeShader.width / 2f, sizeShader.height),
                             listOf(
                                 dynamicColorPalette.background2,
-                                colorPalette().background2,
+                                LumaColor.Raised,
                             ),
                             listOf(0f, 1f)
                         )
@@ -818,7 +822,7 @@ fun Player(
                             Offset(sizeShader.width / 2f, 0f),
                             Offset(sizeShader.width / 2f, sizeShader.height),
                             listOf(
-                                colorPalette().background1,
+                                LumaColor.Raised,
                                 dynamicColorPalette.accent,
                             ),
                             listOf(0f, 1f)
@@ -830,7 +834,7 @@ fun Player(
                             Offset(sizeShader.width / 2f, sizeShader.height),
                             listOf(
                                 //Color.White,
-                                colorPalette().background2,
+                                LumaColor.Raised,
                                 Color.Transparent,
                             ),
                             listOf(0f, 1f)
@@ -930,8 +934,8 @@ fun Player(
                 containerModifier = containerModifier
                     .background(
                         Brush.verticalGradient(
-                            0.5f to if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) dynamicColorPalette.background1 else colorPalette().background1,
-                            1.0f to if (blackgradient) Color.Black else colorPalette().background2,
+                            0.5f to if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) dynamicColorPalette.background1 else LumaColor.Raised,
+                            1.0f to if (blackgradient) Color.Black else LumaColor.Raised,
                             startY = 0.0f,
                             endY = 1500.0f
                         )
@@ -1541,7 +1545,7 @@ fun Player(
                         flingBehavior = fling,
                         userScrollEnabled = !(albumCoverRotation && (isShowingLyrics || showthumbnail)),
                         modifier = Modifier
-                            .background(colorPalette().background1)
+                            .background(LumaColor.Raised)
                             .pointerInteropFilter {
                                 circleOffsetY = it.y
                                 false
@@ -1659,7 +1663,7 @@ fun Player(
                                                            alpha = (2f - startOffset) / 2f
                                                        }
                                                    }
-                                                   .clip(RoundedCornerShape(20.dp))
+                                                   .clip(RoundedCornerShape( LumaRadius.Sleeve ))
                                                    .combinedClickable(
                                                        interactionSource = remember { MutableInteractionSource() },
                                                        indication = null,
@@ -1765,7 +1769,7 @@ fun Player(
                             Image(
                                 painter = painterResource(R.drawable.chevron_down),
                                 contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                                colorFilter = ColorFilter.tint(LumaColor.Ember),
                                 modifier = Modifier
                                     .clickable {
                                         onDismiss()
@@ -1789,7 +1793,7 @@ fun Player(
                                 Image(
                                     painter = painterResource(R.drawable.ellipsis_vertical),
                                     contentDescription = null,
-                                    colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                                    colorFilter = ColorFilter.tint(LumaColor.Ember),
                                     modifier = Modifier
                                         .clickable {
                                             menuState.display {
@@ -2058,7 +2062,7 @@ fun Player(
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.time),
-                                colorFilter = ColorFilter.tint(colorPalette().accent),
+                                colorFilter = ColorFilter.tint(LumaColor.Ember),
                                 modifier = Modifier
                                     .size(20.dp)
                                     .padding(horizontal = 5.dp),
@@ -2069,10 +2073,10 @@ fun Player(
                             Box {
                                 BasicText(
                                     text = " $totalDuration",
-                                    style = typography().xxs.semiBold.merge(
+                                    style = LumaType.Numeral.merge(
                                         TextStyle(
                                             textAlign = TextAlign.Center,
-                                            color = colorPalette().text,
+                                            color = LumaColor.Ink,
                                         )
                                     ),
                                     maxLines = 1,
@@ -2080,7 +2084,7 @@ fun Player(
                                 )
                                 BasicText(
                                     text = " $totalDuration",
-                                    style = typography().xxs.semiBold.merge(
+                                    style = LumaType.Numeral.merge(
                                         TextStyle(
                                             textAlign = TextAlign.Center,
                                             drawStyle = Stroke(
@@ -2154,15 +2158,15 @@ fun Player(
         CustomModalBottomSheet(
             showSheet = showQueue,
             onDismissRequest = { showQueue = false },
-            containerColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
-            contentColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
+            containerColor = if (queueType == QueueType.Modern) Color.Transparent else LumaColor.Raised,
+            contentColor = if (queueType == QueueType.Modern) Color.Transparent else LumaColor.Raised,
             modifier = Modifier
                 .fillMaxWidth(),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             dragHandle = {
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette().background0,
+                    color = LumaColor.Ground,
                     shape = thumbnailShape()
                 ) {}
             },
@@ -2183,15 +2187,15 @@ fun Player(
         CustomModalBottomSheet(
             showSheet = showSearchEntity,
             onDismissRequest = { showSearchEntity = false },
-            containerColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
-            contentColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
+            containerColor = if (playerType == PlayerType.Modern) Color.Transparent else LumaColor.Raised,
+            contentColor = if (playerType == PlayerType.Modern) Color.Transparent else LumaColor.Raised,
             modifier = Modifier
                 .fillMaxWidth(),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             dragHandle = {
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette().background0,
+                    color = LumaColor.Ground,
                     shape = thumbnailShape()
                 ) {}
             },

@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -56,7 +58,7 @@ fun AppearanceSettings(paddingValues: PaddingValues) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.background( colorPalette().background0 )
+        modifier = Modifier.background( LumaColor.Ground )
                            .padding( paddingValues )
                            .fillMaxHeight()
                            .fillMaxWidth(

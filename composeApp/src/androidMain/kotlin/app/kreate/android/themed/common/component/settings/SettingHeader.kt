@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.component.settings
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -28,13 +30,13 @@ fun SettingHeader(
     subtitle: @Composable () -> String = { "" },
     trailingContent: @Composable () -> Unit = {}
 ) {
-    val underlineColor = colorPalette().textDisabled.copy( .6f )
+    val underlineColor = LumaColor.InkFaint.copy( .6f )
 
     Row(
         verticalAlignment = Alignment.Bottom,
         // Set background to make all other elements hidden
         // when scroll pass header
-        modifier = modifier.background( colorPalette().background0 )
+        modifier = modifier.background( LumaColor.Ground )
                            .drawBehind {
                                // Simple dimmed line to make distinction
                                // between header and other elements.
@@ -54,16 +56,16 @@ fun SettingHeader(
     ) {
         Column( Modifier.weight( 1f ) ) {
             BasicText(
+                // Ember-on-black bold sans read as a warning label. Section names are the
+                // quietest rank on a settings page — you scan past them to the entry you want.
                 text = title().uppercase(),
-                style = typography().m
-                                    .semiBold
-                                    .copy( colorPalette().accent ),
+                style = LumaType.Label.copy( LumaColor.InkFaint ),
             )
 
             if ( subtitle().isNotBlank() )
                 BasicText(
                     text = subtitle(),
-                    style = typography().xxs.secondary,
+                    style = LumaType.Meta.copy( LumaColor.InkFaint ),
                     modifier = Modifier.padding( start = 3.dp )
                 )
         }

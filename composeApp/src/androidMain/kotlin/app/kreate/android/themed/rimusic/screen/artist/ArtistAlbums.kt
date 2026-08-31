@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.artist
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -104,7 +106,7 @@ fun ArtistAlbums(
                 state = lazyGridState,
                 columns = GridCells.Adaptive( Dimensions.thumbnails.album + 24.dp ),
                 contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
-                modifier = Modifier.background( colorPalette().background0 )
+                modifier = Modifier.background( LumaColor.Ground )
             ) {
                 items(
                     items = albums.distinctBy( Innertube.AlbumItem::key ),

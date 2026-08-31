@@ -839,6 +839,25 @@ sealed class Preferences<T>(
         val COLOR_PALETTE by lazy {
             Enum( preferences, Key.COLOR_PALETTE, "colorPaletteName", ColorPaletteName.Dynamic )
         }
+
+        /**
+         * Selected skin, by [app.kreate.android.themed.skin.SkinId] name.
+         *
+         * Blank means "none" and leaves the legacy [COLOR_PALETTE] behaviour untouched, so an
+         * existing install keeps exactly the appearance it had until the user opts in.
+         */
+        val SKIN by lazy {
+            String( preferences, Key.SKIN, "skinId", "" )
+        }
+
+        /**
+         * Whether the app learns from listening behaviour. On by default, because a player that
+         * keeps offering things you always skip is the worse default — but switchable, and the
+         * control centre makes what it learned visible either way.
+         */
+        val TASTE_LEARNING_ENABLED by lazy {
+            Boolean( preferences, Key.TASTE_LEARNING, "tasteLearning", true )
+        }
         val THEME_MODE by lazy {
             Enum( preferences, Key.THEME_MODE, "colorPaletteMode", ColorPaletteMode.Dark )
         }
@@ -959,8 +978,17 @@ sealed class Preferences<T>(
         val ENABLE_DISCOVER by lazy {
             Boolean( preferences, Key.ENABLE_DISCOVER, "discover", false )
         }
+        /**
+         * On by default.
+         *
+         * With this off — which it was — nothing about the current queue or playhead is written
+         * anywhere, so an app the OS kills three minutes into a two-hour recitation reopens on
+         * "Nothing playing yet" and the listener starts again from the beginning. Resuming exactly
+         * where you left off is one of the few things that make a media app feel like it is paying
+         * attention, and it costs one small transaction every twenty seconds while playing.
+         */
         val ENABLE_PERSISTENT_QUEUE by lazy {
-            Boolean( preferences, Key.ENABLE_PERSISTENT_QUEUE, "persistentQueue", false )
+            Boolean( preferences, Key.ENABLE_PERSISTENT_QUEUE, "persistentQueue", true )
         }
         val RESUME_PLAYBACK_ON_STARTUP by lazy {
             Boolean( preferences, Key.RESUME_PLAYBACK_ON_STARTUP, "resumePlaybackOnStart", false )
@@ -1925,6 +1953,8 @@ sealed class Preferences<T>(
         const val MENU_STYLE = "MenuStyle"
         const val MAIN_THEME = "MainTheme"
         const val COLOR_PALETTE = "ColorPalette"
+        const val SKIN = "Skin"
+        const val TASTE_LEARNING = "TasteLearning"
         const val THEME_MODE = "ThemeMode"
         const val STARTUP_SCREEN = "StartupScreen"
         const val FONT = "Font"

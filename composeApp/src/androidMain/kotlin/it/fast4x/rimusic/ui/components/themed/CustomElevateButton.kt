@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaRadius
+
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,7 +25,7 @@ fun CustomElevatedButton(
     onClick: () -> Unit,
     backgroundColor: Color,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(8.dp),
+    shape: Shape = RoundedCornerShape( LumaRadius.Panel ),
     content: @Composable BoxScope.() -> Unit
 ) {
     val interSource = remember { MutableInteractionSource() }

@@ -1,5 +1,7 @@
 package it.fast4x.rimusic.ui.components.themed
 
+import app.kreate.android.themed.luma.LumaColor
+import app.kreate.android.themed.luma.LumaType
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -40,7 +42,7 @@ inline fun Menu(
             .padding(top = 48.dp)
             .verticalScroll(rememberScrollState())
             .fillMaxWidth()
-            .background(colorPalette().background1)
+            .background(LumaColor.Raised)
             .padding(top = 2.dp)
             .padding(vertical = 8.dp)
             .navigationBarsPadding(),
@@ -68,12 +70,15 @@ fun MenuEntry(
             .alpha(if (enabled) 1f else 0.4f)
             .padding(horizontal = 24.dp)
     ) {
+        // Quieter and a little larger than the upstream 15.dp black glyph: in this language the
+        // serif label carries the row and the icon is a marker beside it, not the loudest thing in
+        // it.
         Image(
             painter = painter,
             contentDescription = null,
-            colorFilter = ColorFilter.tint(colorPalette().text),
+            colorFilter = ColorFilter.tint(LumaColor.InkSoft),
             modifier = Modifier
-                .size(15.dp)
+                .size(19.dp)
         )
 
         Column(
@@ -81,15 +86,18 @@ fun MenuEntry(
                 .padding(vertical = 16.dp)
                 .weight(1f)
         ) {
+            // `Meta` is the 14sp sans used for supporting lines, so every menu in the app read as
+            // stock Material with the palette swapped. Menu entries are things you pick, and in
+            // this language anything you pick is set in the display serif.
             BasicText(
                 text = text,
-                style = typography().xs.medium
+                style = LumaType.Row
             )
 
             secondaryText?.let { secondaryText ->
                 BasicText(
                     text = secondaryText,
-                    style = typography().xxs.medium.secondary
+                    style = LumaType.Meta
                 )
             }
         }
