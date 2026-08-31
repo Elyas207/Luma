@@ -52,12 +52,25 @@ class SessionState {
 
     fun intentFor( facetValue: String ): Double = intent[facetValue] ?: 0.0
 
-    /** Shannon entropy over the session's facets — low means they are clearly on one thing. */
+    /** Whether this session has seen enough to say anything about itself at all. */
+    fun hasSignal(): Boolean = intent.values.count { it > 0 } >= 1
+
+    /**
+     * Shannon entropy over the session's facets — low means they are clearly on one thing.
+     *
+     * Returns 1.0 (maximum spread, i.e. "no idea") when there is nothing to measure. Returning 0.0
+     * for an empty session, as this first did, is the opposite of the truth: zero entropy reads as
+     * *perfect focus*, so a brand-new session claimed to be laser-focused and suppressed the
+     * long-term profile it should have been leaning on entirely. A selection test caught it —
+     * a strongly loved creator lost to plain continuity because the profile had been discounted to
+     * 40% by an empty session.
+     */
     fun intentEntropy(): Double {
         val positives = intent.values.filter { it > 0 }
+        if ( positives.isEmpty() ) return 1.0
         if ( positives.size < 2 ) return 0.0
         val total = positives.sum()
-        if ( total <= 0 ) return 0.0
+        if ( total <= 0 ) return 1.0
         return -positives.sumOf { val p = it / total; p * ln( p ) } / ln( positives.size.toDouble() )
     }
 
@@ -69,6 +82,10 @@ class SessionState {
      * them further into the corner they are trying to leave.
      */
     fun blendWeight(): Double {
+        // With no session evidence, the profile is all there is — lean on it rather than on
+        // nothing. The floor for a fresh session is deliberately low, not the 0.35 default.
+        if ( !hasSignal() ) return 0.15
+
         var beta = 0.35
         if ( intentEntropy() < 0.4 ) beta += 0.25    // clearly on one thing right now
         if ( seedWasSearch ) beta += 0.15            // they said what they wanted
