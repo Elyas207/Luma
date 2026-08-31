@@ -368,13 +368,28 @@ Deliberately spent on the surfaces I had looked at least, starting with the tabl
     batch of ten "successes" printed ten misses.
     **P1 (evidence integrity).** — `FIXED` (routes via the destinations menu, which is now one tap
     from Home). All ten skins re-captured; still distinct.
-49. **Very long items are slow to reach first audio.** A ~10-hour recitation intermittently failed
-    to start within the oracle's window while three-to-five minute tracks started reliably in
-    4-6 s. The deep URL validation probes at 40% of `clen`, which for a multi-hour file is an
-    enormous byte offset, and the first ranged fetch follows it.
-    **P1.** — `OPEN`, and honestly diagnosed rather than fixed: the probe offset should be capped
-    in absolute bytes rather than scaled with file length. Recorded in the final report as
-    outstanding.
+49. ~~**Very long items are slow to reach first audio.**~~ **The diagnosis was wrong, and the
+    finding does not reproduce.** I claimed the deep validation probe at 40% of `clen` was
+    expensive for a multi-hour file. Measured against the actual 1.5 GB recitation:
+
+    | probe offset | result |
+    |---|---|
+    | 1% (15 MB) | 206 in 0.30 s |
+    | 20% (300 MB) | 206 in 0.44 s |
+    | 25% (375 MB) | 206 in 0.33 s |
+    | 40% (600 MB) | 206 in **0.14 s** |
+
+    A ranged request is O(1) for the CDN regardless of offset, so the probe was never the cost.
+    Re-tested end to end afterwards: the same 1.5 GB file reached audio at **426 ms** and sustained
+    playback. A second hypothesis — that restore-on-launch races a user-initiated play — also
+    failed to reproduce over a 45-second observation.
+
+    What the failures actually correlate with is the **emulator's `system_server` dying**, which
+    happened twice under the load of repeated force-stops (finding 45). Both failures showed a
+    `PAUSED` state at a position from a *previous* session, which is what a half-dead framework
+    reports.
+    — `REJECTED` as an app defect. If it recurs on real hardware it needs re-opening with a
+    device log, not an emulator one.
 50. The oracle's settle window (45 s) was tuned before playback state was restored at launch. A
     cold start now restores the queue *and* performs a full client sweep for whatever is tapped.
     **P2 (harness).** — `FIXED` (90 s; polling costs nothing when the answer comes early).
