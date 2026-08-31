@@ -5,6 +5,11 @@ Release APK: `Luma-autonomous-2026-08-30.apk`, 18 MB, **debug-signed** (see Deli
 
 Read §2 first. It is the part that matters.
 
+> **Late fix, after the report was first written.** The owner reported that pressing **Love**
+> crashed the whole app. Reproduced, traced, fixed and verified both ways on device; the
+> release APK was rebuilt and the published asset replaced (hash-checked against the local
+> build). Details in §1 and finding 51.
+
 ---
 
 ## 1. What was built, per track
@@ -24,6 +29,15 @@ Also fixed, all found by testing rather than reading: the first play after a fre
 never started (a preference write recreated the activity mid-play); a logged-out install
 believed it was signed in; an off-main-thread preference write silently dropped its value
 and toasted an error at the user.
+
+**Pressing Love crashed the app** (reported by the owner, finding 51). The click handler read
+`player.currentMediaItem` *inside* `Database.asyncTransaction`, which runs on Room's transaction
+executor. Media3 calls `verifyApplicationThread()` on every Player access and throws off the
+main thread, and the throw landed in a bare executor with no handler, so the process died and
+the user was dropped to the launcher. The id is now read on the calling thread and the plain
+`String` passed in. Verified both directions: the previous build crashes to the launcher, the
+fixed one stays foreground and the label flips LOVE → LOVED. A `no-player-in-transaction` check
+now guards the pattern, because the broken version looks entirely reasonable.
 
 ### Track A — UX
 
@@ -165,6 +179,12 @@ Full list in `DECISIONS.md`. The ones that actually need you:
 - **My own findings were wrong four times** (17, 33, 40, and part of 14). Each was caught by
   looking again rather than by reasoning, which suggests the audit's error rate is not zero
   and the 30 open findings deserve the same scepticism.
+- **A P0 crash reached the owner before I found it.** Pressing Love — an obvious, everyday
+  control — took the app down, and three refinement passes did not catch it because my sweeps
+  drove *navigation* and playback rather than the secondary controls on each screen. The audit
+  rubric asks whether every interaction gives feedback; I checked that controls were labelled
+  and legible without ever pressing most of them. That is the single biggest process gap in
+  this run.
 - **Test oracles failed dishonestly twice.** One read a dead media session and reported a
   reproducible playback failure while audio was playing; one had been silently failing for
   every skin, so a check passed against stale evidence for hours. Both are fixed, but the
