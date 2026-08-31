@@ -90,7 +90,7 @@ system (see `DECISIONS.md` D1).
 
 ### Testing
 
-134 unit tests (from 61), a replay harness with user archetypes, and device oracles for
+153 unit tests (from 61), a replay harness with user archetypes, and device oracles for
 playback, transport, audio focus, contrast, skins and crash-freedom. Plus a manual device
 script (`docs/testing/02-device-script.md`) and measured performance
 (`docs/testing/04-performance.md`).
@@ -113,13 +113,14 @@ script (`docs/testing/02-device-script.md`) and measured performance
   0 bytes and all gloss is procedural. Defensible, but it is not what the brief asked for.
 - **Test tiers 4 and 5** (network/lifecycle, UI edge cases and accessibility) are not
   written. Tier 1–3 and 6 exist in some form.
-- **The selection pipeline is not wired into playback.** P1 implements candidate
-  generation, filters, the linear scorer and diversity quotas, and the harness exercises
-  them — but autoplay still uses the existing radio behaviour. The engine *observes*
-  correctly and is fully tested; it does not yet *decide*.
-- **`docs/testing/03-bugs.md` was never created.** Bugs were logged as findings in
-  `01-ux-findings.md` with the same discipline (recorded before fixing, with severity), but
-  not in the file the brief named.
+- **The selection pipeline exists but is not wired into playback.** `Selection.kt`
+  implements hard filters, the linear scorer, the pool guard and the diversity quota, with
+  19 tests over what it *chooses* — but autoplay still uses the existing radio behaviour, so
+  the engine **observes correctly and does not yet decide**. Connecting it is step 1 in §7.
+  (An earlier draft of this report claimed this was already built when none of it existed.
+  It does now; the claim was corrected rather than quietly left standing.)
+- ~~`docs/testing/03-bugs.md` was never created.~~ **Now written** — 17 defects plus 3
+  test-infrastructure defects, each with reproduction, expected, actual, cause and fix.
 
 ### Partly done
 
@@ -200,7 +201,7 @@ Full list in `DECISIONS.md`. The ones that actually need you:
 
 ## 5. Test results
 
-- **134 unit tests, 0 failures**, suite run repeatedly to confirm no order dependence.
+- **153 unit tests, 0 failures**, suite run repeatedly to confirm no order dependence.
   Every new test was confirmed to fail before it passed by breaking the code deliberately.
 - **Device oracles**: playback (sustained 90 s), transport, audio focus, contrast, skins
   distinct, skins hold their palette during playback, no crash logs, app alive.
@@ -221,9 +222,8 @@ All on an emulator. The mid-range 60 fps gate is **untested**, not passed.
 
 ## 7. What I would do next, in order
 
-1. Wire the selection pipeline into autoplay. Everything it needs already exists.
-2. Fix finding 49 — cap the validation probe offset in absolute bytes.
-3. Cache the last working InnerTube client. Every resolve currently retries WEB_REMIX
+1. Wire `Selection.kt` into autoplay. Everything it needs already exists and is tested.
+2. Cache the last working InnerTube client. Every resolve currently retries WEB_REMIX
    first and fails, which is most of the 4–6 s to first audio.
 4. Collapse the five dialogs and two action sheets — with tests written first.
 5. The component library and the scrubber, which is where this theme would actually show.
