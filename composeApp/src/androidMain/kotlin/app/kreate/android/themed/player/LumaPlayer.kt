@@ -511,7 +511,17 @@ private fun SecondaryRow(
             label = if ( isLiked ) "Loved" else "Love",
             active = isLiked,
             onClick = {
-                Database.asyncTransaction { songTable.toggleLike( player.currentMediaItem?.mediaId.orEmpty() ) }
+                // Read the id on the calling (main) thread, *then* hand the plain String to the
+                // background transaction.
+                //
+                // `asyncTransaction` runs its block on Room's transaction executor, so the previous
+                // version reached into `player.currentMediaItem` from a background thread. Media3
+                // calls verifyApplicationThread() on every Player access and throws
+                // IllegalStateException off the main thread, and that throw happened inside a bare
+                // executor with no handler — so pressing Love crashed the whole app.
+                val songId = player.currentMediaItem?.mediaId.orEmpty()
+                if ( songId.isNotBlank() )
+                    Database.asyncTransaction { songTable.toggleLike( songId ) }
             }
         )
 

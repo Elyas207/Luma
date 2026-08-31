@@ -324,4 +324,40 @@ if (cmd === 'radius-scale') {
   ok('RADIUS_SCALE_OK');
 }
 
+// Media3 calls verifyApplicationThread() on every Player access and throws IllegalStateException
+// off the main thread. `Database.asyncTransaction` runs its block on Room's transaction executor,
+// so reaching into the player from inside one crashes the process — that is exactly how pressing
+// "Love" took the whole app down (LumaPlayer.kt:514, reproduced from the stack trace).
+//
+// The fix is always the same shape: read what you need on the calling thread, then pass the plain
+// value in. This check exists because the broken version looks completely reasonable.
+if (cmd === 'no-player-in-transaction') {
+  const offenders = [];
+  for (const p of walk(SRC)) {
+    const live = read(p).split('\n')
+      .map(l => l.replace(/^\s*\/\/.*$/, '').replace(/\/\/.*$/, ''))
+      .join('\n');
+
+    for (const m of live.matchAll(/asyncTransaction\s*\{/g)) {
+      // Walk to the matching brace so a nested lambda cannot end the block early.
+      let depth = 0, end = -1;
+      const open = live.indexOf('{', m.index);
+      for (let i = open; i < live.length; i++) {
+        if (live[i] === '{') depth++;
+        else if (live[i] === '}') { depth--; if (depth === 0) { end = i; break; } }
+      }
+      if (end < 0) continue;
+      const body = live.slice(open, end);
+      const hit = body.match(/\bplayer\s*\.\s*(currentMediaItem|currentTimeline|repeatMode|shuffleModeEnabled|currentPosition|duration|mediaItemCount|isPlaying)/);
+      if (hit) {
+        const line = live.slice(0, m.index).split('\n').length;
+        offenders.push(`${p.slice(ROOT.length + 1)}:${line}: reads ${hit[1]} inside asyncTransaction`);
+      }
+    }
+  }
+  if (offenders.length)
+    fail(`Player accessed from a background transaction — this crashes the process:\n  ${offenders.join('\n  ')}`);
+  ok('NO_PLAYER_IN_TRANSACTION_OK');
+}
+
 fail(`unknown subcommand: ${cmd}`);

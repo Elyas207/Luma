@@ -378,3 +378,32 @@ Deliberately spent on the surfaces I had looked at least, starting with the tabl
 50. The oracle's settle window (45 s) was tuned before playback state was restored at launch. A
     cold start now restores the queue *and* performs a full client sweep for whatever is tapped.
     **P2 (harness).** — `FIXED` (90 s; polling costs nothing when the answer comes early).
+
+---
+
+## Reported by the owner during the run
+
+51. **The app crashes when you press "Love".** Reported from a real phone, reproduced on the
+    emulator, and traced from the stack:
+
+    ```
+    java.lang.IllegalStateException: Player is accessed on the wrong thread.
+      at androidx.media3.exoplayer.ExoPlayerImpl.verifyApplicationThread
+      at app.kreate.android.service.player.StatefulPlayerImpl.getCurrentMediaItem
+      at app.kreate.android.themed.player.LumaPlayerKt.SecondaryRow  (LumaPlayer.kt:514)
+    ```
+
+    `Database.asyncTransaction` runs its block on Room's transaction executor, and the handler
+    read `player.currentMediaItem` *inside* that block. Media3 calls `verifyApplicationThread()`
+    on every Player access and throws off the main thread; the throw landed in a bare executor
+    with no handler, so the process died and the user was dropped to the launcher.
+
+    **P0.** — `FIXED`. The id is read on the calling thread and the plain `String` handed to the
+    transaction. Verified both ways on device: the previous build crashes and leaves the
+    launcher in front, the fixed build stays in the foreground and the label changes LOVE →
+    LOVED.
+
+    Also added `verify.mjs no-player-in-transaction`, because the broken version looks entirely
+    reasonable and the same mistake is easy to repeat. The notification path was checked and is
+    already correct — `PlaybackController.getIconId` marshals every player read to
+    `Dispatchers.Main`.
