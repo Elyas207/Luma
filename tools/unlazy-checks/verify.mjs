@@ -338,7 +338,11 @@ if (cmd === 'no-player-in-transaction') {
       .map(l => l.replace(/^\s*\/\/.*$/, '').replace(/\/\/.*$/, ''))
       .join('\n');
 
-    for (const m of live.matchAll(/asyncTransaction\s*\{/g)) {
+    // Every way this codebase gets onto a background thread, not just asyncTransaction — the
+    // crash could equally have come from a Dispatchers.IO launch, and a check that only knows
+    // about the one place it already bit is not a guard.
+    const BACKGROUND = /(asyncTransaction\s*\{|CoroutineScope\s*\(\s*Dispatchers\.(?:IO|Default)[^)]*\)\s*\.launch\s*\{|transactionExecutor\.execute\s*\{)/g;
+    for (const m of live.matchAll(BACKGROUND)) {
       // Walk to the matching brace so a nested lambda cannot end the block early.
       let depth = 0, end = -1;
       const open = live.indexOf('{', m.index);
@@ -348,10 +352,12 @@ if (cmd === 'no-player-in-transaction') {
       }
       if (end < 0) continue;
       const body = live.slice(open, end);
-      const hit = body.match(/\bplayer\s*\.\s*(currentMediaItem|currentTimeline|repeatMode|shuffleModeEnabled|currentPosition|duration|mediaItemCount|isPlaying)/);
+      // A block that hops back to the main thread itself is correct — that is the fix, not the bug.
+      if (/withContext\s*\(\s*Dispatchers\.Main/.test(body)) continue;
+      const hit = body.match(/\bplayer\s*\.\s*(currentMediaItem|currentTimeline|repeatMode|shuffleModeEnabled|currentPosition|duration|mediaItemCount|isPlaying|currentMediaItemIndex|playbackState)/);
       if (hit) {
         const line = live.slice(0, m.index).split('\n').length;
-        offenders.push(`${p.slice(ROOT.length + 1)}:${line}: reads ${hit[1]} inside asyncTransaction`);
+        offenders.push(`${p.slice(ROOT.length + 1)}:${line}: reads player.${hit[1]} on a background thread`);
       }
     }
   }

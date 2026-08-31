@@ -404,6 +404,12 @@ Deliberately spent on the surfaces I had looked at least, starting with the tabl
     LOVED.
 
     Also added `verify.mjs no-player-in-transaction`, because the broken version looks entirely
-    reasonable and the same mistake is easy to repeat. The notification path was checked and is
+    reasonable and the same mistake is easy to repeat. It covers every background entry point in
+    the codebase — `asyncTransaction`, `Dispatchers.IO/Default` launches and direct
+    `transactionExecutor.execute` — not merely the one place it already bit, and it exempts blocks
+    that hop back via `withContext(Dispatchers.Main)`, since that is the fix rather than the bug.
+    Validated against two separate negative controls.
+
+    **A full audit for the same bug class found no other instances.** The notification path was
     already correct — `PlaybackController.getIconId` marshals every player read to
-    `Dispatchers.Main`.
+    `Dispatchers.Main`. So the Love button was the only one, and it is now guarded.
